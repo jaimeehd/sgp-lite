@@ -1,0 +1,14 @@
+# Configuración mínima. El verificador (tools/sgp_check.py) lee estos valores.
+limites:
+  max_iteraciones_por_tarea: 5
+  max_lineas_constitucion: 20
+rutas:
+  specs: specs
+  cambios: changes
+  tests: tests
+comandos:                    # vacío = sensor sin configurar (error en pre-merge)
+  build: ""                  # ej.: dotnet build -c Release | npm run build
+  tests: ""                  # ej.: dotnet test | python -m pytest -q
+  lint: ""                   # ej.: ruff check . | npx astro check
+  test_por_requisito: ""     # ejecuta SOLO las pruebas de un requisito. Marcadores: {id} = EXP-001, {id_py} = EXP_001
+                             # ej.: python -m pytest -q -k {id_py}   |   python -m unittest discover -s tests -k {id_py}
