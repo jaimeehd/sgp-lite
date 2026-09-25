@@ -1,0 +1,12 @@
+limites:
+  max_iteraciones_por_tarea: 5
+  max_lineas_constitucion: 20
+rutas:
+  specs: specs
+  cambios: changes
+  tests: tests
+comandos:
+  build: "python -m compileall -q descuento"
+  tests: "python -m unittest discover -s tests -t ."
+  lint: "python -m compileall -q tests"
+  test_por_requisito: "python -m unittest discover -s tests -t . -k {id_py}"
