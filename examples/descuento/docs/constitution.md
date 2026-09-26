@@ -1,4 +1,4 @@
-# Constitución — descuento-rincon
+# Constitución — descuento-librodemo
 
 1. **La spec manda**: ningún cálculo se implementa sin un requisito en `specs/`. Verificado por: estructura (`sgp_check`) y revisión humana.
 2. **Tests como puerta**: cada tarea termina con sus pruebas en verde. Verificado por: tests.

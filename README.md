@@ -8,8 +8,9 @@
 Este repo nació de una sesión real trabajando con un agente de IA en el diseño de un sistema
 de gestión de proyectos, comparándolo contra herramientas de la industria (GitHub Spec Kit,
 OpenSpec, BMAD-METHOD) y contra una política de ingeniería personal ya en uso. El resultado no
-fue "la herramienta definitiva" — fue un mapa de qué reemplaza a qué, y una plantilla mínima
-(`kit/`) para aplicarlo.
+fue "la herramienta definitiva" — fue un mapa de qué reemplaza a qué, una plantilla mínima
+(`kit/`) para aplicarlo, y la política de ingeniería completa (`docs/system-engineering-policy.SKILL.md`)
+que terminó demostrando, en la práctica, casi todos los puntos del mapeo de abajo.
 
 ## El mapeo
 
@@ -50,7 +51,11 @@ más frecuencia y más rápido que antes.
 .
 ├── README.md                    — este documento
 ├── docs/
-│   └── ejemplo-practico.md      — recorrido real, con salidas de comandos capturadas (no simuladas)
+│   ├── ejemplo-practico.md              — recorrido real, con salidas de comandos capturadas (no simuladas)
+│   └── system-engineering-policy.SKILL.md — política de ingeniería completa (evidencia antes de editar,
+│                                             DONE verificable, sin inferir, sin tocar fuera de alcance,
+│                                             confirmación antes de comprometer cambios). Instalable tal
+│                                             cual como Agent Skill en cualquier agente compatible.
 ├── kit/                         — plantilla mínima aplicable a cualquier repo (SGP Lite)
 │   ├── METODOLOGIA.md           — la metodología en una página
 │   ├── docs/constitution.md     — principios innegociables, cada uno con su forma de verificarse
@@ -65,6 +70,16 @@ más frecuencia y más rápido que antes.
 └── examples/
     └── descuento/                — proyecto real y ejecutable de punta a punta (ver docs/ejemplo-practico.md)
 ```
+
+### Kit vs. política — cómo se relacionan
+
+`kit/` (SGP Lite) resuelve el *ciclo del cambio*: spec → tareas → verificación → cierre, con un
+verificador que corre en cualquier CI. `docs/system-engineering-policy.SKILL.md` resuelve el
+*comportamiento del agente dentro de cada tarea*: qué evidencia exige antes de editar, cuándo
+algo cuenta como "hecho", cuándo debe preguntar en vez de inferir, y cuándo debe pedir tu
+confirmación antes de comprometerse. Son complementarias — podés usar una sin la otra, o las dos
+juntas: la política gobierna el paso 4 (ejecutar una tarea) del kit con más profundidad de la que
+el kit define por sí solo.
 
 ### Empezar
 

@@ -1,4 +1,4 @@
-# AGENTS.md — descuento-rincon
+# AGENTS.md — descuento-librodemo
 
 ## Proyecto
 Calculadora de precio final con descuento para LibroDemo, una librería ficticia. Lógica en `descuento/calculo.py`.
