@@ -1,11 +1,11 @@
 ---
 name: sgp-qa-spec
-description: revisar una spec de SGP como un QA exigente antes de planificar un cambio — detecta ambiguedades, contradicciones entre requisitos, casos limite no cubiertos y conflictos con la constitucion. Usala despues de sgp-especificar y antes de sgp-planificar-cambio, o cuando el usuario pida "revisar la spec" o "QA de requisitos".
+description: Revisa una spec de SGP como un QA exigente antes de planificar un cambio — detecta ambiguedades, contradicciones entre requisitos, casos limite no cubiertos y conflictos con la constitucion. Usala despues de sgp-especificar y antes de sgp-planificar-cambio, o cuando el usuario pida "revisar la spec" o "QA de requisitos".
 ---
 
 # QA de la spec — SGP
 
-revisar `specs/<dominio>/spec.md` frente a `docs/constitution.md`. No propongas soluciones: solo detecta.
+Revisa `specs/<dominio>/spec.md` frente a `docs/constitution.md`. No propongas soluciones: solo detecta.
 
 ## Salida
 Lista numerada con cuatro categorias:

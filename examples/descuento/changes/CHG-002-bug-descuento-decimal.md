@@ -9,7 +9,7 @@ requisitos: []
 ---
 
 ## Propuesta
-**Problema:** `precio_final(2.675, 0)` da 2.67 en vez de 2.68. `round()` de Python usar redondeo banker\'s (al par mas cercano), no half-up como se acordo en la Fase 2 (QA de la spec).
+**Problema:** `precio_final(2.675, 0)` da 2.67 en vez de 2.68. `round()` de Python usa redondeo banker's (al par mas cercano), no half-up como se acordo en la Fase 2 (QA de la spec).
 **Resultado esperado:** el resultado siempre tiene como maximo 2 decimales reales, sin residuos de flotante.
 **Alcance:** corregir la funcion existente.
 **Fuera de alcance:** cambiar la spec (el comportamiento esperado ya esta en DESC-004, esto es un bug de implementacion).

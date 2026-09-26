@@ -10,7 +10,7 @@ No escribas codigo. El objetivo es dejar `specs/<dominio>/spec.md` correcto y ap
 ## Pasos
 1. Lee `docs/constitution.md` y la spec vigente del dominio (si existe).
 2. Haz preguntas de **una en una** para eliminar ambiguedades: casos limite, errores, fuera de alcance. Maximo 6 preguntas. Prioriza las que mas cambian el alcance.
-3. Con las respuestas, editar `specs/<dominio>/spec.md`:
+3. Con las respuestas, edita `specs/<dominio>/spec.md`:
    - Contexto y objetivo (sin tecnologia).
    - Requisitos con ID unico `DOM-NNN` en formato EARS en español:
      - CUANDO <evento>, EL SISTEMA <respuesta observable>

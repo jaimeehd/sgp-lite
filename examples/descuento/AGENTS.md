@@ -8,7 +8,7 @@ Calculadora de precio final con descuento para LibroDemo, una libreria ficticia.
 - Verificar: `python tools/sgp_check.py --run`
 
 ## Skills disponibles
-`python tools/sync_skills.py --agent <tu-agente>` instalar: sgp-especificar, sgp-qa-spec, sgp-planificar-cambio, sgp-ejecutar-tarea, sgp-validar-cerrar.
+`python tools/sync_skills.py --agent <tu-agente>` instala: sgp-especificar, sgp-qa-spec, sgp-planificar-cambio, sgp-ejecutar-tarea, sgp-validar-cerrar.
 
 ## Reglas
 - Lee `docs/constitution.md`, `specs/` y el cambio activo en `changes/` antes de tocar codigo.
@@ -16,4 +16,4 @@ Calculadora de precio final con descuento para LibroDemo, una libreria ficticia.
 - No modifiques `specs/` salvo peticion explicita.
 
 ## Al terminar cualquier tarea
-- ejecutar `python tools/sgp_check.py --run`, muestra el resultado, marca la tarea `[x]` solo si pasa.
+- Ejecuta `python tools/sgp_check.py --run`, muestra el resultado, marca la tarea `[x]` solo si pasa.

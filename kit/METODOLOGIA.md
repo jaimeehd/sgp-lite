@@ -13,15 +13,15 @@
 | `sgp.yaml` | Comandos de build/tests/lint y como ejecutar las pruebas de un requisito |
 | `tools/sgp_check.py`, `tools/pre-commit` | Verificador y hook (ratchet de pruebas) |
 | `prompts.md` | 5 prompts, uno por fase (para agentes sin soporte de skills) |
-| `skills/*/SKILL.md` | Las mismas 5 fases como Agent Skills (estandar agentskills.io); `tools/sync_skills.py` las instalar en el agente |
+| `skills/*/SKILL.md` | Las mismas 5 fases como Agent Skills (estandar agentskills.io); `tools/sync_skills.py` las instala en el agente |
 
 ## Flujo
 
 | # | Fase | Skill / prompt | Tu apruebas | Sensor |
 |---|---|---|---|---|
-| 1 | **Especificar**: entrevista de una pregunta a la vez; el agente editar `specs/` y te muestra el diff. Sin codigo. | `sgp-especificar` / prompt 1 | **La spec** | Formato EARS, IDs unicos |
+| 1 | **Especificar**: entrevista de una pregunta a la vez; el agente edita `specs/` y te muestra el diff. Sin codigo. | `sgp-especificar` / prompt 1 | **La spec** | Formato EARS, IDs unicos |
 | 2 | **QA de la spec**: ambiguedades, contradicciones, casos limite, conflictos con la constitucion | `sgp-qa-spec` / prompt 2 | — | Sin `[POR-ACLARAR]` |
-| 3 | **Cambio**: `--nuevo nombre` crear el archivo; elige carril, plan breve y tareas (20-30 min, cada una con «Hecho cuando:») | `sgp-planificar-cambio` / prompt 3 | **Plan y tareas** | Requisitos existen en `specs/`; cada uno cubierto por una tarea; carril `mayor` exige diseño |
+| 3 | **Cambio**: `--nuevo nombre` crea el archivo; elige carril, plan breve y tareas (20-30 min, cada una con «Hecho cuando:») | `sgp-planificar-cambio` / prompt 3 | **Plan y tareas** | Requisitos existen en `specs/`; cada uno cubierto por una tarea; carril `mayor` exige diseño |
 | 4 | **Ejecutar**: una tarea por sesion, pruebas primero; para al terminar | `sgp-ejecutar-tarea` / prompt 4 | — | build, tests, lint, ratchet |
 | 5 | **Validar**: requisito por requisito, que prueba lo cubre y su resultado | `sgp-validar-cerrar` / prompt 5 | **El merge** | `--stage pre-merge` (ejecutar las pruebas de cada requisito) |
 | 6 | **Cerrar**: `estado: hecho`; `specs/` ya refleja la realidad | — | — | — |
@@ -65,7 +65,7 @@ Reglas: la respuesta es **observable** (mensaje, codigo de salida, estado); el *
 
 ## Convencion de pruebas (trazabilidad real)
 
-El nombre de la prueba incluye el ID del requisito con guion bajo (`test_EXP_001_...`). `sgp.yaml → test_por_requisito` ejecutar solo esas pruebas; si no encuentra ninguna, el requisito cuenta como **sin cobertura** (un comentario con el ID no basta). Lo que no se automatiza (VB6/COM, hardware) va en la tabla «Verificacion manual» del cambio con `OK` por requisito.
+El nombre de la prueba incluye el ID del requisito con guion bajo (`test_EXP_001_...`). `sgp.yaml → test_por_requisito` ejecuta solo esas pruebas; si no encuentra ninguna, el requisito cuenta como **sin cobertura** (un comentario con el ID no basta). Lo que no se automatiza (VB6/COM, hardware) va en la tabla «Verificacion manual» del cambio con `OK` por requisito.
 
 ## Si necesitas mas (sube de nivel solo cuando duela)
 

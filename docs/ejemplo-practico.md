@@ -1,6 +1,6 @@
 # Ejemplo practico y funcional — SGP Lite de punta a punta
 
-Un proyecto real, chico, ejecutado con la metodologia completar: constitucion → spec → QA → cambio → tareas → validacion → cierre, mas un bugfix en carril `rapido` y una demostracion en vivo del ratchet de pruebas. Cada bloque de codigo de abajo es la **salida real** de correr los comandos, no una simulacion redactada — incluye un error genuino que cometi a mitad de camino y como el propio verificador lo detecto.
+Un proyecto real, chico, ejecutado con la metodologia completa: constitucion → spec → QA → cambio → tareas → validacion → cierre, mas un bugfix en carril `rapido` y una demostracion en vivo del ratchet de pruebas. Cada bloque de codigo de abajo es la **salida real** de correr los comandos, no una simulacion redactada — incluye un error genuino que cometi a mitad de camino y como el propio verificador lo detecto.
 
 **El proyecto:** una funcion que calcula el precio final con descuento para la libreria, algo que podrias usar de verdad en `BookStore`. Repo completo (con historial de git) en `demo-descuento.zip`.
 
@@ -99,7 +99,7 @@ FAIL: test_DESC_005_sin_descuento_devuelve_el_precio_de_lista
 AssertionError: 19.999 != 20.0
 ```
 
-**Correccion** (`round(bruto, 2)`) y verificacion completar:
+**Correccion** (`round(bruto, 2)`) y verificacion completa:
 ```
 $ python tools/sgp_check.py --run
 → build: python -m compileall -q descuento
@@ -164,7 +164,7 @@ Dias despues, en caja: un descuento de 0% sobre $2.675 da $2.67 en vez de $2.68.
 2.67
 ```
 
-`round()` de Python usar *banker's rounding* (al par mas cercano), no half-up — el redondeo que se acordo **verbalmente** en la Fase 2 (QA) pero nunca se escribio en la spec ni en un ADR. Es un bug de implementacion, no un requisito nuevo → **carril `rapido`**:
+`round()` de Python usa *banker's rounding* (al par mas cercano), no half-up — el redondeo que se acordo **verbalmente** en la Fase 2 (QA) pero nunca se escribio en la spec ni en un ADR. Es un bug de implementacion, no un requisito nuevo → **carril `rapido`**:
 
 ```
 $ python tools/sgp_check.py --nuevo "bug-descuento-decimal"

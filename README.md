@@ -98,7 +98,7 @@ opcional respecto al siguiente — se puede parar en cualquiera y quedar en un e
 
 ### Paso 0 — Solo la politica de comportamiento (mas barato, sin tocar nada del repo)
 
-1. copiar `docs/system-engineering-policy.SKILL.md` a la carpeta de skills de el agente
+1. Copiar `docs/system-engineering-policy.SKILL.md` a la carpeta de skills de el agente
    (p. ej. `~/.claude/skills/system-engineering-policy/SKILL.md` para Claude Code).
 2. No requiere ningun archivo nuevo en el repo de trabajo. Gobierna el *comportamiento* del
    agente (evidencia antes de editar, DONE verificable, no inferir, no salir de alcance) en
@@ -107,11 +107,11 @@ opcional respecto al siguiente — se puede parar en cualquiera y quedar en un e
 
 ### Paso 1 — Kit minimo en un repo (metodologia de specs)
 
-1. copiar al repo: `kit/docs/`, `kit/specs/`, `kit/changes/`, `kit/tools/`, `kit/AGENTS.md`,
+1. Copiar al repo: `kit/docs/`, `kit/specs/`, `kit/changes/`, `kit/tools/`, `kit/AGENTS.md`,
    `kit/CLAUDE.md`, `kit/sgp.yaml`, `kit/prompts.md`, `kit/METODOLOGIA.md`.
-2. editar `docs/constitution.md`, `AGENTS.md` y los comandos de `sgp.yaml` (build, tests, lint,
+2. Editar `docs/constitution.md`, `AGENTS.md` y los comandos de `sgp.yaml` (build, tests, lint,
    `test_por_requisito`) para el stack.
-3. instalar el hook: `cp tools/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit`.
+3. Instalar el hook: `cp tools/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit`.
 
 ### Paso 2 — Skills del kit (si el agente soporta Agent Skills)
 
@@ -119,8 +119,8 @@ opcional respecto al siguiente — se puede parar en cualquiera y quedar en un e
 python tools/sync_skills.py --agent claude-code   # o copilot, codex, cursor, generico
 ```
 
-instalar `sgp-especificar`, `sgp-qa-spec`, `sgp-planificar-cambio`, `sgp-ejecutar-tarea` y
-`sgp-validar-cerrar`. Si el agente no soporta skills, usar los mismos 5 pasos como prompts desde
+Instala `sgp-especificar`, `sgp-qa-spec`, `sgp-planificar-cambio`, `sgp-ejecutar-tarea` y
+`sgp-validar-cerrar`. Si el agente no soporta skills, usa los mismos 5 pasos como prompts desde
 `kit/prompts.md`.
 
 ### Paso 3 — Primer cambio real
