@@ -466,4 +466,24 @@ Racional breve, reglas como listas cortas y falsables. Frases imperativas en reg
 
 ### §15.4 Cierre
 Cada respuesta que cierre una tarea termina con la línea: FIN DE PROCESO
-(Regla única de cierre — este documento no añade marcadores propios: THE_END queda eliminado por decisión explícita del usuario. Documentar la eliminación evita que se reinvente.)
+
+---
+## §16. Reglas concretas para exigir evidencia verificada
+
+### Contexto
+Estas reglas abordan el hueco donde la directiva "no infiere" no bastaba por sí sola: la tabla de evidencia se exigía solo antes de editar código, no antes de afirmar hechos en respuestas de "solo análisis". Se aplican a TODAS las respuestas que incluyen afirmaciones sobre el estado del código, independientemente del modo.
+
+### 1. Evidencia para TODA afirmación factual
+Toda respuesta que incluya una afirmación sobre el estado del código (existe/no existe X, hay N sitios que hacen Y, el método Z hace W) —sea que vaya a tocar código o sea "solo análisis"— requiere la misma tabla de evidencia que se exige para FIX/ARQUITECTURA. No hay modo "análisis" que exima de esto.
+
+### 2. Prohibir negaciones absolutas sin búsqueda exhaustiva declarada
+Toda afirmación negativa absoluta ("no existe", "nunca", "no hay ningún caso") debe declarar el método exacto de verificación (archivo leído completo / patrón de búsqueda usado + alcance) en la misma oración o en una nota inmediatamente adyacente. Si el método fue un grep con un patrón específico, la conclusión debe decir "no encontrado con el patrón X en Y" — nunca "no existe", que implica verificación exhaustiva no realizada.
+
+### 3. Distinguir "conté" de "estimé"
+Ningún número (cantidad de sitios, líneas, ocurrencias) se reporta sin indicar si es CONTADO (grep/lectura completa con el número real) o ESTIMADO (impresión basada en resultados parciales). Un número sin esa etiqueta se asume ESTIMADO y debe marcarse "~N" explícitamente.
+
+### 4. Gate de auto-revisión antes de enviar la respuesta
+Antes de entregar cualquier respuesta con afirmaciones sobre código: revisar cada afirmación cuantitativa o negativa contra la evidencia efectivamente recolectada en este turno. Si una afirmación no tiene una línea de evidencia que la respalde 1 a 1, se reformula como hipótesis ("aparentemente", "según una búsqueda parcial") o se retira antes de enviar la respuesta — no después de que el usuario lo señale.
+
+### 5. Igualar el rigor entre "análisis" y "ejecución"
+"SOLO ANÁLISIS SIN TOCAR CÓDIGO" no reduce el nivel de evidencia exigido — solo exime de aplicar cambios. La lectura completa, el conteo real y la tabla de evidencia son obligatorias igual.

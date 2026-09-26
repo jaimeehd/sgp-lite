@@ -91,6 +91,59 @@ python -m unittest tools/test_sgp_check.py -v   # 27 pruebas del propio verifica
 
 Para instalar el kit en un repo propio, seguí `kit/LEEME.md`.
 
+## Procedimiento de implementación
+
+Orden recomendado para adoptar esto en un repo real, de menor a mayor compromiso. Cada paso es
+opcional respecto al siguiente — se puede parar en cualquiera y quedar en un estado útil.
+
+### Paso 0 — Solo la política de comportamiento (más barato, sin tocar nada del repo)
+
+1. Copiá `docs/system-engineering-policy.SKILL.md` a la carpeta de skills de tu agente
+   (p. ej. `~/.claude/skills/system-engineering-policy/SKILL.md` para Claude Code).
+2. No requiere ningún archivo nuevo en el repo de trabajo. Gobierna el *comportamiento* del
+   agente (evidencia antes de editar, DONE verificable, no inferir, no salir de alcance) en
+   cualquier tarea, sin metodología de specs.
+3. Válido como punto de partida único — es la pieza que más impacto tiene por menor costo.
+
+### Paso 1 — Kit mínimo en un repo (metodología de specs)
+
+1. Copiá al repo: `kit/docs/`, `kit/specs/`, `kit/changes/`, `kit/tools/`, `kit/AGENTS.md`,
+   `kit/CLAUDE.md`, `kit/sgp.yaml`, `kit/prompts.md`, `kit/METODOLOGIA.md`.
+2. Editá `docs/constitution.md`, `AGENTS.md` y los comandos de `sgp.yaml` (build, tests, lint,
+   `test_por_requisito`) para tu stack.
+3. Instalá el hook: `cp tools/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit`.
+
+### Paso 2 — Skills del kit (si tu agente soporta Agent Skills)
+
+```bash
+python tools/sync_skills.py --agent claude-code   # o copilot, codex, cursor, generico
+```
+
+Instala `sgp-especificar`, `sgp-qa-spec`, `sgp-planificar-cambio`, `sgp-ejecutar-tarea` y
+`sgp-validar-cerrar`. Si tu agente no soporta skills, usá los mismos 5 pasos como prompts desde
+`kit/prompts.md`.
+
+### Paso 3 — Primer cambio real
+
+1. Especificar: entrevista de una pregunta a la vez → `specs/<dominio>/spec.md` con requisitos
+   EARS e ID (`DOM-001`).
+2. QA de la spec: ambigüedades, contradicciones, casos límite, conflictos con la constitución.
+3. Planificar: `python tools/sgp_check.py --nuevo <nombre>` → completar propuesta, criterios de
+   finalización y tareas de 20-30 min con "Hecho cuando: ...".
+4. Ejecutar: una tarea por sesión, prueba en rojo antes que código, `sgp_check.py --run` al
+   terminar cada una.
+5. Validar y cerrar: `sgp_check.py --stage pre-merge` (trazabilidad real por requisito, no solo
+   por nombre) antes de aprobar el merge.
+
+Ver `docs/ejemplo-practico.md` para este mismo procedimiento corrido de punta a punta, con las
+salidas reales de cada comando.
+
+### Paso 4 — Repetir y ajustar
+
+No hay fase final. Cada cambio futuro repite el Paso 3 y relee `specs/` antes de tocar nada —
+así la especificación nunca queda desactualizada. Ajustá `sgp.yaml` (presupuesto de iteraciones,
+límite de revisiones) con lo que tu propio uso muestre que hace falta.
+
 ## Por qué esto no es "la forma correcta"
 
 La base de evidencia sobre desarrollo guiado por especificaciones con IA es todavía joven —
