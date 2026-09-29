@@ -47,10 +47,13 @@ más frecuencia y más rápido que antes.
 
 ## Qué hay en este repo
 
+> **¿Primera vez o no eres experto?** Empieza por [`docs/manual-usuario.md`](docs/manual-usuario.md): explica todo paso a paso, sin dar nada por sabido.
+
 ```text
 .
 ├── README.md                    — este documento
 ├── docs/
+│   ├── manual-usuario.md                — manual paso a paso para personas no expertas
 │   ├── ejemplo-practico.md              — recorrido real, con salidas de comandos capturadas (no simuladas)
 │   └── system-engineering-policy.SKILL.md — política de ingeniería completa (evidencia antes de editar,
 │                                             DONE verificable, sin inferir, sin tocar fuera de alcance,
