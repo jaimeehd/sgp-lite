@@ -61,6 +61,7 @@ más frecuencia y más rápido que antes.
 │                                             cual como Agent Skill en cualquier agente compatible.
 ├── kit/                         — plantilla mínima aplicable a cualquier repo (SGP Lite)
 │   ├── METODOLOGIA.md           — la metodología en una página
+│   ├── ADOPCION.md              — cuánto del kit usar según el tamaño/criticidad del proyecto
 │   ├── docs/constitution.md     — principios innegociables, cada uno con su forma de verificarse
 │   ├── specs/                   — dónde viven los requisitos vigentes
 │   ├── changes/                 — plantilla de un cambio (propuesta + tareas + progreso)
@@ -68,6 +69,7 @@ más frecuencia y más rápido que antes.
 │   ├── prompts.md               — los mismos 5 pasos como prompts, para agentes sin soporte de skills
 │   └── tools/
 │       ├── sgp_check.py         — verificador: estructura, trazabilidad real, presupuesto, ratchet de pruebas
+│       ├── sgp_kit.py           — instala y ACTUALIZA el kit en un proyecto (init/update/status)
 │       ├── sync_skills.py       — instala las skills en la ruta de tu agente
 │       └── pre-commit           — hook de git que bloquea pruebas borradas o debilitadas
 └── examples/
@@ -98,6 +100,8 @@ Para instalar el kit en un repo propio, sigue `kit/LEEME.md`.
 
 Orden recomendado para adoptar esto en un repo real, de menor a mayor compromiso. Cada paso es
 opcional respecto al siguiente — se puede parar en cualquiera y quedar en un estado útil.
+Si dudás de **cuánto** usar según el tamaño o la criticidad de tu proyecto, empezá por
+[`kit/ADOPCION.md`](kit/ADOPCION.md).
 
 ### Paso 0 — Solo la política de comportamiento (más barato, sin tocar nada del repo)
 
@@ -110,8 +114,10 @@ opcional respecto al siguiente — se puede parar en cualquiera y quedar en un e
 
 ### Paso 1 — Kit mínimo en un repo (metodología de specs)
 
-1. Copia al repo: `kit/docs/`, `kit/specs/`, `kit/changes/`, `kit/tools/`, `kit/AGENTS.md`,
-   `kit/CLAUDE.md`, `kit/sgp.yaml`, `kit/prompts.md`, `kit/METODOLOGIA.md`.
+1. Instala el kit con el actualizador (recomendado, permite traer mejoras después):
+   `python kit/tools/sgp_kit.py init --source kit --dest .` desde la raíz de tu repo.
+   (Alternativa manual: copia `kit/docs/`, `kit/specs/`, `kit/changes/`, `kit/tools/`, `kit/AGENTS.md`,
+   `kit/CLAUDE.md`, `kit/sgp.yaml`, `kit/prompts.md`, `kit/METODOLOGIA.md`.)
 2. Edita `docs/constitution.md`, `AGENTS.md` y los comandos de `sgp.yaml` (build, tests, lint,
    `test_por_requisito`) para tu stack.
 3. Instala el hook: `cp tools/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit`.

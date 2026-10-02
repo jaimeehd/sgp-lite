@@ -1,0 +1,22 @@
+# Manifiesto del kit SGP Lite. Lo lee tools/sgp_kit.py.
+#   managed <ruta|dir>  -> se instala y se ACTUALIZA en cada `update` (protegido por hash)
+#   seeded  <ruta>      -> se copia solo si NO existe en el proyecto; nunca se sobreescribe
+
+managed tools/sgp_check.py
+managed tools/sync_skills.py
+managed tools/pre-commit
+managed tools/test_sgp_check.py
+managed tools/sgp_kit.py
+managed tools/test_sgp_kit.py
+managed prompts.md
+managed METODOLOGIA.md
+managed ADOPCION.md
+managed changes/_plantilla.md
+managed docs/adr/_plantilla.md
+managed specs/_plantilla-dominio/spec.md
+managed skills
+
+seeded docs/constitution.md
+seeded AGENTS.md
+seeded CLAUDE.md
+seeded sgp.yaml

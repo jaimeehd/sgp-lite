@@ -256,7 +256,7 @@ def run_commands(root, cmds, rep, strict):
             fix = f"define comandos.{name} en sgp.yaml (un sensor sin comprobación real no cuenta como 'pasó')"
             (rep.error if strict and name != "lint" else rep.warn)("sgp.yaml", f"sensor '{name}' sin configurar", fix)
             continue
-        print(f"→ {name}: {cmd}")
+        print(f"-> {name}: {cmd}")
         proc = run_shell(cmd, root)
         if proc.returncode != 0:
             tail = "\n".join((proc.stdout + proc.stderr).strip().splitlines()[-30:])

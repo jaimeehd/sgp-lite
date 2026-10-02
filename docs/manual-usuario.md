@@ -244,7 +244,7 @@ Al terminar una tarea, el asistente cierra con la frase `FIN DE PROCESO`.
 ## 8. Preguntas frecuentes
 
 **¿Tengo que usar todo el kit?**
-No. Puedes quedarte solo con la política (sección 4.1). Si un día quieres más orden, agregas el kit.
+No. Puedes quedarte solo con la política (sección 4.1). Si un día quieres más orden, agregas el kit. Para decidir cuánto usar según el tamaño y la importancia del proyecto, mira `kit/ADOPCION.md`.
 
 **¿Funciona con cualquier lenguaje de programación?**
 Sí, porque el verificador solo ejecuta los comandos que tú le indiques en `sgp.yaml`. Lo que cambia entre lenguajes es cómo se compila y cómo se corren las pruebas.
@@ -291,5 +291,6 @@ No. Garantiza que cada requisito escrito tiene una prueba que lo ejercita y que 
 
 - El recorrido completo con ejemplos reales de salida: `docs/ejemplo-practico.md`.
 - La metodología en una página: `kit/METODOLOGIA.md`.
+- Cuánto del kit usar según el tamaño del proyecto: `kit/ADOPCION.md`.
 - Un proyecto de ejemplo ejecutable: carpeta `examples/descuento/`.
 - La política completa: `docs/system-engineering-policy.SKILL.md`.
