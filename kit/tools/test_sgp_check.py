@@ -54,6 +54,15 @@ class Estructura(Base):
         rc, out = self.run_check(self.repo({}))
         self.assertEqual(rc, 0, out)
 
+    def test_run_en_consola_cp1252_no_crashea(self):
+        # En Windows la consola puede ser cp1252: un carácter no codificable (p. ej. →) en un
+        # print lanza UnicodeEncodeError y aborta con traceback en vez de informar el resultado.
+        y = sgp_yaml(build=f"{PY} -c pass", tests=f"{PY} -c pass", lint=f"{PY} -c pass")
+        r = self.repo({"sgp.yaml": y})
+        rc, out = self.run_check(r, "--run", env={"PYTHONIOENCODING": "cp1252"})
+        self.assertEqual(rc, 0, out)
+        self.assertNotIn("UnicodeEncodeError", out)
+
     def test_tarea_sin_hecho_cuando(self):
         r = self.repo({"changes/CHG-001-x.md": change(tasks="- [x] T001 [EXP-001] uno\n- [x] T002 [EXP-002] dos\n  Hecho cuando: ok\n")})
         rc, out = self.run_check(r)
@@ -131,6 +140,19 @@ class PreMerge(Base):
     def test_pasa_con_pruebas_reales(self):
         rc, out = self.run_check(self.pm(), "--stage", "pre-merge")
         self.assertEqual(rc, 0, out); self.assertIn("EXP-001", out)
+
+    def test_filtro_dotnet_sin_coincidencias_no_es_ok(self):
+        # dotnet test con un filtro sin coincidencias termina con código 0 y solo escribe un mensaje
+        # (visto en la práctica en español; el inglés es el texto documentado del mismo mensaje).
+        mensajes = ["Ninguna prueba coincide con el filtro de casos de prueba proporcionado",
+                    "No test matches the given testcase filter"]
+        for msg in mensajes:
+            with self.subTest(msg=msg):
+                tpl = f"{PY} -c \\\"print('{msg}')\\\""
+                y = sgp_yaml(build=f"{PY} -c pass", tests=f"{PY} -c pass", lint=f"{PY} -c pass", test_por_requisito=tpl)
+                rc, out = self.run_check(self.pm(cmds=y), "--stage", "pre-merge")
+                self.assertEqual(rc, 1, out)
+                self.assertIn("sin pruebas", out)
 
     def test_falso_verde_por_comentario(self):
         rc, out = self.run_check(self.pm(tests="# EXP-001 EXP-002\nimport unittest\nclass T(unittest.TestCase):\n    def test_algo(self): pass\n"),

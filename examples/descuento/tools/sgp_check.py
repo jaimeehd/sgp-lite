@@ -21,7 +21,8 @@ TASK_RE = re.compile(r"^\s*-\s*\[( |x|X)\]\s+(T\d+)\b(.*)$")
 TAG_RE = re.compile(rf"\[({ID}(?:\s*,\s*{ID})*)\]")
 PENDING = "[POR-ACLARAR]"
 VAGAS = ("adecuad", "rápid", "rapid", "intuitiv", "fácil", "facil", "robust", "eficien", "amigabl")  # raíces
-SIN_PRUEBAS = re.compile(r"Ran 0 tests|no tests ran|collected 0 items|0 tests? (found|ran)|Total tests: 0", re.I)
+SIN_PRUEBAS = re.compile(r"Ran 0 tests|no tests ran|collected 0 items|0 tests? (found|ran)|Total tests: 0"
+                         r"|No test matches|Ninguna prueba coincide", re.I)  # las dos últimas: dotnet test con filtro sin coincidencias (código 0)
 DEFAULTS = {"max_iteraciones_por_tarea": "5", "max_lineas_constitucion": "20",
             "specs": "specs", "cambios": "changes", "tests": "tests"}
 
@@ -149,7 +150,7 @@ def check_change(path, reqs, rep_main, today, cfg):
     text, fm, ids, tasks, manual = parse_change(path)
     carril, estado = fm.get("carril", "normal"), fm.get("estado", "")
     if carril not in CARRILES:
-        rep.error(name, f"carril inválido '{carril}'", "usa normal o rapido")
+        rep.error(name, f"carril inválido '{carril}'", "usa rapido, normal o mayor")
         return None
     if estado not in ESTADOS:
         rep.error(name, f"estado inválido '{estado}'", "usa: " + ", ".join(ESTADOS))
@@ -256,7 +257,7 @@ def run_commands(root, cmds, rep, strict):
             fix = f"define comandos.{name} en sgp.yaml (un sensor sin comprobación real no cuenta como 'pasó')"
             (rep.error if strict and name != "lint" else rep.warn)("sgp.yaml", f"sensor '{name}' sin configurar", fix)
             continue
-        print(f"→ {name}: {cmd}")
+        print(f"-> {name}: {cmd}")
         proc = run_shell(cmd, root)
         if proc.returncode != 0:
             tail = "\n".join((proc.stdout + proc.stderr).strip().splitlines()[-30:])

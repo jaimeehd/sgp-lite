@@ -193,16 +193,20 @@ def status(source: Path, dest: Path):
 
 def main(argv):
     ap = argparse.ArgumentParser(description="Instala/actualiza el kit SGP Lite en un proyecto.")
-    ap.add_argument("accion", choices=["init", "update", "status"])
-    ap.add_argument("--source", required=True, help="ruta de la carpeta del kit (con sgp-kit.manifest)")
+    ap.add_argument("accion", nargs="?", choices=["init", "update", "status"])
+    ap.add_argument("--source", required=False, help="ruta de la carpeta del kit (con sgp-kit.manifest)")
     ap.add_argument("--dest", default=".", help="raíz del proyecto destino")
     ap.add_argument("--version", action="store_true", help="muestra la versión del kit y sale")
     a = ap.parse_args(argv)
+    if a.version:
+        print(read_version(Path(__file__).resolve().parent.parent))
+        return 0
+    if not a.source:
+        ap.error("--source es requerido (salvo con --version)")
+    if a.accion is None:
+        ap.error("se requiere una acción: init, update o status")
     source = Path(a.source).resolve()
     dest = Path(a.dest).resolve()
-    if a.version:
-        print(read_version(source))
-        return 0
     if not (source / MANIFEST).exists():
         print(f"'{source}' no parece el kit: falta {MANIFEST}")
         return 2

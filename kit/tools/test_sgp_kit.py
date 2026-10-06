@@ -86,6 +86,17 @@ class SgpKitTests(unittest.TestCase):
         self.assertEqual(1, len(backups))
         self.assertEqual("MIA", backups[0].read_text(encoding="utf-8"))
 
+    def test_cli_version_sin_accion_ni_source(self):
+        # --version funciona solo: informa la versión del kit sin exigir acción ni --source
+        rc = sgp_kit.main(["--version"])
+        self.assertEqual(0, rc)
+
+    def test_cli_sin_accion_falla_ruidoso(self):
+        # --source sin verbo no ejecuta nada en silencio: usage + exit 2
+        with self.assertRaises(SystemExit) as cm:
+            sgp_kit.main(["--source", str(self.kit)])
+        self.assertEqual(2, cm.exception.code)
+
     def test_status_reports_version_and_pending(self):
         sgp_kit.apply(self.kit, self.dest)
         (self.kit / "tools" / "a.py").write_text("A2", encoding="utf-8")

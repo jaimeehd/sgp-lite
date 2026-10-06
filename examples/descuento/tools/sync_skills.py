@@ -19,6 +19,7 @@ DESTINOS = {
     "copilot":     {"repo": ".github/skills", "personal": "~/.copilot/skills"},
     "codex":       {"repo": ".agents/skills", "personal": "~/.codex/skills"},
     "cursor":      {"repo": ".cursor/skills", "personal": None},
+    "opencode":    {"repo": ".agents/skills", "personal": "~/.agents/skills"},  # estándar agentskills.io; opencode lo lee
     "generico":    {"repo": ".agents/skills", "personal": None},  # estándar agentskills.io
 }
 
@@ -50,7 +51,7 @@ def main():
         if target.exists():
             shutil.rmtree(target)
         shutil.copytree(skill_dir, target)
-        print(f"→ {target}")
+        print(f"-> {target}")
     print(f"\n{len(list(src.iterdir()))} skill(s) instaladas para {a.agent} ({a.scope}).")
     print("Si tu agente no aparece en la lista: cualquier herramienta compatible con el estándar")
     print("agentskills.io puede leer skills/*/SKILL.md directamente; solo copia la carpeta a su ruta de skills.")
