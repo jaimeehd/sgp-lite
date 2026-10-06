@@ -91,9 +91,11 @@ Dentro de tu proyecto:
    Este paso requiere que la carpeta ya sea un repositorio Git (si no lo es, ejecuta antes `git init`).
 5. **(Opcional) Instala las skills del kit** si tu asistente las soporta:
    ```bash
-   python tools/sync_skills.py --agent claude-code
-   ```
-   Otros valores posibles: `copilot`, `codex`, `cursor`, `generico`. El comando `python tools/sync_skills.py --list` muestra las opciones.
+    python tools/sync_skills.py --agent claude-code
+    ```
+
+**(Opcional) Instala el kit completo usando el instalador:** `python kit/tools/sgp_kit.py init --source . --dest .` (ver `kit/LEEME.md`).
+   Otros valores posibles: `copilot`, `codex`, `cursor`, `generico`, `opencode`. El comando `python tools/sync_skills.py --list` muestra las opciones.
 
 Para comprobar que todo quedó bien, ejecuta:
 

@@ -102,9 +102,9 @@ AssertionError: 19.999 != 20.0
 **Corrección** (`round(bruto, 2)`) y verificación completa:
 ```
 $ python tools/sgp_check.py --run
-→ build: python -m compileall -q descuento
-→ tests: python -m unittest discover -s tests -t .
-→ lint: python -m compileall -q tests
+-> build: python -m compileall -q descuento
+-> tests: python -m unittest discover -s tests -t .
+-> lint: python -m compileall -q tests
 Resumen: 0 error(es), 0 aviso(s).
 ```
 
@@ -219,7 +219,7 @@ El commit **no se hizo**. Si de verdad fuera legítimo (una prueba mal escrita),
 
 ## 8. Bonus: un defecto real del propio verificador, encontrado al usarlo
 
-Durante el paso 6, `--stage pre-merge` con `CHG-002` en revisión (carril `rapido`, sin requisitos) mostraba `[AVISO] no hay cambios en estado 'revision'`, que es **falso** — sí lo había, solo que el carril `rapido` no lleva trazabilidad por requisito. Lo corregí en `tools/sgp_check.py` (ahora distingue "no hay ninguno" de "hay, pero es carril rápido") y volví a correr las 27 pruebas del verificador: siguen en verde. La versión corregida es la que trae este zip y también `sgp-lite.zip`.
+Durante el paso 6, `--stage pre-merge` con `CHG-002` en revisión (carril `rapido`, sin requisitos) mostraba `[AVISO] no hay cambios en estado 'revision'`, que es **falso** — sí lo había, solo que el carril `rapido` no lleva trazabilidad por requisito. Lo corregí en `tools/sgp_check.py` (ahora distingue "no hay ninguno" de "hay, pero es carril rápido") y volví a correr las pruebas del verificador (28 en la versión actual): siguen en verde. La versión corregida es la que trae este zip y también `sgp-lite.zip`.
 
 ---
 

@@ -21,14 +21,14 @@ python <kit>/tools/sgp_kit.py update --source <kit> --dest .
 - **seeded** (solo se copian si faltan; nunca se pisan): `docs/constitution.md`, `AGENTS.md`, `CLAUDE.md`, `sgp.yaml`.
 - `sgp-kit.manifest` (en el kit) declara qué es cada cosa.
 
-Si preferís el método manual (sin updates), copiá a mano la misma lista de `sgp-kit.manifest`.
+Si prefieres el método manual (sin updates), copia a mano la misma lista de `sgp-kit.manifest`.
 
 ## Instalar en un repo (5 pasos)
 
 1. Copia al repo (o usa `sgp_kit.py init`, arriba): `docs/`, `specs/`, `changes/`, `tools/`, `skills/`, `AGENTS.md`, `CLAUDE.md`, `sgp.yaml`, `prompts.md`, `METODOLOGIA.md`.
 2. Edita `docs/constitution.md`, `AGENTS.md` y los comandos de `sgp.yaml` (build, tests, lint y `test_por_requisito`).
 3. Hook: `cp tools/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit` (en Windows funciona con Git Bash).
-   Skills (opcional, si tu agente las soporta): `python tools/sync_skills.py --agent claude-code` (o `copilot`, `codex`, `cursor`, `generico`; `--list` muestra las opciones).
+   Skills (opcional, si tu agente las soporta): `python tools/sync_skills.py --agent claude-code` (o `copilot`, `codex`, `cursor`, `generico`, `opencode`; `--list` muestra las opciones).
 4. Primer cambio: fase 1 especificar → 2 QA → 3 planificar (elige carril: rapido/normal/mayor) → 4 ejecutar (una tarea por sesión) → 5 validar. Usa las skills si las instalaste, o los prompts equivalentes de `prompts.md`.
 5. Verifica cuando quieras: `python tools/sgp_check.py` (rápido) · `--run` (con comandos) · `--stage pre-merge` (estricto, con trazabilidad).
 

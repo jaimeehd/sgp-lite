@@ -19,8 +19,8 @@ No escribas código. El objetivo es dejar `specs/<dominio>/spec.md` correcto y a
      - MIENTRAS <estado>, EL SISTEMA <respuesta>
      - EL SISTEMA <propiedad que siempre se cumple>
    - No funcionales, casos límite (→ requisito que los cubre), fuera de alcance, **Supuestos** (lo asumido, con `[POR-ACLARAR]`) y dudas abiertas con `[POR-ACLARAR]`.
-5. Cada requisito debe ser **comprobable** (mensaje, código de salida, estado): decí cómo se verifica. Nada de "rápido", "intuitivo", "adecuado" sin cifra.
-6. Si dos requisitos chocan, resolvelo por **precedencia** (seguridad > restricción de proyecto > pedido > compatibilidad > corrección > mantenibilidad) y anótalo.
+5. Cada requisito debe ser **comprobable** (mensaje, código de salida, estado): di cómo se verifica. Nada de "rápido", "intuitivo", "adecuado" sin cifra.
+6. Si dos requisitos chocan, resuélvelo por **precedencia** (seguridad > restricción de proyecto > pedido > compatibilidad > corrección > mantenibilidad) y anótalo.
 7. Muestra el diff y espera aprobación explícita antes de continuar a un cambio.
 
 ## No hacer

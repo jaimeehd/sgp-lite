@@ -10,7 +10,7 @@ Revisa `specs/<dominio>/spec.md` frente a `docs/constitution.md`. No propongas s
 ## Salida
 Lista numerada con estas categorías:
 1. Ambigüedades (requisitos que admiten más de una interpretación razonable).
-2. Contradicciones entre requisitos (resolvelas por precedencia: seguridad > restricción de proyecto > pedido > compatibilidad > corrección > mantenibilidad).
+2. Contradicciones entre requisitos (resuélvelas por precedencia: seguridad > restricción de proyecto > pedido > compatibilidad > corrección > mantenibilidad).
 3. Casos límite mencionados pero sin requisito que los cubra, o requisitos sin escenario de error.
 4. Conflictos con algún principio de `docs/constitution.md`.
 5. Supuestos sin confirmar o requisitos sin forma de comprobarse.

@@ -78,7 +78,7 @@ El nombre de la prueba incluye el ID del requisito con guion bajo (`test_EXP_001
 
 - **Decisiones estructurales:** `docs/adr/_plantilla.md`.
 - **Varios cambios en paralelo:** un `git worktree` y una rama por cambio.
-- **Métricas DORA, límite de revisiones, deltas por dominio, portafolio:** están en el kit completo anterior (`sgp-template`). No los actives hasta necesitarlos.
+- **Métricas DORA, límite de revisiones, deltas por dominio, portafolio de varios proyectos:** no están en este kit liviano. Si hacen falta, se agregan cuando su ausencia realmente duela, no antes.
 
 ## Límites
 

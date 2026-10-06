@@ -2,7 +2,7 @@
 
 > Comportamiento VIGENTE del dominio. Se edita primero la spec y luego el código (con diff revisado por ti).
 > Un requisito por línea: `- **DOM-NNN** <patrón EARS>`. Prefijo = 2-5 letras mayúsculas del dominio.
-> Cada requisito indica **cómo se comprueba** (mensaje, salida, estado): si no podés decir cómo verificarlo, no es un requisito.
+> Cada requisito indica **cómo se comprueba** (mensaje, salida, estado): si no puedes decir cómo verificarlo, no es un requisito.
 > Un **supuesto** no es un requisito: lo asumido va en «Supuestos», marcado `[POR-ACLARAR]`.
 > Ante conflicto entre requisitos, precedencia: seguridad > restricción de proyecto > pedido > compatibilidad > corrección > mantenibilidad.
 

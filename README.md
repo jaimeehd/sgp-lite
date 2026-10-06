@@ -91,7 +91,7 @@ el kit define por sí solo.
 ```bash
 cd kit
 python tools/sgp_check.py --help
-python -m unittest tools/test_sgp_check.py -v   # 27 pruebas del propio verificador
+python -m unittest tools/test_sgp_check.py -v   # 28 pruebas del propio verificador
 ```
 
 Para instalar el kit en un repo propio, sigue `kit/LEEME.md`.
@@ -100,7 +100,7 @@ Para instalar el kit en un repo propio, sigue `kit/LEEME.md`.
 
 Orden recomendado para adoptar esto en un repo real, de menor a mayor compromiso. Cada paso es
 opcional respecto al siguiente — se puede parar en cualquiera y quedar en un estado útil.
-Si dudás de **cuánto** usar según el tamaño o la criticidad de tu proyecto, empezá por
+Si dudas de **cuánto** usar según el tamaño o la criticidad de tu proyecto, empieza por
 [`kit/ADOPCION.md`](kit/ADOPCION.md).
 
 ### Paso 0 — Solo la política de comportamiento (más barato, sin tocar nada del repo)
@@ -125,7 +125,7 @@ Si dudás de **cuánto** usar según el tamaño o la criticidad de tu proyecto, 
 ### Paso 2 — Skills del kit (si tu agente soporta Agent Skills)
 
 ```bash
-python tools/sync_skills.py --agent claude-code   # o copilot, codex, cursor, generico
+python tools/sync_skills.py --agent claude-code   # o copilot, codex, cursor, generico, opencode
 ```
 
 Instala `sgp-especificar`, `sgp-qa-spec`, `sgp-planificar-cambio`, `sgp-ejecutar-tarea` y
@@ -150,7 +150,7 @@ salidas reales de cada comando.
 ### Paso 4 — Repetir y ajustar
 
 No hay fase final. Cada cambio futuro repite el Paso 3 y relee `specs/` antes de tocar nada —
-así la especificación nunca queda desactualizada. Ajustá `sgp.yaml` (presupuesto de iteraciones,
+así la especificación nunca queda desactualizada. Ajusta `sgp.yaml` (presupuesto de iteraciones,
 límite de revisiones) con lo que tu propio uso muestre que hace falta.
 
 ## Por qué esto no es "la forma correcta"
@@ -159,7 +159,7 @@ La base de evidencia sobre desarrollo guiado por especificaciones con IA es toda
 Thoughtworks lo tiene en su Radar en el anillo *Assess* (vale la pena explorar, no adoptar a
 ciegas) al momento de escribir esto. Este repo documenta un mapeo y una plantilla que
 funcionaron en un caso concreto, con sus pruebas y su ejemplo ejecutable — no una receta
-universal. Ajustalo con tu propia evidencia antes de confiar en él para producción.
+universal. Ajústalo con tu propia evidencia antes de confiar en él para producción.
 
 ## Fuentes y prácticas de referencia
 
@@ -175,4 +175,4 @@ blogs o repositorios comunitarios, no normas oficiales.
 
 ## Licencia
 
-MIT — ver [`LICENSE`](LICENSE). Usalo, adaptalo, rompelo y contame qué no funcionó.
+MIT — ver [`LICENSE`](LICENSE). Úsalo, adáptalo, rómpelo y cuéntame qué no funcionó.
