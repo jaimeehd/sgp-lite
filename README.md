@@ -56,10 +56,12 @@ más frecuencia y más rápido que antes.
 ├── docs/
 │   ├── manual-usuario.md                — manual paso a paso para personas no expertas
 │   ├── ejemplo-practico.md              — recorrido real, con salidas de comandos capturadas (no simuladas)
-│   └── system-engineering-policy.SKILL.md — política de ingeniería completa (evidencia antes de editar,
-│                                             DONE verificable, sin inferir, sin tocar fuera de alcance,
-│                                             confirmación antes de comprometer cambios). Instalable tal
-│                                             cual como Agent Skill en cualquier agente compatible.
+│   ├── system-engineering-policy.SKILL.md — política de ingeniería completa (evidencia antes de editar,
+│   │                                         DONE verificable, sin inferir, sin tocar fuera de alcance,
+│   │                                         confirmación antes de comprometer cambios). Instalable tal
+│   │                                         cual como Agent Skill en cualquier agente compatible.
+│   └── protocolo-ingenieria-senior.SKILL.md — procedimiento operativo de la política (tabla de evidencia,
+│                                             diagnóstico con confianza, alcance mínimo, verificación DONE)
 ├── kit/                         — plantilla mínima aplicable a cualquier repo (SGP Lite)
 │   ├── METODOLOGIA.md           — la metodología en una página
 │   ├── ADOPCION.md              — cuánto del kit usar según el tamaño/criticidad del proyecto
@@ -67,8 +69,8 @@ más frecuencia y más rápido que antes.
 │   ├── docs/requerimientos/     — plantilla del documento de requerimientos (opcional, solo documentación)
 │   ├── specs/                   — dónde viven los requisitos vigentes
 │   ├── changes/                 — plantilla de un cambio (propuesta + tareas + progreso)
-│   ├── skills/                  — 6 Agent Skills (estándar agentskills.io) instalables en tu agente
-│   ├── prompts.md               — los mismos pasos como prompts (6), para agentes sin soporte de skills
+│   ├── skills/                  — 8 Agent Skills (6 de proceso + 2 de comportamiento) instalables en tu agente
+│   ├── prompts.md               — los 6 pasos de proceso como prompts, para agentes sin soporte de skills
 │   └── tools/
 │       ├── sgp_check.py         — verificador: estructura, trazabilidad real, presupuesto, ratchet de pruebas
 │       ├── sgp_kit.py           — instala y ACTUALIZA el kit en un proyecto (init/update/status)
@@ -111,7 +113,9 @@ Si dudas de **cuánto** usar según el tamaño o la criticidad de tu proyecto, e
 ### Paso 0 — Solo la política de comportamiento (más barato, sin tocar nada del repo)
 
 1. Copia `docs/system-engineering-policy.SKILL.md` a la carpeta de skills de tu agente
-   (p. ej. `~/.claude/skills/system-engineering-policy/SKILL.md` para Claude Code).
+   (p. ej. `~/.claude/skills/system-engineering-policy/SKILL.md` para Claude Code). El kit la trae
+   también en `kit/skills/system-engineering-policy/`, junto a su protocolo compañero
+   (`protocolo-ingenieria-senior`); `sync_skills.py` (Paso 2) instala ambas con las demás skills.
 2. No requiere ningún archivo nuevo en el repo de trabajo. Gobierna el *comportamiento* del
    agente (evidencia antes de editar, DONE verificable, no inferir, no salir de alcance) en
    cualquier tarea, sin metodología de specs.
@@ -136,9 +140,10 @@ Si dudas de **cuánto** usar según el tamaño o la criticidad de tu proyecto, e
 python tools/sync_skills.py --agent claude-code   # o copilot, codex, cursor, generico, opencode
 ```
 
-Instala `sgp-documento-requerimientos`, `sgp-especificar`, `sgp-qa-spec`,
-`sgp-planificar-cambio`, `sgp-ejecutar-tarea` y `sgp-validar-cerrar`. Si tu agente no soporta
-skills, usa los mismos pasos como prompts desde `kit/prompts.md`.
+Instala las 6 skills de proceso (`sgp-documento-requerimientos`, `sgp-especificar`, `sgp-qa-spec`,
+`sgp-planificar-cambio`, `sgp-ejecutar-tarea`, `sgp-validar-cerrar`) y las 2 de comportamiento
+(`system-engineering-policy` y `protocolo-ingenieria-senior`). Si tu agente no soporta skills, usa
+los 6 pasos de proceso como prompts desde `kit/prompts.md`; las 2 de comportamiento no tienen prompt.
 
 ### Paso 3 — Primer cambio real
 

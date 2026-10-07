@@ -59,4 +59,5 @@ changes/_plantilla.md  AGENTS.md  CLAUDE.md  sgp.yaml  prompts.md  METODOLOGIA.m
 tools/sgp_check.py  tools/pre-commit  tools/sync_skills.py  tools/test_sgp_check.py
 tools/sgp_kit.py  tools/test_sgp_kit.py  tools/sgp_zip.py  tools/test_sgp_zip.py
 skills/sgp-documento-requerimientos  skills/sgp-especificar  skills/sgp-qa-spec  skills/sgp-planificar-cambio  skills/sgp-ejecutar-tarea  skills/sgp-validar-cerrar
+skills/system-engineering-policy  skills/protocolo-ingenieria-senior
 ```

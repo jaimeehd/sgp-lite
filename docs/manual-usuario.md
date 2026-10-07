@@ -66,7 +66,8 @@ Cada requisito lleva un código, por ejemplo `DESC-001`. Ese código es el hilo 
 1. Localiza la carpeta de "skills" de tu asistente. En Claude Code suele ser `~/.claude/skills/` (en Windows: `C:\Users\TuUsuario\.claude\skills\`). Si usas otro asistente, usa la carpeta que ese asistente lea para sus skills (por ejemplo, en opencode es `~/.agents/skills/`).
 2. Dentro crea una carpeta llamada `system-engineering-policy`.
 3. Copia el archivo `docs/system-engineering-policy.SKILL.md` de este repositorio dentro de esa carpeta y renómbralo a `SKILL.md`.
-4. Listo. No tienes que cambiar nada en tus proyectos.
+4. Recomendado: la política tiene un compañero (`protocolo-ingenieria-senior`) con el procedimiento detallado. Repite los pasos 2 y 3 con `docs/protocolo-ingenieria-senior.SKILL.md` en una carpeta `protocolo-ingenieria-senior`.
+5. Listo. No tienes que cambiar nada en tus proyectos.
 
 Desde ese momento, el asistente sigue las reglas de la política en cualquier tarea de ingeniería. Verás que empieza a mostrar tablas de evidencia, a pedirte confirmación antes de cambios importantes y a decir "no pude verificarlo" en vez de inventar.
 
@@ -107,7 +108,7 @@ Dentro de tu proyecto:
    ```bash
    python tools/sync_skills.py --agent claude-code
    ```
-   Otros valores posibles: `copilot`, `codex`, `cursor`, `generico`, `opencode`. El comando `python tools/sync_skills.py --list` muestra las opciones.
+   Otros valores posibles: `copilot`, `codex`, `cursor`, `generico`, `opencode`. El comando `python tools/sync_skills.py --list` muestra las opciones. Instala las 8 skills del kit: 6 de proceso y 2 de comportamiento (la política y su protocolo).
 
 Para comprobar que todo quedó bien, ejecuta:
 
@@ -310,4 +311,4 @@ No. Garantiza que cada requisito escrito tiene una prueba que lo ejercita y que 
 - La metodología en una página: `kit/METODOLOGIA.md`.
 - Cuánto del kit usar según el tamaño del proyecto: `kit/ADOPCION.md`.
 - Un proyecto de ejemplo ejecutable: carpeta `examples/descuento/`.
-- La política completa: `docs/system-engineering-policy.SKILL.md`.
+- La política completa: `docs/system-engineering-policy.SKILL.md`. Su procedimiento operativo: `docs/protocolo-ingenieria-senior.SKILL.md`.

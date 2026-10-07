@@ -13,8 +13,8 @@
 | `changes/CHG-NNN-nombre.md` | **Un archivo por cambio**: propuesta, criterios de finalización, tareas, progreso |
 | `sgp.yaml` | Comandos de build/tests/lint y cómo ejecutar las pruebas de un requisito |
 | `tools/sgp_check.py`, `tools/pre-commit` | Verificador y hook (ratchet de pruebas) |
-| `prompts.md` | 6 prompts: uno opcional de documentación y cinco de fase (para agentes sin soporte de skills) |
-| `skills/*/SKILL.md` | Las mismas fases como Agent Skills (6 skills; estándar agentskills.io); `tools/sync_skills.py` las instala en tu agente |
+| `prompts.md` | 6 prompts de proceso: uno opcional de documentación y cinco de fase (para agentes sin soporte de skills) |
+| `skills/*/SKILL.md` | 8 Agent Skills (6 de proceso + 2 de comportamiento: la política y su protocolo); `tools/sync_skills.py` las instala en tu agente |
 
 > **Antes de especificar (opcional):** si el pedido es grande o confuso, redacta `docs/requerimientos.md` (skill `sgp-documento-requerimientos` / prompt 0). Es documentación de apoyo, no una fase.
 
