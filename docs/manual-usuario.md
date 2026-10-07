@@ -33,10 +33,12 @@ Si solo tienes 10 minutos, empieza por la política (sección 4.1 de este manual
 
 ## 2. Qué necesitas antes de empezar
 
+- **Este kit descargado en tu computadora.** Descarga este repositorio desde la página donde lo encontraste (botón `Code` → `Download ZIP`; o `git clone` si sabes usarlo) y descomprímelo en una carpeta fija, por ejemplo `<ruta-del-repo>`. La carpeta del kit es la subcarpeta `kit` de esa descarga; anota su ruta completa (la usarás en la sección 4).
 - **Python 3.8 o superior.** Para comprobarlo, abre una terminal y escribe `python --version`. Si aparece un número como `3.11.4`, está bien. Si dice que no lo encuentra, instálalo desde python.org (en Windows, marca la casilla "Add Python to PATH" durante la instalación).
 - **Git.** Comprueba con `git --version`. En Windows, instala "Git for Windows", que además trae "Git Bash" (una terminal que usaremos para un paso).
 - **Un asistente de IA que pueda leer y escribir archivos de tu proyecto** (por ejemplo Claude Code). Si tu asistente es solo un chat sin acceso a archivos, puedes usar igual los textos de `kit/prompts.md`, pegándolos a mano.
 - **Un proyecto de código** donde quieras aplicarlo (una carpeta con tu programa). Para practicar, sirve una carpeta vacía.
+- **Saber abrir la terminal en la carpeta de tu proyecto.** Todos los comandos de este manual se ejecutan con la terminal "parada" en la raíz de tu proyecto. La forma fácil: abre la carpeta del proyecto en el Explorador de archivos, haz clic derecho sobre un espacio vacío y elige **"Abrir en Terminal"** (Windows 11) o **"Abrir ventana de PowerShell aquí"** (Windows 10); en macOS, clic derecho sobre la carpeta → **Servicios → Nueva terminal en la carpeta**. Si no aparece esa opción, abre una terminal y escribe `cd "C:\ruta\completa\de\tu proyecto"`. Los comandos que empiezan con `python` funcionan en PowerShell, en la Terminal de macOS/Linux o en Git Bash; los únicos que en Windows necesitan Git Bash son `cp` y `chmod` (un solo paso, sección 4.2).
 
 ---
 
@@ -61,7 +63,7 @@ Cada requisito lleva un código, por ejemplo `DESC-001`. Ese código es el hilo 
 
 ### 4.1 Opción mínima: solo la política (5 minutos)
 
-1. Localiza la carpeta de "skills" de tu asistente. En Claude Code suele ser `~/.claude/skills/` (en Windows: `C:\Users\TuUsuario\.claude\skills\`).
+1. Localiza la carpeta de "skills" de tu asistente. En Claude Code suele ser `~/.claude/skills/` (en Windows: `C:\Users\TuUsuario\.claude\skills\`). Si usas otro asistente, usa la carpeta que ese asistente lea para sus skills (por ejemplo, en opencode es `~/.agents/skills/`).
 2. Dentro crea una carpeta llamada `system-engineering-policy`.
 3. Copia el archivo `docs/system-engineering-policy.SKILL.md` de este repositorio dentro de esa carpeta y renómbralo a `SKILL.md`.
 4. Listo. No tienes que cambiar nada en tus proyectos.
@@ -72,7 +74,19 @@ Desde ese momento, el asistente sigue las reglas de la política en cualquier ta
 
 Dentro de tu proyecto:
 
-1. **Copia** estas carpetas y archivos desde `kit/` a la raíz de tu proyecto: `docs/`, `specs/`, `changes/`, `tools/`, `skills/`, `AGENTS.md`, `CLAUDE.md`, `sgp.yaml`, `prompts.md`, `METODOLOGIA.md`.
+1. **Trae el kit a tu proyecto.** Elige una forma:
+   - **Instalador (recomendada: permite actualizar después):** desde la raíz de tu proyecto, ejecuta
+     (ejemplo en Windows; cambia la ruta por la tuya de la sección 2):
+     `python "<ruta-del-repo>\kit\tools\sgp_kit.py" init --source "<ruta-del-repo>\kit" --dest .`
+     Las comillas protegen la ruta si tiene espacios. Para traer mejoras del kit después, repite el
+     comando cambiando `init` por `update`.
+   - **Zip (la más simple, sin actualizaciones):** descarga `sgp-lite.zip` del mismo lugar donde obtuviste
+     este manual, y descomprímelo **en la raíz de tu proyecto** (elige "Extraer aquí" o pon la carpeta de
+     tu proyecto como destino). Si te pregunta si reemplazar archivos que ya tienes (por ejemplo tu propio
+     `AGENTS.md` o `sgp.yaml`), responde que **no** los reemplace.
+   - **Copia manual (sin actualizaciones):** copia a la raíz de tu proyecto `docs/`, `specs/`, `changes/`,
+     `tools/`, `skills/`, `AGENTS.md`, `CLAUDE.md`, `sgp.yaml`, `prompts.md`, `METODOLOGIA.md` y
+     `ADOPCION.md` desde `kit/`.
 2. **Abre `sgp.yaml`** y escribe los comandos de tu proyecto para compilar y probar. Por ejemplo, en un proyecto Python:
    ```yaml
    comandos:
@@ -91,10 +105,8 @@ Dentro de tu proyecto:
    Este paso requiere que la carpeta ya sea un repositorio Git (si no lo es, ejecuta antes `git init`).
 5. **(Opcional) Instala las skills del kit** si tu asistente las soporta:
    ```bash
-    python tools/sync_skills.py --agent claude-code
-    ```
-
-**(Opcional) Instala el kit completo usando el instalador:** `python kit/tools/sgp_kit.py init --source . --dest .` (ver `kit/LEEME.md`).
+   python tools/sync_skills.py --agent claude-code
+   ```
    Otros valores posibles: `copilot`, `codex`, `cursor`, `generico`, `opencode`. El comando `python tools/sync_skills.py --list` muestra las opciones.
 
 Para comprobar que todo quedó bien, ejecuta:
@@ -110,6 +122,8 @@ Debe terminar con una línea parecida a `Resumen: 0 error(es), 0 aviso(s).` Si a
 ## 5. Tu primer cambio, paso a paso
 
 Vamos a imaginar que quieres pedir "una función que calcule el precio final con descuento". El proceso tiene cinco fases. En cada una hay algo que hace el asistente y algo que apruebas tú.
+
+> **Si tu pedido es grande o confuso** (varias funciones, un cliente, una idea todavía vaga), antes de la Fase 1 conviene redactar un **documento de requerimientos**: pídele al asistente "ayúdame con el documento de requerimientos" (o usa el prompt 0 de `kit/prompts.md`). Ese documento es **solo apoyo para aclarar** qué se pide: no lo revisa ninguna herramienta y no reemplaza a la especificación. Si el pedido es chico, sáltalo.
 
 ### Fase 1. Especificar (tú apruebas la especificación)
 
@@ -280,6 +294,7 @@ No. Garantiza que cada requisito escrito tiene una prueba que lo ejercita y que 
 
 - **Agente / asistente de IA:** el programa de inteligencia artificial que escribe código por ti.
 - **Commit:** guardar de forma permanente un conjunto de cambios en Git.
+- **Documento de requerimientos:** un texto de apoyo para aclarar qué se pide antes de la especificación; no lo verifica ninguna herramienta.
 - **EARS:** una forma de escribir requisitos con las palabras CUANDO, SI…ENTONCES, MIENTRAS.
 - **Frontmatter:** las líneas del inicio de un archivo, entre dos rayas `---`, con datos como `estado` y `carril`.
 - **Hook (candado):** un programa que Git ejecuta automáticamente antes de guardar cambios.

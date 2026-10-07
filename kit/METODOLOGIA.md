@@ -9,11 +9,14 @@
 | `docs/constitution.md` | 4-6 principios innegociables (≤15 líneas); cada uno dice *cómo se verifica* |
 | `AGENTS.md` (+ `CLAUDE.md` = `@AGENTS.md`) | Comandos y reglas para el agente (≤30 líneas) |
 | `specs/<dominio>/spec.md` | El comportamiento **vigente**: requisitos EARS con ID (`EXP-001`) |
+| `docs/requerimientos.md` | Opcional: documento de apoyo para aclarar el pedido **antes** de la spec (solo documentación) |
 | `changes/CHG-NNN-nombre.md` | **Un archivo por cambio**: propuesta, criterios de finalización, tareas, progreso |
 | `sgp.yaml` | Comandos de build/tests/lint y cómo ejecutar las pruebas de un requisito |
 | `tools/sgp_check.py`, `tools/pre-commit` | Verificador y hook (ratchet de pruebas) |
-| `prompts.md` | 5 prompts, uno por fase (para agentes sin soporte de skills) |
-| `skills/*/SKILL.md` | Las mismas 5 fases como Agent Skills (estándar agentskills.io); `tools/sync_skills.py` las instala en tu agente |
+| `prompts.md` | 6 prompts: uno opcional de documentación y cinco de fase (para agentes sin soporte de skills) |
+| `skills/*/SKILL.md` | Las mismas fases como Agent Skills (6 skills; estándar agentskills.io); `tools/sync_skills.py` las instala en tu agente |
+
+> **Antes de especificar (opcional):** si el pedido es grande o confuso, redacta `docs/requerimientos.md` (skill `sgp-documento-requerimientos` / prompt 0). Es documentación de apoyo, no una fase.
 
 ## Flujo
 

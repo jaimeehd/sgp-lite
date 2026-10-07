@@ -52,6 +52,7 @@ más frecuencia y más rápido que antes.
 ```text
 .
 ├── README.md                    — este documento
+├── sgp-lite.zip                 — el kit comprimido, listo para descomprimir en tu proyecto (alternativa al instalador)
 ├── docs/
 │   ├── manual-usuario.md                — manual paso a paso para personas no expertas
 │   ├── ejemplo-practico.md              — recorrido real, con salidas de comandos capturadas (no simuladas)
@@ -63,13 +64,15 @@ más frecuencia y más rápido que antes.
 │   ├── METODOLOGIA.md           — la metodología en una página
 │   ├── ADOPCION.md              — cuánto del kit usar según el tamaño/criticidad del proyecto
 │   ├── docs/constitution.md     — principios innegociables, cada uno con su forma de verificarse
+│   ├── docs/requerimientos/     — plantilla del documento de requerimientos (opcional, solo documentación)
 │   ├── specs/                   — dónde viven los requisitos vigentes
 │   ├── changes/                 — plantilla de un cambio (propuesta + tareas + progreso)
-│   ├── skills/                  — 5 Agent Skills (estándar agentskills.io) instalables en tu agente
-│   ├── prompts.md               — los mismos 5 pasos como prompts, para agentes sin soporte de skills
+│   ├── skills/                  — 6 Agent Skills (estándar agentskills.io) instalables en tu agente
+│   ├── prompts.md               — los mismos pasos como prompts (6), para agentes sin soporte de skills
 │   └── tools/
 │       ├── sgp_check.py         — verificador: estructura, trazabilidad real, presupuesto, ratchet de pruebas
 │       ├── sgp_kit.py           — instala y ACTUALIZA el kit en un proyecto (init/update/status)
+│       ├── sgp_zip.py           — genera sgp-lite.zip (misma lista de archivos que el instalador)
 │       ├── sync_skills.py       — instala las skills en la ruta de tu agente
 │       └── pre-commit           — hook de git que bloquea pruebas borradas o debilitadas
 └── examples/
@@ -91,10 +94,12 @@ el kit define por sí solo.
 ```bash
 cd kit
 python tools/sgp_check.py --help
-python -m unittest tools/test_sgp_check.py -v   # 28 pruebas del propio verificador
+python -m unittest tools/test_sgp_check.py -v   # 29 pruebas del propio verificador
 ```
 
-Para instalar el kit en un repo propio, sigue `kit/LEEME.md`.
+Para instalar el kit en un repo propio, sigue `kit/LEEME.md`. Si prefieres no usar el instalador,
+descomprime `sgp-lite.zip` en la raíz de tu proyecto (o copia los archivos a mano). El zip se regenera
+con `python kit/tools/sgp_zip.py --source kit --dest sgp-lite.zip` cuando el kit cambie.
 
 ## Procedimiento de implementación
 
@@ -115,9 +120,12 @@ Si dudas de **cuánto** usar según el tamaño o la criticidad de tu proyecto, e
 ### Paso 1 — Kit mínimo en un repo (metodología de specs)
 
 1. Instala el kit con el actualizador (recomendado, permite traer mejoras después):
-   `python kit/tools/sgp_kit.py init --source kit --dest .` desde la raíz de tu repo.
-   (Alternativa manual: copia `kit/docs/`, `kit/specs/`, `kit/changes/`, `kit/tools/`, `kit/AGENTS.md`,
-   `kit/CLAUDE.md`, `kit/sgp.yaml`, `kit/prompts.md`, `kit/METODOLOGIA.md`.)
+   `python <kit>/tools/sgp_kit.py init --source <kit> --dest .` desde la raíz de tu repo, donde `<kit>`
+   es la ruta a la carpeta del kit (p. ej. `../ia-sdlc/kit`). Para traer mejoras después:
+   `python <kit>/tools/sgp_kit.py update --source <kit> --dest .`.
+   (Alternativa manual: descomprime `sgp-lite.zip` en la raíz del repo, o copia `kit/docs/`, `kit/specs/`,
+   `kit/changes/`, `kit/tools/`, `kit/skills/`, `kit/AGENTS.md`, `kit/CLAUDE.md`, `kit/sgp.yaml`,
+   `kit/prompts.md`, `kit/METODOLOGIA.md`, `kit/ADOPCION.md`.)
 2. Edita `docs/constitution.md`, `AGENTS.md` y los comandos de `sgp.yaml` (build, tests, lint,
    `test_por_requisito`) para tu stack.
 3. Instala el hook: `cp tools/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit`.
@@ -128,11 +136,15 @@ Si dudas de **cuánto** usar según el tamaño o la criticidad de tu proyecto, e
 python tools/sync_skills.py --agent claude-code   # o copilot, codex, cursor, generico, opencode
 ```
 
-Instala `sgp-especificar`, `sgp-qa-spec`, `sgp-planificar-cambio`, `sgp-ejecutar-tarea` y
-`sgp-validar-cerrar`. Si tu agente no soporta skills, usa los mismos 5 pasos como prompts desde
-`kit/prompts.md`.
+Instala `sgp-documento-requerimientos`, `sgp-especificar`, `sgp-qa-spec`,
+`sgp-planificar-cambio`, `sgp-ejecutar-tarea` y `sgp-validar-cerrar`. Si tu agente no soporta
+skills, usa los mismos pasos como prompts desde `kit/prompts.md`.
 
 ### Paso 3 — Primer cambio real
+
+> Si el pedido es grande o confuso, empieza por el **documento de requerimientos** (prompt 0 / skill
+> `sgp-documento-requerimientos`): un texto de apoyo para aclarar qué se pide antes de especificar.
+> Es solo documentación; si el pedido es chico, sáltalo.
 
 1. Especificar: entrevista de una pregunta a la vez → `specs/<dominio>/spec.md` con requisitos
    EARS e ID (`DOM-001`).

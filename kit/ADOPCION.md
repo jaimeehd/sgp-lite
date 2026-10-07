@@ -20,6 +20,7 @@ No son fases obligatorias: son **puntos de entrada**. Puedes quedarte en cualqui
 
 - **Bugfix**: un arreglo con su prueba de regresión. Si es trivial (typo, una línea), un *quick fix* alcanza.
 - **Assessment**: decidir si algo merece la pena, antes de construir. Puede usarse solo.
+- **Documento de requerimientos** (opcional, solo documentación): aclarar un pedido grande o confuso antes de escribir la spec. No es una fase ni lo verifica el kit.
 
 ## Cuándo subir de forma
 
