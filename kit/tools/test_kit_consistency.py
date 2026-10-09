@@ -59,5 +59,31 @@ class ZipTests(unittest.TestCase):
                                  f"contenido desactualizado en el zip: {rel}")
 
 
+class EjemploTests(unittest.TestCase):
+    def test_skills_del_ejemplo_iguales_al_kit(self):
+        kit_skills = sorted(p.name for p in (KIT / "skills").iterdir() if p.is_dir())
+        ej_skills = sorted(p.name for p in (EJEMPLO / "skills").iterdir() if p.is_dir())
+        self.assertEqual(kit_skills, ej_skills, "el ejemplo debe tener las mismas skills que el kit")
+        for name in kit_skills:
+            self.assertEqual(
+                normalizado((KIT / "skills" / name / "SKILL.md").read_bytes()),
+                normalizado((EJEMPLO / "skills" / name / "SKILL.md").read_bytes()),
+                f"examples/descuento/skills/{name}/SKILL.md difiere del kit",
+            )
+
+    def test_tools_del_ejemplo_iguales_al_kit(self):
+        for rel in ("sgp_check.py", "sync_skills.py"):
+            self.assertEqual(
+                normalizado((KIT / "tools" / rel).read_bytes()),
+                normalizado((EJEMPLO / "tools" / rel).read_bytes()),
+                f"examples/descuento/tools/{rel} difiere del kit",
+            )
+
+    def test_agents_del_ejemplo_lista_las_skills_del_kit(self):
+        texto = (EJEMPLO / "AGENTS.md").read_text(encoding="utf-8")
+        for name in sorted(p.name for p in (KIT / "skills").iterdir() if p.is_dir()):
+            self.assertIn(name, texto, f"AGENTS.md del ejemplo no menciona {name}")
+
+
 if __name__ == "__main__":
     unittest.main()
