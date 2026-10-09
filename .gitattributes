@@ -1,3 +1,4 @@
 # Normaliza finales de línea: LF en el índice en todas las plataformas.
 # Evita divergencias CRLF/LF entre Windows y Unix sin tocar el contenido.
 * text=auto
+sgp-lite.zip binary
