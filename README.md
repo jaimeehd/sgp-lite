@@ -5,6 +5,9 @@
 > cambio, y qué mecanismos concretos reemplazan a cada etapa cuando quien construye es
 > mayormente un agente de IA.
 
+[![CI](https://github.com/jaimeehd/sgp-lite/actions/workflows/ci.yml/badge.svg)](https://github.com/jaimeehd/sgp-lite/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Este repo nació de una sesión real trabajando con un agente de IA en el diseño de un sistema
 de gestión de proyectos, comparándolo contra herramientas de la industria (GitHub Spec Kit,
 OpenSpec, BMAD-METHOD) y contra una política de ingeniería personal ya en uso. El resultado no
