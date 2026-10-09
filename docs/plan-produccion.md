@@ -635,7 +635,7 @@ def read_version(kit_dir):
 | P0.1 CI | HECHO (`63318f1`) | suite local 40 OK; `sgp_check --root examples/descuento --run` -> `Resumen: 0 error(es), 0 aviso(s).` |
 | P0.2 zip + guarda + tag | HECHO (`9cbbe67`, tag `v1.4.0`) | suite 42 OK; prueba negativa: alterar el kit -> `FAILED (contenido desactualizado en el zip: METODOLOGIA.md)`; restaurar -> OK |
 | P0.3 gobernanza | HECHO (`997cdba`) | 6 archivos + `README.md` seccion Contribuir; enlaces CONTRIBUTING/SECURITY verificados |
-| P0.4 publicar | BLOQUEADA (D1) | falta la URL del remoto; el tag `v1.4.0` ya existe en local |
+| P0.4 publicar | HECHO | pusheado a https://github.com/jaimeehd/sgp-lite (rama `master` + tag `v1.4.0`); CI a confirmar en la pestana Actions (`gh` no disponible localmente) |
 | P1.1 ejemplo + guarda | HECHO (`952f348`) | ejemplo con 8 skills; suite 45 OK |
 | P1.2 licencia | HECHO (`7ae4b17`) | `LICENSE`: `Copyright (c) 2026 the ia-sdlc authors` |
 | P1.3 YAML | HECHO (`ac2d0d6`) | doc en `kit/sgp.yaml` y `LEEME.md`; test nuevo; suite 46 OK; zip regenerado |
