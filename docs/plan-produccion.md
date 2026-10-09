@@ -247,154 +247,13 @@ if __name__ == "__main__":
 - **Hecho cuando**: zip versionado, tag creado, guarda en verde y la manipulación negativa falla como se describe.
 - **Commit**: el del paso 5.
 
-#### [x] Tarea P0.3 — Gobernanza (contribución, seguridad, conducta, plantillas)
+#### [x] Tarea P0.3 - Gobernanza (DESCARTADA)
 
-- **Objetivo**: que un tercero sepa cómo contribuir, cómo reportar un problema de seguridad y qué esperar del repo.
-- **Depende de**: nada.
-- **Archivos (nuevos)**: `CONTRIBUTING.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`,
-  `.github/ISSUE_TEMPLATE/bug_report.md`, `.github/ISSUE_TEMPLATE/feature_request.md`,
-  `.github/pull_request_template.md`; edición de `README.md` (sección "Contribuir").
-- **Pasos y contenido**:
+- **Descartada a pedido del autor**: el repositorio se pone a disposicion del publico **solo bajo la
+  licencia** (MIT), sin contribuciones externas. Se retiraron `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`,
+  las plantillas de issues/PR y la seccion de contribucion del README.
 
-  1. Crear `CONTRIBUTING.md`:
-
-```markdown
-# Contribuir a sgp-lite
-
-Gracias por aportar. Este repo contiene la metodología SGP Lite (`kit/`), la política de ingeniería
-(`docs/system-engineering-policy.SKILL.md`) y un ejemplo ejecutable (`examples/descuento/`).
-
-## Antes de abrir un PR
-
-1. Corre las pruebas del kit: `cd kit && python -m unittest discover -s tools -p "test_*.py" -v`
-   (deben quedar en `OK`).
-2. Corre el verificador sobre el ejemplo: `python kit/tools/sgp_check.py --root examples/descuento --run`
-   (debe terminar en `Resumen: 0 error(es), 0 aviso(s).`).
-3. Si tu cambio toca `docs/` o `kit/skills/{protocolo-ingenieria-senior,system-engineering-policy}`,
-   recuerda la guarda de sincronía (`kit/tools/test_policy_sync.py`): las copias deben ser idénticas.
-4. Si creaste o cambiaste archivos del kit cubiertos por `sgp-kit.manifest`, regenera el zip:
-   `python kit/tools/sgp_zip.py --source kit --dest sgp-lite.zip` y corre
-   `kit/tools/test_kit_consistency.py`.
-
-## Reglas
-
-- Prohibido borrar o debilitar pruebas para hacer pasar un cambio (ratchet: `tools/pre-commit`).
-- Un cambio = un alcance declarado; lo demás se reporta, no se mezcla.
-- Los tools son solo-stdlib (Python 3.8+): no agregues dependencias.
-- Describe en el PR: qué problema resuelve, qué verificación ejecutaste y su salida real.
-
-## Licencia
-
-Al contribuir aceptas que tu aporte se distribuya bajo la licencia MIT de este repositorio.
-```
-
-  2. Crear `SECURITY.md`:
-
-```markdown
-# Seguridad
-
-## Reportar una vulnerabilidad
-
-Abre un **borrador de aviso de seguridad** en la pestaña *Security* del repositorio
-("Report a vulnerability"). No abras un issue público para un problema de seguridad.
-
-## Frontera de confianza (importante)
-
-Este kit ejecuta comandos que declares en `sgp.yaml` usando `shell=True`
-(`kit/tools/sgp_check.py`), y el hook `kit/tools/pre-commit` ejecuta el verificador y el ratchet.
-Consecuencias:
-
-- No instales ni ejecutes el kit sobre un repositorio cuyo `sgp.yaml` o `tools/` no hayas revisado.
-- El kit asume que el repositorio donde vive es de confianza; no es un sandbox.
-- No incluyas secretos en `sgp.yaml`, `specs/`, `changes/` ni en la salida de los sensores.
-```
-
-  3. Crear `CODE_OF_CONDUCT.md` (base: Contributor Covenant v2.1, texto mínimo):
-
-```markdown
-# Código de conducta
-
-Este proyecto adopta el [Contributor Covenant v2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
-
-**Nuestro compromiso:** un entorno abierto y libre de acoso para todas las personas que participan.
-
-**Comportamiento esperado:** lenguaje respetuoso, crítica técnica sobre el trabajo y no sobre la
-persona, y disposición a aceptar correcciones con evidencia.
-
-**Comportamiento inaceptable:** acoso, insultos, ataques personales y publicación de información
-privada de terceros.
-
-**Aplicación:** los mantenedores pueden eliminar comentarios, cerrar hilos o bloquear cuentas ante
-incumplimientos. Para reportar un incidente, usa el canal privado de los mantenedores o abre un
-issue pidiendo contacto privado; los reportes se tratan con discreción.
-```
-
-  4. Crear `.github/ISSUE_TEMPLATE/bug_report.md`:
-
-```markdown
----
-name: Reporte de bug
-about: Algo del kit o del ejemplo no funciona como se documenta
-labels: bug
----
-
-**Qué esperabas que pasara**
-
-**Qué pasó realmente** (pega la salida real del comando)
-
-**Cómo reproducirlo** (comandos exactos, en orden)
-
-**Entorno** (SO, versión de Python, versión del kit: `kit/VERSION`)
-```
-
-  5. Crear `.github/ISSUE_TEMPLATE/feature_request.md`:
-
-```markdown
----
-name: Propuesta
-about: Una mejora o una idea para el kit, la metodología o la documentación
-labels: enhancement
----
-
-**Problema que resuelve** (no la solución: el dolor concreto)
-
-**Propuesta concreta**
-
-**Alternativa considerada**
-
-**¿Afecta a `specs/`/`changes/` o solo al kit?**
-```
-
-  6. Crear `.github/pull_request_template.md`:
-
-```markdown
-## Qué cambia
-
-## Verificación (pega las salidas reales)
-- [ ] `cd kit && python -m unittest discover -s tools -p "test_*.py" -v`
-- [ ] `python kit/tools/sgp_check.py --root examples/descuento --run`
-- [ ] Si toqué kit o skills: zip regenerado (`python kit/tools/sgp_zip.py --source kit --dest sgp-lite.zip`) y guardas en verde
-
-## Fuera de alcance (lo que NO toca este PR)
-```
-
-  7. Añadir al final de `README.md`, antes de `## Licencia`, esta sección:
-
-```markdown
-## Contribuir
-
-Lee [`CONTRIBUTING.md`](CONTRIBUTING.md) (pruebas que debes correr, regenerar el zip, reglas del
-ratchet) y [`SECURITY.md`](SECURITY.md) (frontera de confianza del kit). Para problemas de
-seguridad, usa el aviso privado del repositorio; para todo lo demás, abre un issue.
-```
-
-- **Verificación**: `git status --porcelain` lista los 7 archivos nuevos y `README.md`; los enlaces
-  citados (`CONTRIBUTING.md`, `SECURITY.md`) existen en la raíz.
-- **Evidencia a registrar**: listado de archivos creados + enlaces verificados.
-- **Hecho cuando**: los 6 archivos nuevos existen con su contenido y el README enlaza CONTRIBUTING/SECURITY.
-- **Commit**: `Añadir gobernanza: guía de contribución, política de seguridad, código de conducta y plantillas de issues/PR`
-
-#### [ ] Tarea P0.4 — Publicar (remoto, push, release opcional) — **BLOQUEADA (D1)** hasta tener la URL
+#### [x] Tarea P0.4 - Publicar (remoto, push, release opcional)
 
 - **Objetivo**: que el repositorio y el tag queden publicados y el CI corra verde.
 - **Depende de**: D1 (URL del remoto), P0.1 y P0.2 completas.
@@ -610,7 +469,7 @@ def read_version(kit_dir):
 
 1. `Añadir CI: tests del kit y ejemplo en matriz Linux/Windows y Python 3.8/3.12` (P0.1)
 2. `Versionar sgp-lite.zip y guardar su consistencia con sgp-kit.manifest` (P0.2; incluye el tag `v1.4.0`)
-3. `Añadir gobernanza: guía de contribución, política de seguridad, código de conducta y plantillas de issues/PR` (P0.3)
+3. ~~Añadir gobernanza~~ (descartado: el repositorio se publica solo bajo la licencia).
 4. `Sincronizar el ejemplo con el kit (8 skills) y guardar la consistencia` (P1.1)
 5. `Completar el titular de la licencia MIT` (P1.2)
 6. `Documentar y probar el subconjunto YAML de sgp.yaml` (P1.3)
@@ -634,7 +493,7 @@ def read_version(kit_dir):
 |---|---|---|
 | P0.1 CI | HECHO (`63318f1`) | suite local 40 OK; `sgp_check --root examples/descuento --run` -> `Resumen: 0 error(es), 0 aviso(s).` |
 | P0.2 zip + guarda + tag | HECHO (`9cbbe67`, tag `v1.4.0`) | suite 42 OK; prueba negativa: alterar el kit -> `FAILED (contenido desactualizado en el zip: METODOLOGIA.md)`; restaurar -> OK |
-| P0.3 gobernanza | HECHO (`997cdba`) | 6 archivos + `README.md` seccion Contribuir; enlaces CONTRIBUTING/SECURITY verificados |
+| P0.3 gobernanza | DESCARTADO | retirado a pedido del autor: el repositorio se publica solo bajo la licencia |
 | P0.4 publicar | HECHO | pusheado a https://github.com/jaimeehd/sgp-lite (rama `master` + tag `v1.4.0`); CI a confirmar en la pestana Actions (`gh` no disponible localmente) |
 | P1.1 ejemplo + guarda | HECHO (`952f348`) | ejemplo con 8 skills; suite 45 OK |
 | P1.2 licencia | HECHO (`7ae4b17`) | `LICENSE`: `Copyright (c) 2026 the sgp-lite authors` |

@@ -194,12 +194,6 @@ example — not a universal recipe. Adjust it with your own evidence before trus
 None of these sources is cited as a final authority; they were contrasted with each other and several
 are blogs or community repositories, not official standards.
 
-## Contributing
-
-Read [`CONTRIBUTING.md`](CONTRIBUTING.md) (tests you must run, regenerating the zip, ratchet rules)
-and [`SECURITY.md`](SECURITY.md) (the kit's trust boundary). For security issues, use the repo's
-private advisory; for everything else, open an issue.
-
 ## License
 
 MIT — see [`LICENSE`](LICENSE). Use it, adapt it, break it and tell me what did not work.
