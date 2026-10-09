@@ -20,6 +20,7 @@ python <kit>/tools/sgp_kit.py update --source <kit> --dest .
 - **managed** (se actualizan): `tools/` (salvo `sgp_zip.py`, que es del repositorio del kit), `skills/`, `prompts.md`, `METODOLOGIA.md`, `ADOPCION.md` y las plantillas en blanco.
 - **seeded** (solo se copian si faltan; nunca se pisan): `docs/constitution.md`, `AGENTS.md`, `CLAUDE.md`, `sgp.yaml`.
 - `sgp-kit.manifest` (en el kit) declara qué es cada cosa.
+El archivo `sgp.yaml` usa un subconjunto simple de YAML (secciones y pares `clave: valor`); no admite listas ni anidamiento.
 
 Si prefieres el método manual (sin updates), descomprime `sgp-lite.zip` en la raíz de tu proyecto, o copia a mano la misma lista de `sgp-kit.manifest`. El zip se regenera desde la raíz del repositorio con `python kit/tools/sgp_zip.py --source kit --dest sgp-lite.zip`.
 

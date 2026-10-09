@@ -1,4 +1,8 @@
 # Configuración mínima. El verificador (tools/sgp_check.py) lee estos valores.
+# Subconjunto soportado por el verificador: secciones `clave:` y dentro pares `clave: valor`.
+# No hay listas YAML ni anidamiento: las líneas que no son `clave: valor` se ignoran.
+# Un `#` precedido de espacio inicia un comentario, incluso dentro de comillas.
+# Ver tools/sgp_check.py (read_config).
 limites:
   max_iteraciones_por_tarea: 5
   max_lineas_constitucion: 20

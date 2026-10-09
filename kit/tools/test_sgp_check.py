@@ -63,6 +63,17 @@ class Estructura(Base):
         self.assertEqual(rc, 0, out)
         self.assertNotIn("UnicodeEncodeError", out)
 
+    def test_yaml_con_estructura_no_soportada_no_crashea(self):
+        # listas y anidamiento se ignoran; un valor entre comillas se acepta
+        y = ("rutas:\n  tests: tests\nlistas:\n  - uno\n  - dos\n"
+             "comandos:\n"
+             f"  build: \"{PY} -c pass\"\n"
+             "  tests: \"\"\n"
+             "  lint: \"\"\n"
+             "  test_por_requisito: \"\"\n")
+        rc, out = self.run_check(self.repo({"sgp.yaml": y}), "--run")
+        self.assertEqual(rc, 0, out)
+
     def test_tarea_sin_hecho_cuando(self):
         r = self.repo({"changes/CHG-001-x.md": change(tasks="- [x] T001 [EXP-001] uno\n- [x] T002 [EXP-002] dos\n  Hecho cuando: ok\n")})
         rc, out = self.run_check(r)
