@@ -57,6 +57,11 @@ class Estructura(Base):
         rc, out = self.run_check(self.repo({}))
         self.assertEqual(rc, 0, out)
 
+    def test_cli_version(self):
+        p = subprocess.run([PY, CHECK, "--version"], capture_output=True, text=True)
+        self.assertEqual(p.returncode, 0)
+        self.assertTrue(p.stdout.strip())
+
     def test_run_en_consola_cp1252_no_crashea(self):
         # En Windows la consola puede ser cp1252: un carácter no codificable (p. ej. →) en un
         # print lanza UnicodeEncodeError y aborta con traceback en vez de informar el resultado.

@@ -27,6 +27,11 @@ DEFAULTS = {"max_iteraciones_por_tarea": "5", "max_lineas_constitucion": "20",
             "specs": "specs", "cambios": "changes", "tests": "tests"}
 
 
+def read_version(kit_dir):
+    v = kit_dir / "VERSION"
+    return v.read_text(encoding="utf-8").strip() if v.exists() else "(sin VERSION)"
+
+
 class Report:
     def __init__(self):
         self.errors, self.warnings = [], []
@@ -346,7 +351,11 @@ def main():
     ap.add_argument("--ratchet", action="store_true")
     ap.add_argument("--nuevo", metavar="NOMBRE")
     ap.add_argument("--today", help="AAAA-MM-DD (pruebas)")
+    ap.add_argument("--version", action="store_true", help="muestra la versión del kit y sale")
     a = ap.parse_args()
+    if a.version:
+        print(read_version(Path(__file__).resolve().parent.parent))
+        return 0
     root = Path(a.root).resolve()
     cfg, cmds = read_config(root)
     if a.ratchet:
