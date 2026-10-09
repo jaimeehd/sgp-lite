@@ -488,7 +488,7 @@ class EjemploTests(unittest.TestCase):
 ```yaml
 # Subconjunto soportado por el verificador: secciones `clave:` y dentro pares `clave: valor`.
 # No hay listas YAML ni anidamiento: las líneas que no son `clave: valor` se ignoran.
-# Un `#` precedido de espacio inicia un comentario, incluso dentro de comillas.
+# Un `#` precedido de espacio inicia un comentario, salvo dentro de comillas.
 # Ver tools/sgp_check.py (read_config).
 ```
 
@@ -512,6 +512,7 @@ class EjemploTests(unittest.TestCase):
 
   4. Correr la suite completa → `OK`.
   5. Commit: `git add kit/sgp.yaml kit/LEEME.md kit/tools/test_sgp_check.py && git commit -m "Documentar y probar el subconjunto YAML de sgp.yaml"`
+- **Nota (corregida)**: `strip_comment` se corrigió para que un `#` dentro de comillas no inicie comentario; test dedicado `StripComment`; kit, ejemplo y zip sincronizados (`4faa274`).
 - **Verificación**: el test nuevo pasa en Windows y Linux (sin dependencias de plataforma).
 - **Evidencia a registrar**: salida del test nuevo + suite completa.
 - **Hecho cuando**: documentación en `sgp.yaml` y `LEEME.md`, test en verde.
