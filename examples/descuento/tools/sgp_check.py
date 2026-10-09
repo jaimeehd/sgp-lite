@@ -45,7 +45,20 @@ class Report:
 
 
 def strip_comment(v):
-    v = re.sub(r"\s+#.*$", "", v).strip()
+    out, quote = [], None
+    for i, ch in enumerate(v):
+        if quote is not None:
+            out.append(ch)
+            if ch == quote:
+                quote = None
+        elif ch in "\"'":
+            quote = ch
+            out.append(ch)
+        elif ch == "#" and (i == 0 or v[i - 1].isspace()):
+            break
+        else:
+            out.append(ch)
+    v = "".join(out).strip()
     if len(v) >= 2 and v[0] == v[-1] == '"':
         v = v[1:-1].replace('\\"', '"').replace("\\\\", "\\")
     elif len(v) >= 2 and v[0] == v[-1] == "'":

@@ -2,6 +2,9 @@
 import os, subprocess, sys, tempfile, textwrap, unittest
 from pathlib import Path
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import sgp_check  # noqa: E402
+
 CHECK = str(Path(__file__).with_name("sgp_check.py"))
 PY = sys.executable
 
@@ -268,6 +271,16 @@ class Nuevo(Base):
         names = sorted(p.name for p in (Path(r) / "changes").glob("CHG-*.md"))
         self.assertEqual(names, ["CHG-001-mi-cambio.md", "CHG-002-otro.md"])
         self.assertIn("id: CHG-002", (Path(r) / "changes" / names[1]).read_text())
+
+
+class StripComment(unittest.TestCase):
+    def test_comentario_y_comillas(self):
+        self.assertEqual(sgp_check.strip_comment('a # b'), 'a')
+        self.assertEqual(sgp_check.strip_comment('# inicio'), '')
+        self.assertEqual(sgp_check.strip_comment('a#b'), 'a#b')
+        self.assertEqual(sgp_check.strip_comment('"a # b"'), 'a # b')
+        self.assertEqual(sgp_check.strip_comment("'a # b'"), 'a # b')
+        self.assertEqual(sgp_check.strip_comment('"echo #x"  # fuera'), 'echo #x')
 
 
 if __name__ == "__main__":
