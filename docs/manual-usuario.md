@@ -1,5 +1,7 @@
 # Manual de usuario (para personas no expertas)
 
+**Español** · [English](manual-usuario.en.md)
+
 Este manual explica, paso a paso y sin dar nada por sabido, cómo usar el kit de este repositorio para trabajar con un asistente de IA (por ejemplo Claude) sin perder el control de lo que te construye.
 
 No necesitas ser programador experto. Sí necesitas poder abrir una terminal y escribir comandos cortos. Todo lo demás se explica aquí.
