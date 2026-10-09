@@ -49,7 +49,7 @@ class ManifiestoTests(unittest.TestCase):
 class ZipTests(unittest.TestCase):
     def test_zip_versionado_coincide_con_el_manifiesto(self):
         if not ZIP.exists():
-            self.skipTest("sgp-lite.zip no está versionado (ver docs/plan-produccion.md, P0.2)")
+            self.skipTest("sgp-lite.zip no está versionado")
         esperados = set(expandidos())
         with zipfile.ZipFile(ZIP) as z:
             self.assertEqual(esperados, set(z.namelist()),

@@ -11,3 +11,6 @@ __pycache__/
 *.pfx
 *.p12
 secrets.*
+
+# Planes y pendientes: viven solo en local, no se publican en el remoto
+docs/plan-*.md
