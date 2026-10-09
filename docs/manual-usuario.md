@@ -33,7 +33,7 @@ Si solo tienes 10 minutos, empieza por la política (sección 4.1 de este manual
 
 ## 2. Qué necesitas antes de empezar
 
-- **Este kit descargado en tu computadora.** Descarga este repositorio desde la página donde lo encontraste (botón `Code` → `Download ZIP`; o `git clone` si sabes usarlo) y descomprímelo en una carpeta fija, por ejemplo `<ruta-del-repo>`. La carpeta del kit es la subcarpeta `kit` de esa descarga; anota su ruta completa (la usarás en la sección 4).
+- **Este kit descargado en tu computadora.** Descarga este repositorio desde la página donde lo encontraste (botón `Code` → `Download ZIP`; o `git clone` si sabes usarlo) y descomprímelo en una carpeta fija, por ejemplo `C:\ruta\a\sgp-lite`. La carpeta del kit es la subcarpeta `kit` de esa descarga; anota su ruta completa (la usarás en la sección 4).
 - **Python 3.8 o superior.** Para comprobarlo, abre una terminal y escribe `python --version`. Si aparece un número como `3.11.4`, está bien. Si dice que no lo encuentra, instálalo desde python.org (en Windows, marca la casilla "Add Python to PATH" durante la instalación).
 - **Git.** Comprueba con `git --version`. En Windows, instala "Git for Windows", que además trae "Git Bash" (una terminal que usaremos para un paso).
 - **Un asistente de IA que pueda leer y escribir archivos de tu proyecto** (por ejemplo Claude Code). Si tu asistente es solo un chat sin acceso a archivos, puedes usar igual los textos de `kit/prompts.md`, pegándolos a mano.
@@ -78,7 +78,7 @@ Dentro de tu proyecto:
 1. **Trae el kit a tu proyecto.** Elige una forma:
    - **Instalador (recomendada: permite actualizar después):** desde la raíz de tu proyecto, ejecuta
      (ejemplo en Windows; cambia la ruta por la tuya de la sección 2):
-     `python "<ruta-del-repo>\kit\tools\sgp_kit.py" init --source "<ruta-del-repo>\kit" --dest .`
+     `python "C:\ruta\a\sgp-lite\kit\tools\sgp_kit.py" init --source "C:\ruta\a\sgp-lite\kit" --dest .`
      Las comillas protegen la ruta si tiene espacios. Para traer mejoras del kit después, repite el
      comando cambiando `init` por `update`.
    - **Zip (la más simple, sin actualizaciones):** descarga `sgp-lite.zip` del mismo lugar donde obtuviste

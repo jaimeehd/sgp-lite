@@ -1,4 +1,4 @@
-# Decisiones deliberadas — ia-sdlc
+# Decisiones deliberadas — sgp-lite
 
 Registro de decisiones que no se ven en el código. Formato: fecha, contexto,
 decisión, razones (sin reinterpretar) y consecuencias. Nada aquí se toca "de paso".
@@ -23,25 +23,20 @@ decisión, razones (sin reinterpretar) y consecuencias. Nada aquí se toca "de p
 - **Consecuencias**: futuros commits ignoran ese aviso para `kit/tools/*.py`
   (y sus copias en `examples/`). Revisar solo si cambia el contrato de salida.
 
-## 2026-10-09 — Fuente única de la política y su skill; junctions en los roots de agente
+## 2026-10-09 — Fuente única de la política y su skill
 
-- **Contexto**: copias divergentes del skill `protocolo-ingenieria-senior` y de la política en
-  varios roots (`~/.claude/skills`, `~/.config/opencode/skills`, tres repos con el kit, el plugin
-  de Claude Desktop) y variantes viejas ("[redactado]"/`CLAUDE.md`, numeración previa a la v2).
+- **Contexto**: había copias divergentes del skill `protocolo-ingenieria-senior` y de la política en
+  varios directorios de skills y en proyectos que adoptaron el kit, algunas con numeración previa
+  a la v2.
 - **Decisión**: el repo es la **fuente única**. `kit/skills/{protocolo-ingenieria-senior,
-  system-engineering-policy}` se mantiene idéntico a `docs/…SKILL.md` por `test_policy_sync`; los
-  roots personales `~/.claude/skills/…` y `~/.config/opencode/skills/protocolo-ingenieria-senior`
-  son **junctions** (mklink /J) a `kit/skills/…`. Se eliminó el stray
-  `~/.config/opencode/protocolo-ingenieria-senior/` (ningún loader lo leía).
+  system-engineering-policy}` se mantiene idéntico a `docs/…SKILL.md` por `test_policy_sync`; las
+  copias desplegadas en los directorios de skills del agente se sincronizan desde el repo (copia o
+  enlace). Se eliminó una copia suelta que ningún cargador leía.
 - **Razones**: elimina la duplicación que produjo el desfase (un subconjunto copiado a mano, sin
   sincronía); un cambio commiteado en el repo llega solo a los roots, sin copiar.
 - **Consecuencias**:
-  1. Si el repo se mueve de `<ruta-del-repo>`, los junctions se rompen: hay que recrearlos.
-  2. Cuando cambie `~/.config/opencode/system_prompt.md`: reescribir
-     `docs/system-engineering-policy.SKILL.md` (frontmatter actual + cuerpo íntegro), copiar a
-     `kit/skills/system-engineering-policy/SKILL.md` y correr los tests del kit; los roots lo ven
-     por junction.
+  1. Si el repo cambia de ubicación, los enlaces (si se usaron) se recrean.
+  2. Cuando cambie la política de origen: reescribir `docs/system-engineering-policy.SKILL.md`,
+     copiar a `kit/skills/system-engineering-policy/SKILL.md` y correr los tests del kit.
   3. Los repos que adoptaron el kit se actualizan con `sgp_kit update` + `sync_skills.py`.
-  4. El plugin de Claude Desktop se reconstruye desde su origen: la copia local actualizada no
-     garantiza persistencia.
-  5. La guarda `kit/tools/test_policy_sync.py` cubre `docs/` ↔ `kit/skills/` (falla si divergen).
+  4. La guarda `kit/tools/test_policy_sync.py` cubre `docs/` ↔ `kit/skills/` (falla si divergen).

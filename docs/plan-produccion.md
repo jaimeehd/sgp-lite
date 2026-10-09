@@ -75,7 +75,7 @@
 
 | # | Decisión | Estado | Default adoptado |
 |---|---|---|---|
-| **D1** | URL del remoto GitHub | **PENDIENTE** (la provee el humano antes de P0.4) | — |
+| **D1** | URL del remoto GitHub | **RESUELTA** (https://github.com/jaimeehd/sgp-lite.git) | — |
 | **D2** | Titular de la licencia | Abierta | `the ia-sdlc authors` (P1.2 lo aplica; el humano puede reemplazarlo) |
 | **D3** | Distribución del zip | Abierta | **Versionar `sgp-lite.zip` en el repo** + guarda de consistencia (P0.2). Alternativa documentada: asset de Release (P0.4, opcional) |
 
