@@ -10,16 +10,17 @@
 ## Usuarios
 <Quién lo usa y qué necesita.>
 
-## Alcance de la primera versión
-<Lo mínimo que debe funcionar primero.>
-
 ## Requerimientos
-<Lista numerada, en lenguaje claro (no EARS). Un ítem por línea.>
-1. <…>
-2. <…>
+<Lista numerada, en lenguaje claro (no EARS). Prioridad al final, entre paréntesis:
+1ª versión | siguiente | fuera de alcance.>
+1. <…> (1ª versión)
+2. <…> (siguiente)
+
+## No funcionales
+<Cada uno con cifra y cómo se medirá: p. ej. respuesta < 2 s en catálogo (medido con cronómetro).>
 
 ## Restricciones
-<Plataformas, integraciones, fechas, presupuesto, límites conocidos.>
+<Plataformas, integraciones, fechas, presupuesto, y soluciones impuestas con su motivo.>
 
 ## Fuera de alcance
 <Lo que NO se hará en esta etapa.>
@@ -27,8 +28,11 @@
 ## Supuestos
 - [POR-ACLARAR] <algo asumido>
 
-## Dudas abiertas
-- [POR-ACLARAR] <pregunta para resolver con el cliente o una fuente fiable>
-
 ## Ambigüedades pendientes
 - <lo que aún no se puede especificar sin decidir algo>
+
+## Dominios candidatos
+- <prefijo (2-5 letras)> — <capacidades que lo componen>
+
+## Orden sugerido de primeros cambios
+- <capacidad de la 1ª versión> → carril <rapido | normal | mayor>
