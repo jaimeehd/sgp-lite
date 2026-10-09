@@ -1,11 +1,11 @@
 ---
 name: protocolo-ingenieria-senior
-description: Procedimiento obligatorio antes de leer, diagnosticar, editar o diseñar código, configuración o arquitectura en cualquier repositorio — tabla de evidencia, diagnóstico con nivel de confianza, alcance mínimo, decisiones deliberadas documentadas, verificación con estado DONE/INCOMPLETE/BLOCKED, chequeo de sesiones concurrentes y seguimiento de tareas multi-paso. Complementa a docs/system-engineering-policy.SKILL.md (identidad, prohibiciones, contraste, ambigüedad, confirmación). Invocar ante cualquier bug fix, refactor, nueva función, módulo o subsistema, elección de stack/patrón, o propuesta de arquitectura.
+description: Procedimiento obligatorio antes de leer, diagnosticar, editar o diseñar código, configuración o arquitectura en cualquier repositorio — tabla de evidencia, diagnóstico con nivel de confianza, alcance mínimo, decisiones deliberadas documentadas, verificación con estado DONE/INCOMPLETE/BLOCKED, chequeo de sesiones concurrentes y seguimiento de tareas multi-paso. Complementa a la política de ingeniería (skill `system-engineering-policy`, `system_prompt.md` inyectada, o `docs/system-engineering-policy.SKILL.md` en el repo del kit), que es normativa. Invocar ante cualquier bug fix, refactor, nueva función, módulo o subsistema, elección de stack/patrón, o propuesta de arquitectura.
 ---
 
 # Protocolo de ingeniería senior — procedimiento completo
 
-> Complementa a `docs/system-engineering-policy.SKILL.md` (identidad, prohibiciones duras, prioridad de decisión, contraste obligatorio, ambigüedad, confirmación, anclaje de proyecto — eso NO se repite aquí). Esto es la plantilla operativa: qué tabla llenar, qué declarar, en qué orden, antes de tocar cualquier archivo.
+> Complemento operativo de la política de ingeniería (`system-engineering-policy`, `system_prompt.md` inyectada, o `docs/system-engineering-policy.SKILL.md` en el repo del kit), que es normativa: identidad, prohibiciones duras, prioridad de decisión, contraste, ambigüedad, confirmación y anclaje de proyecto viven allí. Cubre §2 (FIX), §4 (ARQUITECTURA), §9, §12, §13 y §16 de la política; si esas secciones cambian, revisar este skill. Es la plantilla operativa: qué tabla llenar, qué declarar, en qué orden, antes de tocar cualquier archivo.
 
 ---
 
@@ -16,14 +16,14 @@ description: Procedimiento obligatorio antes de leer, diagnosticar, editar o dis
 Antes de la tabla de evidencia, declara en una línea el radio de impacto del sistema que se toca:
 
 ```
-CRITICIDAD: PRODUCCIÓN/USUARIO FINAL | HERRAMIENTA INTERNA RECURRENTE | SCRIPT DE UN SOLO USO O DESCARTABLE
+CRITICIDAD: PRODUCCIÓN/USUARIO FINAL | HERRAMIENTA INTERNA RECURRENTE | SCRIPT DESCARTABLE
 ```
 
-No exime ninguna regla de §2 — solo ajusta la profundidad de §2.4: en PRODUCCIÓN/USUARIO FINAL, DONE exige test o smoke test ejecutado; en SCRIPT DE UN SOLO USO, una ejecución exitosa observada por el usuario puede bastar (se declara igual, no se omite la fila). Ante duda genuina, trátalo como PRODUCCIÓN por defecto — el rigor se sube por declaración explícita a la baja, nunca se asume bajo por conveniencia.
+No exime ninguna regla de §2 — solo ajusta la profundidad de §2.4 y permite la vía ligera de más abajo: en PRODUCCIÓN/USUARIO FINAL, DONE exige test o smoke test ejecutado; en HERRAMIENTA INTERNA o SCRIPT DESCARTABLE los bloques pueden condensarse, pero la evidencia no se omite. Ante duda genuina, trátalo como PRODUCCIÓN por defecto — el rigor se sube por declaración explícita a la baja, nunca se asume bajo por conveniencia.
 
-**Auditoría independiente en PRODUCCIÓN.** Una tabla de EVIDENCIA bien formateada no prueba que los datos sean correctos. Antes de DONE, recomienda verificarla contra el repo real, idealmente en otra sesión — hacerlo tú mismo heredaría el mismo sesgo que se busca detectar.
+**Auditoría independiente en PRODUCCIÓN.** Una tabla de EVIDENCIA bien formateada no prueba que los datos sean correctos. Antes de DONE, la tabla debe verificarse contra el repo real por una sesión o subagente independiente cuando sea factible; si no lo es, se declara `verificación independiente: NO EJECUTADA`.
 
-**Vía ligera.** Si CRITICIDAD es HERRAMIENTA INTERNA o SCRIPT DE UN SOLO USO, y no hay decisión deliberada (§9) ni casilla marcada del CONTRASTE (§8.1), los bloques DIAGNÓSTICO/SOLUCIÓN/VERIFICACIÓN pueden condensarse en pocas líneas — evidencia y criticidad siguen siendo obligatorias. No aplica a PRODUCCIÓN/USUARIO FINAL.
+**Vía ligera.** Si CRITICIDAD es HERRAMIENTA INTERNA o SCRIPT DESCARTABLE, y no hay decisión deliberada (§9) ni casilla marcada del CONTRASTE (§8.1), los bloques DIAGNÓSTICO/SOLUCIÓN/VERIFICACIÓN pueden condensarse en pocas líneas — evidencia y criticidad siguen siendo obligatorias. No aplica a PRODUCCIÓN/USUARIO FINAL.
 
 ### 2.1 Regla dura: evidencia antes de editar
 
@@ -72,10 +72,10 @@ Si detecto un bug, mejora o problema fuera de lo pedido en este turno — mismo 
 
 ```
 VERIFICACIÓN
-| Método | Resultado | Evidencia real |
-|---|---|---|
-| compilación / chequeo estático (build, type-check, lint — el que aplique al lenguaje/proyecto) | OK | [output real, no "probablemente compila"] |
-| test / smoke test | OK / FALLA / NO EJECUTADO | [output o razón] |
+| Método | Comando ejecutado | Resultado | Evidencia real |
+|---|---|---|---|
+| compilación / chequeo estático (build, type-check, lint — el que aplique al lenguaje/proyecto) | `cmd exacto` | OK | [output real, no "probablemente compila"] |
+| test / smoke test | `cmd exacto` | OK / FALLA / NO EJECUTADO | [output o razón] |
 
 CONSIDERADO Y DESCARTADO: [cualquier cambio adicional que se evaluó tocar durante la tarea y no se ejecutó — con la razón. "Ninguno" si de verdad no hubo nada]
 
@@ -266,7 +266,7 @@ Cada paso sigue sujeto a las reglas del modo correspondiente (§2 FIX, §4 ARQUI
 
 ## 16. Rigor constante en todas las respuestas
 
-Independientemente del modo (FIX, ARQUITECTURA o CONSULTA) y de si se toca o no código, las reglas de evidencia verificable se mantienen obligatorias:
+Independientemente del modo (FIX, ARQUITECTURA, DOCS o CONSULTA) y de si se toca o no código, las reglas de evidencia verificable se mantienen obligatorias:
 
 **EVIDENCIA PARA TODA AFIRMACIÓN FACTUAL** (§16.1):
 - Toda afirmación sobre el estado del código (existe/no existe, cantidad de sitios, comportamiento de un método) requiere tabla de evidencia equivalente a la de modo FIX/ARQUITECTURA.
@@ -290,6 +290,6 @@ Independientemente del modo (FIX, ARQUITECTURA o CONSULTA) y de si se toca o no 
 
 **VERIFICACIÓN ANTES DE DONE** (§16, §2.4):
 - DONE exige ≥1 fila que pruebe comportamiento, no solo "build: OK" → INCOMPLETE.
-- Sin forma de probar comportamiento (repo sin infra de tests): se pregunta (§11) si se desea crear infra mínima de test — es ampliación de alcance y requiere confirmación explícita; sin ella, ESTADO = INCOMPLETE con la razón.
+- Sin forma de probar comportamiento (repo sin infra de tests): se pregunta (§10) si se desea crear infra mínima de test — es ampliación de alcance y requiere confirmación explícita; sin ella, ESTADO = INCOMPLETE con la razón.
 
 ---
