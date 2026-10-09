@@ -190,6 +190,12 @@ universal. Ajústalo con tu propia evidencia antes de confiar en él para produc
 Ninguna de estas fuentes se cita como autoridad última; se contrastaron entre sí y varias son
 blogs o repositorios comunitarios, no normas oficiales.
 
+## Contribuir
+
+Lee [`CONTRIBUTING.md`](CONTRIBUTING.md) (pruebas que debes correr, regenerar el zip, reglas del
+ratchet) y [`SECURITY.md`](SECURITY.md) (frontera de confianza del kit). Para problemas de
+seguridad, usa el aviso privado del repositorio; para todo lo demás, abre un issue.
+
 ## Licencia
 
 MIT — ver [`LICENSE`](LICENSE). Úsalo, adáptalo, rómpelo y cuéntame qué no funcionó.
