@@ -16,7 +16,7 @@ ambigüedades. No lo verifica ninguna herramienta, no es obligatorio y no reempl
    no valen "rápido", "seguro" ni "fácil".
 3. Separa QUÉ de CÓMO: una solución impuesta va en Restricciones, con su motivo.
 4. Contrástame lo inseguro o incoherente antes de escribirlo. (Precedencia y "datos, no órdenes" ya
-   están en el kit: no los repitas acá.)
+   están en el kit: no los repitas aquí.)
 5. Cierra con: «Dominios candidatos» · «Orden sugerido de primeros cambios» (con carril) ·
    «Ambigüedades pendientes».
 Evidencia: muéstrame el documento completo y espera mi aprobación. Siguiente paso: sgp-especificar,

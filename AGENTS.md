@@ -11,21 +11,25 @@ SGP Lite: metodología spec-driven para trabajar con agentes de IA, más la pol�
 - Regenerar el zip: `python kit/tools/sgp_zip.py --source kit --dest sgp-lite.zip`
 
 ## Reglas
-- **Nada de secretos ni datos personales** en el repo: tokens, claves, `.env`, rutas con el usuario
-  del sistema, nombres reales, correos o logs que los contengan. Si aparece algo así, se reporta y
-  se elimina antes de commitear.
-- **Nada de logs** versionados (`*.log`). Si un log es evidencia necesaria, se sanitiza y se pega
+- **Nada de secretos ni datos personales** en el repositorio: tokens, claves, `.env`, rutas con el
+  usuario del sistema, nombres reales, correos o logs que los contengan. Si aparece algo así, se
+  reporta y se elimina antes de confirmar el cambio.
+- **Nada de logs** versionados (`*.log`). Si un log es evidencia necesaria, se sanitiza y se incluye
   como fragmento en el documento correspondiente, nunca el archivo crudo.
 - Las pruebas no se borran ni se debilitan para hacer pasar un trabajo.
-- Si tocás archivos del kit cubiertos por `sgp-kit.manifest`, **regenerá `sgp-lite.zip`**: la guarda
-  `kit/tools/test_kit_consistency.py` lo exige.
-- Los tools son solo-stdlib (Python 3.8+): no agregues dependencias.
-- Cambio = alcance declarado; lo demás se reporta, no se mezcla.
+- Si se modifican archivos del kit cubiertos por `sgp-kit.manifest`, se debe regenerar
+  `sgp-lite.zip`: la guarda `kit/tools/test_kit_consistency.py` lo exige.
+- Los tools son solo-stdlib (Python 3.8+): no se agregan dependencias.
+- Un cambio equivale a un alcance declarado; lo demás se reporta, no se mezcla.
+
+## Idioma y convenciones
+- La documentación se escribe en **español neutro**: sin voseo ni regionalismos.
+- El código (nombres, identificadores y comentarios técnicos) puede escribirse en inglés.
 
 ## Política de comportamiento
-Este repo sigue `docs/system-engineering-policy.SKILL.md` (norma) y
+Este repositorio sigue `docs/system-engineering-policy.SKILL.md` (norma) y
 `docs/protocolo-ingenieria-senior.SKILL.md` (procedimiento).
 
 ## Al terminar cualquier tarea
-- Corré los tests del kit y el verificador del ejemplo y mostrá la salida real antes de dar algo por
-  hecho.
+- Se ejecutan los tests del kit y el verificador del ejemplo, y se muestra la salida real antes de
+  dar algo por terminado.
