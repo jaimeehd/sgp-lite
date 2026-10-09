@@ -40,3 +40,55 @@ decisión, razones (sin reinterpretar) y consecuencias. Nada aquí se toca "de p
      copiar a `kit/skills/system-engineering-policy/SKILL.md` y correr los tests del kit.
   3. Los repos que adoptaron el kit se actualizan con `sgp_kit update` + `sync_skills.py`.
   4. La guarda `kit/tools/test_policy_sync.py` cubre `docs/` ↔ `kit/skills/` (falla si divergen).
+
+## 2026-10-09 — Publicación: solo bajo la licencia, sin canal de contribución
+
+- **Contexto**: se publica el repositorio en https://github.com/jaimeehd/sgp-lite
+  (nombre `sgp-lite`, rama `master`, tag `v1.4.0`).
+- **Decisión**:
+  1. Licencia MIT con titular `Copyright (c) 2026 the sgp-lite authors`.
+  2. El repositorio se publica **solo bajo la licencia**: no se aceptan contribuciones. Se retiran
+     `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, `.github/ISSUE_TEMPLATE/*` y
+     `.github/pull_request_template.md`, y las secciones "Contribuir"/"Contributing".
+  3. Se conservan `SECURITY.md` (canal privado de reporte de seguridad) y el workflow de CI
+     (`.github/workflows/ci.yml`, disparado por `pull_request`).
+- **Razones**: decisión del autor; el repositorio no busca contribuciones externas.
+- **Consecuencias**: no se añaden plantillas de issue/PR ni guías de contribución; los cambios
+  llegan solo por el autor.
+
+## 2026-10-09 — Todo en español, salvo la licencia y el código
+
+- **Contexto**: la fase P2.4 añadió versiones en inglés (`README.en.md`,
+  `docs/manual-usuario.en.md`) con conmutadores de idioma.
+- **Decisión**: los documentos del repositorio se escriben **íntegramente en español neutro** (sin
+  voseo ni regionalismos). Se eliminan `README.en.md` y `docs/manual-usuario.en.md` y los
+  conmutadores de idioma. Se exceptúan el texto de la licencia (MIT, en inglés) y el código
+  (comandos, identificadores y fragmentos incluidos en la documentación, que pueden ir en inglés).
+  La descripción del frontmatter de la política se traduce y se propaga a las tres copias
+  (`docs/`, `kit/skills/` y `examples/`).
+- **Razones**: decisión del autor (hablante de español).
+- **Consecuencias**: no se agrega documentación en inglés; al cambiar la descripción de la política
+  hay que propagarla a `kit/skills/` y `examples/` y regenerar `sgp-lite.zip` (lo exigen
+  `test_policy_sync` y `test_kit_consistency`).
+
+## 2026-10-09 — Los planes y pendientes viven solo en local
+
+- **Contexto**: `docs/plan-produccion.md` se había publicado en el remoto.
+- **Decisión**: los planes y pendientes no se publican. Se retira del índice
+  (`git rm --cached docs/plan-produccion.md`), el archivo queda solo en local y `.gitignore` lo
+  excluye con `docs/plan-*.md`. La historia previa del remoto se deja intacta (no se reescribe).
+- **Razones**: decisión del autor; los planes son de trabajo interno.
+- **Consecuencias**:
+  1. Todo plan/pendiente nuevo en `docs/plan-*.md` queda solo en local, nunca en el remoto.
+  2. El registro duradero de decisiones es `.clean/decisions.md` (sí publicado), no el plan.
+  3. La historia del remoto conserva el plan ya publicado (no se purgó por decisión del autor).
+
+## 2026-10-09 — P2.3 (ciclo de «deltas» y archivo de specs): backlog
+
+- **Contexto**: el plan P2.3 evaluaba un mecanismo tipo OpenSpec (deltas ADDED/MODIFIED/REMOVED +
+  archivo) para specs de larga vida.
+- **Decisión**: no se ejecuta. Queda documentado como posible implementación a posteriori.
+- **Razones**: requiere un diseño propio (contrato nuevo en `specs/`/`changes/`) y aprobación
+  explícita; excede el alcance de esta fase.
+- **Consecuencias**: se registra aquí porque el plan (`docs/plan-produccion.md`) no se publica; si
+  se retoma, se hace en MODO ARQUITECTURA con su propio diseño y ADR.
