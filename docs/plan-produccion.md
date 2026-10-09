@@ -412,7 +412,7 @@ seguridad, usa el aviso privado del repositorio; para todo lo demás, abre un is
 
 ### Fase P1 — Coherencia y robustez
 
-#### [ ] Tarea P1.1 — Sincronizar el ejemplo con el kit (8 skills) + guarda
+#### [x] Tarea P1.1 — Sincronizar el ejemplo con el kit (8 skills) + guarda
 
 - **Objetivo**: que el ejemplo deje de estar desactualizado y que ninguna desincronización futura pase inadvertida.
 - **Depende de**: P0.2 (crea `test_kit_consistency.py`).
@@ -464,7 +464,7 @@ class EjemploTests(unittest.TestCase):
 - **Hecho cuando**: ejemplo con 8 skills, AGENTS.md actualizado, guarda en verde y la manipulación negativa falla.
 - **Commit**: el del paso 5.
 
-#### [ ] Tarea P1.2 — Titular de licencia
+#### [x] Tarea P1.2 — Titular de licencia
 
 - **Objetivo**: que la licencia tenga titular (aplica **D2**, default `the ia-sdlc authors`).
 - **Depende de**: nada.
@@ -477,7 +477,7 @@ class EjemploTests(unittest.TestCase):
 - **Hecho cuando**: la línea de copyright tiene titular.
 - **Commit**: el del paso 2.
 
-#### [ ] Tarea P1.3 — Documentar y probar el subconjunto YAML de `sgp.yaml`
+#### [x] Tarea P1.3 — Documentar y probar el subconjunto YAML de `sgp.yaml`
 
 - **Objetivo**: que el parser casero (`kit/tools/sgp_check.py:56-71`) no sorprenda: subconjunto documentado y probado.
 - **Depende de**: nada.
@@ -486,9 +486,10 @@ class EjemploTests(unittest.TestCase):
   1. Añadir a `kit/sgp.yaml`, debajo del comentario de la primera línea, este bloque:
 
 ```yaml
-# Subconjunto soportado por el verificador: secciones `clave:` y dentro pares `clave: valor`
-# (con o sin comillas). No hay listas YAML ni anidamiento: las líneas que no son `clave: valor`
-# se ignoran. Los comentarios empiezan con # (fuera de comillas). Ver tools/sgp_check.py (read_config).
+# Subconjunto soportado por el verificador: secciones `clave:` y dentro pares `clave: valor`.
+# No hay listas YAML ni anidamiento: las líneas que no son `clave: valor` se ignoran.
+# Un `#` precedido de espacio inicia un comentario, incluso dentro de comillas.
+# Ver tools/sgp_check.py (read_config).
 ```
 
   2. En `kit/LEEME.md`, tras la línea que menciona `sgp-kit.manifest` (sección "Instalar y actualizar"), añadir:
@@ -498,10 +499,10 @@ class EjemploTests(unittest.TestCase):
 
 ```python
     def test_yaml_con_estructura_no_soportada_no_crashea(self):
-        # listas y anidamiento se ignoran; comillas protegen el # interno
+        # listas y anidamiento se ignoran; un valor entre comillas se acepta
         y = ("rutas:\n  tests: tests\nlistas:\n  - uno\n  - dos\n"
              "comandos:\n"
-             "  build: \"echo # no es comentario\"\n"
+             f"  build: \"{PY} -c pass\"\n"
              "  tests: \"\"\n"
              "  lint: \"\"\n"
              "  test_por_requisito: \"\"\n")
@@ -597,7 +598,7 @@ def read_version(kit_dir):
 
 | # | Comando (desde la raíz) | Esperado | Aplica a |
 |---|---|---|---|
-| V1 | `cd kit; python -m unittest discover -s tools -p "test_*.py" -v` | `OK` (hoy 40 tests; crece con las guardas que añade el plan) | todas las fases |
+| V1 | `cd kit; python -m unittest discover -s tools -p "test_*.py" -v` | `OK` (hoy 46 tests) | todas las fases |
 | V2 | `python kit/tools/sgp_check.py --root examples/descuento --run` | `Resumen: 0 error(es), 0 aviso(s).` | todas las fases |
 | V3 | `python kit/tools/sgp_check.py --version` | `1.4.0` | P2.1+ |
 | V4 | `git ls-files -- sgp-lite.zip` | ruta listada | P0.2+ |
@@ -634,9 +635,9 @@ def read_version(kit_dir):
 | P0.2 zip + guarda + tag | HECHO (`9cbbe67`, tag `v1.4.0`) | suite 42 OK; prueba negativa: alterar el kit -> `FAILED (contenido desactualizado en el zip: METODOLOGIA.md)`; restaurar -> OK |
 | P0.3 gobernanza | HECHO (`997cdba`) | 6 archivos + `README.md` seccion Contribuir; enlaces CONTRIBUTING/SECURITY verificados |
 | P0.4 publicar | BLOQUEADA (D1) | falta la URL del remoto; el tag `v1.4.0` ya existe en local |
-| P1.1 ejemplo + guarda | PENDIENTE | |
-| P1.2 licencia | PENDIENTE | |
-| P1.3 YAML | PENDIENTE | |
+| P1.1 ejemplo + guarda | HECHO (`952f348`) | ejemplo con 8 skills; suite 45 OK |
+| P1.2 licencia | HECHO (`7ae4b17`) | `LICENSE`: `Copyright (c) 2026 the ia-sdlc authors` |
+| P1.3 YAML | HECHO (`ac2d0d6`) | doc en `kit/sgp.yaml` y `LEEME.md`; test nuevo; suite 46 OK; zip regenerado |
 | P2.1 --version | PENDIENTE | |
 | P2.2 badges | PENDIENTE | |
 | P2.3 deltas (backlog) | NO INICIADA | |
