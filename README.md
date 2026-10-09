@@ -125,7 +125,7 @@ Si dudas de **cuánto** usar según el tamaño o la criticidad de tu proyecto, e
 
 1. Instala el kit con el actualizador (recomendado, permite traer mejoras después):
    `python <kit>/tools/sgp_kit.py init --source <kit> --dest .` desde la raíz de tu repo, donde `<kit>`
-   es la ruta a la carpeta del kit (p. ej. `../ia-sdlc/kit`). Para traer mejoras después:
+   es la ruta a la carpeta del kit (p. ej. `../sgp-lite/kit`). Para traer mejoras después:
    `python <kit>/tools/sgp_kit.py update --source <kit> --dest .`.
    (Alternativa manual: descomprime `sgp-lite.zip` en la raíz del repo, o copia `kit/docs/`, `kit/specs/`,
    `kit/changes/`, `kit/tools/`, `kit/skills/`, `kit/AGENTS.md`, `kit/CLAUDE.md`, `kit/sgp.yaml`,

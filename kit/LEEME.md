@@ -9,7 +9,7 @@ no una copia muerta: guarda en el proyecto `.sgp-kit.json` (versión + hashes) y
 archivos gestionados por el kit y archivos tuyos.
 
 ```bash
-# Instalar (desde la raíz de TU proyecto). <kit> = ruta a esta carpeta, p. ej. ../ia-sdlc/kit
+# Instalar (desde la raíz de TU proyecto). <kit> = ruta a esta carpeta, p. ej. ../sgp-lite/kit
 python <kit>/tools/sgp_kit.py init   --source <kit> --dest .
 # Ver qué cambió el kit desde tu última versión
 python <kit>/tools/sgp_kit.py status --source <kit> --dest .

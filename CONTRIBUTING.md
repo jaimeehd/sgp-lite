@@ -1,4 +1,4 @@
-# Contribuir a ia-sdlc
+# Contribuir a sgp-lite
 
 Gracias por aportar. Este repo contiene la metodología SGP Lite (`kit/`), la política de ingeniería
 (`docs/system-engineering-policy.SKILL.md`) y un ejemplo ejecutable (`examples/descuento/`).

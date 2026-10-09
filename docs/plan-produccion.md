@@ -1,4 +1,4 @@
-# Plan hacia producción — ia-sdlc (SGP Lite + política de ingeniería)
+# Plan hacia producción — sgp-lite (SGP Lite + política de ingeniería)
 
 > **Versión del plan:** 1 · **Fecha:** 2026-10-09 · **Base:** rama `master`, `kit/VERSION` = `1.4.0`
 > **Objetivo:** cerrar los huecos que impiden publicar este repositorio como producto mantenible
@@ -76,7 +76,7 @@
 | # | Decisión | Estado | Default adoptado |
 |---|---|---|---|
 | **D1** | URL del remoto GitHub | **RESUELTA** (https://github.com/jaimeehd/sgp-lite.git) | — |
-| **D2** | Titular de la licencia | Abierta | `the ia-sdlc authors` (P1.2 lo aplica; el humano puede reemplazarlo) |
+| **D2** | Titular de la licencia | Abierta | `the sgp-lite authors` (P1.2 lo aplica; el humano puede reemplazarlo) |
 | **D3** | Distribución del zip | Abierta | **Versionar `sgp-lite.zip` en el repo** + guarda de consistencia (P0.2). Alternativa documentada: asset de Release (P0.4, opcional) |
 
 **Regla**: si una decisión pendiente bloquea una tarea, marcarla `BLOQUEADA (D#)` en §7 y continuar con la siguiente tarea de la misma fase que no dependa de ella.
@@ -259,7 +259,7 @@ if __name__ == "__main__":
   1. Crear `CONTRIBUTING.md`:
 
 ```markdown
-# Contribuir a ia-sdlc
+# Contribuir a sgp-lite
 
 Gracias por aportar. Este repo contiene la metodología SGP Lite (`kit/`), la política de ingeniería
 (`docs/system-engineering-policy.SKILL.md`) y un ejemplo ejecutable (`examples/descuento/`).
@@ -466,11 +466,11 @@ class EjemploTests(unittest.TestCase):
 
 #### [x] Tarea P1.2 — Titular de licencia
 
-- **Objetivo**: que la licencia tenga titular (aplica **D2**, default `the ia-sdlc authors`).
+- **Objetivo**: que la licencia tenga titular (aplica **D2**, default `the sgp-lite authors`).
 - **Depende de**: nada.
 - **Archivos**: `LICENSE` (1 línea).
 - **Pasos**:
-  1. Cambiar `Copyright (c) 2026` por `Copyright (c) 2026 the ia-sdlc authors` (o el titular que
+  1. Cambiar `Copyright (c) 2026` por `Copyright (c) 2026 the sgp-lite authors` (o el titular que
      indique el humano en D2).
   2. Commit: `git add LICENSE && git commit -m "Completar el titular de la licencia MIT"`
 - **Verificación**: `Select-String -LiteralPath LICENSE -Pattern 'Copyright'` → una línea con titular.
@@ -637,7 +637,7 @@ def read_version(kit_dir):
 | P0.3 gobernanza | HECHO (`997cdba`) | 6 archivos + `README.md` seccion Contribuir; enlaces CONTRIBUTING/SECURITY verificados |
 | P0.4 publicar | HECHO | pusheado a https://github.com/jaimeehd/sgp-lite (rama `master` + tag `v1.4.0`); CI a confirmar en la pestana Actions (`gh` no disponible localmente) |
 | P1.1 ejemplo + guarda | HECHO (`952f348`) | ejemplo con 8 skills; suite 45 OK |
-| P1.2 licencia | HECHO (`7ae4b17`) | `LICENSE`: `Copyright (c) 2026 the ia-sdlc authors` |
+| P1.2 licencia | HECHO (`7ae4b17`) | `LICENSE`: `Copyright (c) 2026 the sgp-lite authors` |
 | P1.3 YAML | HECHO (`ac2d0d6`) | doc en `kit/sgp.yaml` y `LEEME.md`; test nuevo; suite 46 OK; zip regenerado |
 | P2.1 --version | PENDIENTE | |
 | P2.2 badges | PENDIENTE | |
