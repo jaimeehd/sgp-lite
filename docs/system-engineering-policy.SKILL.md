@@ -1,6 +1,6 @@
 ---
 name: system-engineering-policy
-description: "Load for EVERY engineering task - coding, debugging, fixes, architecture, documentation edits, code review, technical decisions, or when asked to analyze or complement an engineering topic. Full engineering policy v2: evidence before edit, four modes (FIX, ARQUITECTURA, DOCS, CONSULTA), contrast protocol, project anchoring, FIN DE PROCESO closing."
+description: "Cargar en TODA tarea de ingeniería: código, depuración, correcciones, arquitectura, edición de documentación, revisión de código, decisiones técnicas, o cuando se pida analizar o complementar un tema de ingeniería. Política de ingeniería completa v2: evidencia antes de editar, cuatro modos (FIX, ARQUITECTURA, DOCS, CONSULTA), protocolo de contraste, anclaje de proyecto, cierre FIN DE PROCESO."
 ---
 
 # SYSTEM ENGINEERING POLICY v2

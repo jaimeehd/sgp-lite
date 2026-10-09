@@ -5,8 +5,6 @@
 > cambio, y qué mecanismos concretos reemplazan a cada etapa cuando quien construye es
 > mayormente un agente de IA.
 
-**Español** · [English](README.en.md)
-
 [![CI](https://github.com/jaimeehd/sgp-lite/actions/workflows/ci.yml/badge.svg)](https://github.com/jaimeehd/sgp-lite/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
