@@ -41,6 +41,8 @@ decisión, razones (sin reinterpretar) y consecuencias. Nada aquí se toca "de p
   3. Los repos que adoptaron el kit se actualizan con `sgp_kit update` + `sync_skills.py`.
   4. La guarda `kit/tools/test_policy_sync.py` cubre `docs/` ↔ `kit/skills/` (falla si divergen).
 
+- **Estado (2026-10-11)**: superada en lo relativo a las copias desplegadas por «Independencia entre las políticas del equipo y las del proyecto». La cadena interna (`docs/` → `kit/skills/` → `examples/descuento/skills/` → `sgp-lite.zip`) sigue vigente.
+
 ## 2026-10-09 — Publicación: solo bajo la licencia, sin canal de contribución
 
 - **Contexto**: se publica el repositorio en https://github.com/jaimeehd/sgp-lite
@@ -116,6 +118,8 @@ decisión, razones (sin reinterpretar) y consecuencias. Nada aquí se toca "de p
      configuración local de un agente, plugins o cachés de una cuenta) no tienen guarda: se
      verifican por hash tras cada cambio.
   4. Ante cualquier discrepancia, prevalece el repositorio sobre la copia desplegada.
+
+- **Estado (2026-10-11)**: superada en lo relativo a subordinar la configuración del equipo al repositorio por «Independencia entre las políticas del equipo y las del proyecto». La verificación por hash y la cadena interna siguen vigentes **dentro del repo**.
 
 ## 2026-10-11 — Independencia entre las políticas del equipo y las del proyecto
 

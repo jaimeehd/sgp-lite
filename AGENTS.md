@@ -42,6 +42,6 @@ SGP Lite: metodología spec-driven para trabajar con agentes de IA, más la pol�
 Este repositorio sigue `docs/system-engineering-policy.SKILL.md` (norma) y
 `docs/protocolo-ingenieria-senior.SKILL.md` (procedimiento).
 
-## Al terminar cualquier tarea
+## Al terminar una tarea que modifica archivos
 - Se ejecutan los tests del kit y el verificador del ejemplo, y se muestra la salida real antes de
   dar algo por terminado.

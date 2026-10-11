@@ -97,6 +97,8 @@ ESTADO: DONE | INCOMPLETE | BLOCKED
 
 DONE solo es válido si al menos una fila prueba comportamiento (la fila "docs de proyecto" no cuenta como tal), no solo compilación — si la única fila es "build: OK", el estado correcto es INCOMPLETE.
 
+**Output real o no existe.** Prohibido transcribir output de comandos no ejecutados en esta sesión; un fallo de entorno (deps, permisos, sin red) = BLOCKED con la razón — no se marca OK "probablemente". **Criterio de BLOCKED**: falta un requisito externo no resoluble por el agente (entorno, credencial, decisión/permiso del usuario).
+
 Con PROYECTO ACTIVO y una tarea que modificó código o docs del proyecto, la fila "docs de proyecto" debe mostrar OK con la lista concreta de docs actualizados; si no, ESTADO = INCOMPLETE. Se verifica por auto-auditoría del agente, sin recordatorio externo. Excepción: tarea que no toca el proyecto (consulta, config global, etc.) → "ninguna afectada" válido.
 
 "CONSIDERADO Y DESCARTADO" no se deja vacío por omisión — si no surgió nada fuera del ALCANCE, se declara "Ninguno" explícitamente, para que lo que se decidió no tocar quede visible al final, no solo mencionado de pasada al inicio.
@@ -238,6 +240,8 @@ Queda activa para el **resto de la sesión** en ese proyecto — no se redescubr
 
 **Caso especial: autorización explícita como restricción de proyecto.** Si exige aprobación antes de cualquier cambio (no solo ante objeción de §8), eso se antepone a §2: ni VIABLE SIN RESERVAS autoriza implementar directo — se presenta la SOLUCIÓN PROPUESTA (§2.3) y se espera confirmación explícita, mismo trato que NO VIABLE, pero por autorización de proyecto.
 
+**Conflicto con la política:** manda la restricción de proyecto (nivel 2 de la prelación) salvo seguridad. Una restricción de proyecto solo puede **añadir limitaciones**: nunca relaja las reglas duras de la política.
+
 ---
 ---
 
@@ -286,7 +290,7 @@ Cada paso sigue sujeto a las reglas del modo correspondiente (§2 FIX, §4 ARQUI
 Independientemente del modo (FIX, ARQUITECTURA, DOCS o CONSULTA) y de si se toca o no código, las reglas de evidencia verificable se mantienen obligatorias:
 
 **EVIDENCIA PARA TODA AFIRMACIÓN FACTUAL** (§16.1):
-- Toda afirmación sobre el estado del código (existe/no existe, cantidad de sitios, comportamiento de un método) requiere tabla de evidencia equivalente a la de modo FIX/ARQUITECTURA.
+- Toda afirmación sobre el estado del código (existe/no existe, cantidad de sitios, comportamiento de un método) requiere la tabla de evidencia de §2.1 (lectura real, filas, caducidad).
 - No hay modo "solo análisis" que exima de esto.
 
 **PROHIBIR NEGACIONES ABSOLUTAS SIN BÚSQUEDA EXHAUSTIVA** (§16.2):

@@ -30,6 +30,7 @@ def main():
     ap.add_argument("--scope", choices=["repo", "personal"], default="repo")
     ap.add_argument("--root", default=".")
     ap.add_argument("--list", action="store_true")
+    ap.add_argument("--force", action="store_true", help="reemplaza las skills que ya existan en el destino")
     a = ap.parse_args()
     root = Path(a.root).resolve()
     src = root / "skills"
@@ -46,13 +47,18 @@ def main():
         return 1
     dest = (Path(dest_tpl).expanduser() if dest_tpl.startswith("~") else root / dest_tpl)
     dest.mkdir(parents=True, exist_ok=True)
+    installed = 0
     for skill_dir in sorted(p for p in src.iterdir() if p.is_dir()):
         target = dest / skill_dir.name
+        if target.exists() and not a.force:
+            print(f"  [existe] {target} (no se sobrescribe; usa --force para reemplazar)")
+            continue
         if target.exists():
             shutil.rmtree(target)
         shutil.copytree(skill_dir, target)
+        installed += 1
         print(f"-> {target}")
-    print(f"\n{len(list(src.iterdir()))} skill(s) instaladas para {a.agent} ({a.scope}).")
+    print(f"\n{installed} skill(s) instaladas para {a.agent} ({a.scope}).")
     print("Si tu agente no aparece en la lista: cualquier herramienta compatible con el estándar")
     print("agentskills.io puede leer skills/*/SKILL.md directamente; solo copia la carpeta a su ruta de skills.")
     return 0
