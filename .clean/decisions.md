@@ -92,3 +92,49 @@ decisión, razones (sin reinterpretar) y consecuencias. Nada aquí se toca "de p
   explícita; excede el alcance de esta fase.
 - **Consecuencias**: se registra aquí porque el plan (`docs/plan-produccion.md`) no se publica; si
   se retoma, se hace en MODO ARQUITECTURA con su propio diseño y ADR.
+
+## 2026-10-09 — El repositorio es la fuente de verdad: se verifica, no se asume
+
+- **Contexto**: la política y sus skills existen en varios lugares además del repositorio
+  (directorios de skills de los agentes, el archivo de política inyectado en la configuración local
+  de un agente, plugins o cachés sincronizados desde una cuenta y copias en proyectos que adoptaron
+  el kit). Una sesión de agente dio por vigente una de esas copias sin comprobarla contra el
+  repositorio.
+- **Decisión**: a partir de esta fecha, el repositorio es la fuente de verdad de la política, del
+  protocolo y de las skills. Cualquier otra ubicación es una copia derivada, nunca un origen: no se
+  edita ni se da por vigente sin verificar.
+- **Razones**: decisión del autor; evitar que se afirme qué versión rige por el nombre, la ruta o
+  la fecha de un archivo.
+- **Consecuencias**:
+  1. Antes de afirmar qué versión rige en cualquier ubicación, se compara con el repositorio (hash
+     o diff, con finales de línea normalizados: el mismo texto puede ser CRLF en Windows y LF en
+     otras copias).
+  2. Los cambios se hacen solo en el repositorio, en este orden: `docs/` → `kit/skills/` →
+     `examples/descuento/skills/` → `sgp-lite.zip`; después se propagan a las copias desplegadas.
+  3. Los tests cubren `docs/` ↔ `kit/skills/` (`test_policy_sync`) y `kit/` ↔ `examples/descuento/`
+     y el zip (`test_kit_consistency`). Las copias fuera del repositorio (política inyectada en la
+     configuración local de un agente, plugins o cachés de una cuenta) no tienen guarda: se
+     verifican por hash tras cada cambio.
+  4. Ante cualquier discrepancia, prevalece el repositorio sobre la copia desplegada.
+
+## 2026-10-11 — Independencia entre las políticas del equipo y las del proyecto
+
+- **Contexto**: la decisión 2026-10-09 hizo del repositorio la fuente única y trató la política
+  inyectada en la configuración local del agente como copia derivada. Eso acopló el equipo al repo
+  (skills del agente por enlace a `kit/skills/`) y subordinó la configuración de cada máquina al
+  proyecto.
+- **Decisión**: se independizan. Las políticas globales del equipo y las copias empaquetadas en el
+  repo son **independientes y complementarias**. El repo es fuente **solo de sus propias copias**;
+  las copias del repo son para **portabilidad** (si el equipo no tiene las políticas globales, se
+  usan las copias incluidas o se sugiere instalarlas). Se rompen los enlaces (junctions) del
+  directorio de skills del agente a `kit/skills/`; pasan a ser copias propias.
+- **Razones**: decisión del autor; el proyecto debe poder instalarse en equipos sin las políticas
+  globales sin depender de la ubicación del repo, y la configuración del equipo no debe quedar atada
+  al proyecto.
+- **Consecuencias**:
+  1. Supera la decisión 2026-10-09 "Fuente única de la política y su skill" y la de "El repositorio
+     es la fuente de verdad" en lo que respecta a subordinar la configuración del equipo al repo.
+  2. Se conserva la consistencia **interna** del repo: `test_policy_sync` (`docs/` ↔ `kit/skills/`)
+     y `test_kit_consistency` (`kit/` ↔ `examples/descuento/` ↔ zip).
+  3. Las actualizaciones del proyecto se propagan con `sgp_kit update` + `sync_skills.py`, sin asumir
+     autoridad sobre la configuración global del equipo.

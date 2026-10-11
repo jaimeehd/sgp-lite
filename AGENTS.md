@@ -26,6 +26,18 @@ SGP Lite: metodología spec-driven para trabajar con agentes de IA, más la pol�
 - La documentación se escribe en **español neutro**: sin voseo ni regionalismos.
 - El código (nombres, identificadores y comentarios técnicos) puede escribirse en inglés.
 
+## Copias de la política y las skills (independencia y portabilidad)
+- Las políticas globales del equipo (config del agente) y las copias empaquetadas en este repo son
+  **independientes y complementarias**. Este repositorio es la fuente **solo de sus propias copias**
+  (`docs/` → `kit/skills/` → `examples/descuento/skills/` → `sgp-lite.zip`); no gobierna la
+  configuración global de la máquina.
+- Las copias del repo existen para **portabilidad**: en un equipo que no tenga las políticas
+  globales, el agente usa las copias incluidas o **sugiere instalarlas** en ese equipo.
+- Dentro del repo, la consistencia es obligatoria y verificada: `test_policy_sync` (`docs/` ↔
+  `kit/skills/`) y `test_kit_consistency` (`kit/` ↔ `examples/descuento/` ↔ zip).
+- No se asume qué versión rige por el nombre, la ruta o la fecha de un archivo: se verifica por
+  hash o diff, con finales de línea normalizados.
+
 ## Política de comportamiento
 Este repositorio sigue `docs/system-engineering-policy.SKILL.md` (norma) y
 `docs/protocolo-ingenieria-senior.SKILL.md` (procedimiento).

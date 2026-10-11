@@ -9,9 +9,9 @@ description: Procedimiento obligatorio antes de leer, diagnosticar, editar o dis
 
 ---
 
-## 2. MODO FIX
+## §2. MODO FIX
 
-### 2.0 Criticidad declarada (ajusta el rigor, no lo elimina)
+### §2.0 Criticidad declarada (ajusta el rigor, no lo elimina)
 
 Antes de la tabla de evidencia, declara en una línea el radio de impacto del sistema que se toca:
 
@@ -25,7 +25,19 @@ No exime ninguna regla de §2 — solo ajusta la profundidad de §2.4 y permite 
 
 **Vía ligera.** Si CRITICIDAD es HERRAMIENTA INTERNA o SCRIPT DESCARTABLE, y no hay decisión deliberada (§9) ni casilla marcada del CONTRASTE (§8.1), los bloques DIAGNÓSTICO/SOLUCIÓN/VERIFICACIÓN pueden condensarse en pocas líneas — evidencia y criticidad siguen siendo obligatorias. No aplica a PRODUCCIÓN/USUARIO FINAL.
 
-### 2.1 Regla dura: evidencia antes de editar
+### §2.0.1 Requisito declarado
+
+Antes de la tabla de evidencia, fija el pedido como requisito con un criterio de aceptación observable — qué comportamiento debe darse y cómo se sabrá que ocurrió. No se pasa a EVIDENCIA sobre un requisito que el agente completó, interpretó o amplió por su cuenta.
+
+```
+REQUISITO
+- Pedido: [una línea, en palabras del usuario o resumen fiel]
+- Criterio de aceptación: [comportamiento observable esperado — lo que la VERIFICACIÓN (§2.4) deberá probar]
+```
+
+Si el criterio de aceptación no es derivable del pedido → §10 (dato faltante): se pregunta; no se infiere ni se completa con un "supuesto razonable". Este criterio es el que ancla la VERIFICACIÓN: DONE exige probar exactamente esto.
+
+### §2.1 Regla dura: evidencia antes de editar
 
 No emitas ninguna edición sin haber producido antes, en este turno o en uno visible de la conversación, una tabla de evidencia que cubra cada archivo que la edición toca. Si no la tienes, tu única acción permitida es generar las lecturas necesarias para construirla.
 
@@ -39,11 +51,11 @@ EVIDENCIA
 
 Una fila "¿Completo? NO" no es neutra: obliga a declarar en el diagnóstico qué riesgo introduce esa lectura parcial y por qué se acepta, o a completar la lectura antes de continuar. No se permite ninguna fila basada en convención de nombres o de framework sin lectura real: lo no leído no entra a la tabla y por tanto no puede usarse como hecho.
 
-**Re-lectura obligatoria si el archivo pudo cambiar.** Una fila caduca si (1) una edición sobre ese archivo falla o se aplica parcialmente — relee antes de reintentar; o (2) hubo otra acción entre lectura y edición que pudo modificarlo (otra edición, herramienta externa, autofix). En ambos casos, relee antes de continuar — nunca se asume que "seguía igual".
+**Re-lectura obligatoria si el archivo pudo cambiar.** Una fila caduca si (1) una edición sobre ese archivo falla o se aplica parcialmente — relee antes de reintentar; (2) hubo otra acción entre lectura y edición que pudo modificarlo (otra edición, herramienta externa, autofix); o (3) la conversación fue compactada y la fila ya no está visible en el contexto. En todos los casos, relee antes de continuar — nunca se asume que "seguía igual".
 
 **Archivos nuevos.** Si el FIX requiere crear un archivo que no existe, no hay líneas que leer en él — su fila de evidencia se marca `(nuevo, no existe)` en vez de un rango de líneas. Eso no exime la tabla: el archivo o los archivos existentes que van a consumir/importar el nuevo sí necesitan su propia fila, con lectura real, igual que cualquier otro — no se mezcla la evidencia de dos archivos distintos en una sola celda.
 
-### 2.2 Diagnóstico
+### §2.2 Diagnóstico
 
 ```
 DIAGNÓSTICO
@@ -54,7 +66,7 @@ DIAGNÓSTICO
 
 Nunca implementes sobre INFERENCIA o HIPÓTESIS sin intentar antes su verificación más barata. Si no es posible con la evidencia disponible, no se implementa asumiendo que "probablemente" es correcta — se aplica §10: se declara qué falta y se pregunta. Solo HECHO autoriza implementar sin ese paso.
 
-### 2.3 Cambio mínimo
+### §2.3 Cambio mínimo
 
 ```
 SOLUCIÓN PROPUESTA: [1-2 líneas]
@@ -64,11 +76,11 @@ FUERA DE ALCANCE (y por qué no se toca): [lista corta]
 
 No se refactoriza, limpia ni reorganiza nada fuera del alcance declarado, aunque sea una mejora obvia. Se anota aparte, no se ejecuta. No se elimina un workaround, guard clause o comentario de advertencia sin haber investigado por qué existe (historial, changelog, documentación) y sin citar esa fuente en la tabla de evidencia.
 
-### 2.3.1 Hallazgos fuera de la solicitud (dentro o fuera del proyecto activo)
+### §2.3.1 Hallazgos fuera de la solicitud (dentro o fuera del proyecto activo)
 
 Si detecto un bug, mejora o problema fuera de lo pedido en este turno — mismo archivo, otro módulo, u otro proyecto — la única acción permitida es informarlo, nunca corregirlo ni "aprovechar para arreglarlo". Se reporta aparte (`HALLAZGO NO SOLICITADO: [qué, dónde, por qué importa]`) y el usuario decide si se vuelve tarea nueva.
 
-### 2.4 Verificación
+### §2.4 Verificación
 
 ```
 VERIFICACIÓN
@@ -76,24 +88,27 @@ VERIFICACIÓN
 |---|---|---|---|
 | compilación / chequeo estático (build, type-check, lint — el que aplique al lenguaje/proyecto) | `cmd exacto` | OK | [output real, no "probablemente compila"] |
 | test / smoke test | `cmd exacto` | OK / FALLA / NO EJECUTADO | [output o razón] |
+| docs de proyecto | `git diff --name-only` + revisión manual | OK | [lista de docs de proyecto actualizados (README, ARCHITECTURE, DOCUMENTATION, AGENTS.md, docs/*) o "ninguna afectada"] |
 
 CONSIDERADO Y DESCARTADO: [cualquier cambio adicional que se evaluó tocar durante la tarea y no se ejecutó — con la razón. "Ninguno" si de verdad no hubo nada]
 
 ESTADO: DONE | INCOMPLETE | BLOCKED
 ```
 
-DONE solo es válido si al menos una fila prueba comportamiento, no solo compilación — si la única fila es "build: OK", el estado correcto es INCOMPLETE.
+DONE solo es válido si al menos una fila prueba comportamiento (la fila "docs de proyecto" no cuenta como tal), no solo compilación — si la única fila es "build: OK", el estado correcto es INCOMPLETE.
+
+Con PROYECTO ACTIVO y una tarea que modificó código o docs del proyecto, la fila "docs de proyecto" debe mostrar OK con la lista concreta de docs actualizados; si no, ESTADO = INCOMPLETE. Se verifica por auto-auditoría del agente, sin recordatorio externo. Excepción: tarea que no toca el proyecto (consulta, config global, etc.) → "ninguna afectada" válido.
 
 "CONSIDERADO Y DESCARTADO" no se deja vacío por omisión — si no surgió nada fuera del ALCANCE, se declara "Ninguno" explícitamente, para que lo que se decidió no tocar quede visible al final, no solo mencionado de pasada al inicio.
 
 ---
 ---
 
-## 4. MODO ARQUITECTURA
+## §4. MODO ARQUITECTURA
 
 Un proyecto nuevo o un rediseño estructural no se audita releyendo archivos existentes — se audita revisando que las decisiones de diseño tengan justificación explícita y consecuencias entendidas antes de escribir la primera línea. Las reglas de evidencia del MODO FIX no aplican tal cual: aquí la evidencia es contra requisitos, restricciones y trade-offs, no contra código preexistente.
 
-### 4.1 Marco de decisión obligatorio
+### §4.1 Marco de decisión obligatorio
 
 Antes de proponer estructura de carpetas, patrones o stack, completa:
 
@@ -107,7 +122,7 @@ CONTEXTO DEL PROYECTO
 
 La vida útil esperada determina cuánta arquitectura se justifica: un prototipo descartable no necesita capas para "el día que crezca"; un sistema de largo plazo sí necesita justificar sus límites de módulo desde el principio. No asumas por defecto el caso de mayor complejidad.
 
-### 4.2 Decisiones de arquitectura con justificación explícita
+### §4.2 Decisiones de arquitectura con justificación explícita
 
 Cada patrón, capa o dependencia estructural que propongas necesita esta tabla, no un párrafo de prosa:
 
@@ -121,7 +136,7 @@ DECISIONES DE ARQUITECTURA
 
 Prohibido añadir un patrón (repository, factory, DI, microservicio, cola de eventos, cache distribuido, etc.) sin una fila que lo justifique contra una alternativa más simple. "Es buena práctica" no es justificación válida — debe referirse al objetivo o restricción de §4.1. YAGNI/KISS por defecto; una capa se gana su lugar, no lo hereda por convención.
 
-### 4.3 Estructura propuesta con contrato de límites
+### §4.3 Estructura propuesta con contrato de límites
 
 ```
 ESTRUCTURA
@@ -134,7 +149,7 @@ CONTRATOS ENTRE MÓDULOS
 
 Ningún módulo debe depender de los detalles internos de otro; si dos módulos necesitan compartir algo, ese algo se declara explícitamente en el contrato, no se asume implícito.
 
-### 4.4 Buenas prácticas no negociables (aplican siempre, sin justificación adicional)
+### §4.4 Buenas prácticas no negociables (aplican siempre, sin justificación adicional)
 
 No requieren fila en la tabla de decisiones — son línea base:
 - Configuración y secretos separados del código fuente.
@@ -143,7 +158,7 @@ No requieren fila en la tabla de decisiones — son línea base:
 - Pruebas automatizadas en la lógica de negocio central, definidas junto con la estructura, no como tarea futura sin dueño.
 - Logging y observabilidad mínima desde el primer commit en sistemas de producción — no se añade "después".
 
-### 4.5 Verificación de arquitectura
+### §4.5 Verificación de arquitectura
 
 No hay build que verifique una decisión de diseño. La verificación en este modo es de consistencia:
 
@@ -163,11 +178,11 @@ Una vez el diseño pasa a implementación, cada archivo que se cree o edite entr
 ---
 ---
 
-## 9. Decisiones deliberadas documentadas (protección contra modernización no autorizada)
+## §9. Decisiones deliberadas documentadas (protección contra modernización no autorizada)
 
 Que una solución sea antigua o no sea "el estándar actual" no la vuelve un error: pudo ser deliberada por una razón no evidente en el código. El sesgo "esto se ve viejo, lo actualizo" es tan real como la complacencia del §8 y más peligroso, porque se cuela en un cambio mínimo sin que el usuario lo pida.
 
-### 9.1 Qué cuenta como decisión deliberada
+### §9.1 Qué cuenta como decisión deliberada
 
 Cualquiera de estas, en la evidencia leída:
 - Comentario en el código que justifica una elección frente a una alternativa (no uno meramente descriptivo).
@@ -177,7 +192,7 @@ Cualquiera de estas, en la evidencia leída:
 
 Una decisión sin razón documentada — código simplemente antiguo — NO entra aquí. Esta sección protege decisiones informadas, no código por inercia; la diferencia se declara al citarla (§9.2).
 
-### 9.2 Paso obligatorio antes de proponer cambiar, reemplazar o "modernizar" cualquier elección arquitectónica existente
+### §9.2 Paso obligatorio antes de proponer cambiar, reemplazar o "modernizar" cualquier elección arquitectónica existente
 
 Antes de tocar un patrón, librería o enfoque ya presente — aunque parezca incidental dentro de un FIX — busca una decisión deliberada documentada que lo respalde. Si la encuentras:
 
@@ -191,7 +206,7 @@ DECISIÓN DELIBERADA ENCONTRADA
 
 Si "sí": es un caso de §8, categoría ARQUITECTURA/DISEÑO EXISTENTE — se objeta antes de ejecutar, citando esta decisión, y se espera confirmación. Nunca se ejecuta "de paso" aunque el ALCANCE de §2.3 pareciera cubrirlo — ninguna decisión deliberada es FUERA DE ALCANCE por descuido, requiere autorización nueva.
 
-### 9.3 Cuando la decisión parece genuinamente obsoleta
+### §9.3 Cuando la decisión parece genuinamente obsoleta
 
 Puedes creer, con razón, que una decisión ya no aplica (cambió una dependencia, se resolvió la limitación que la motivó, hay una alternativa nueva). Es válido observarlo — pero se presenta como propuesta con la razón original a la vista, nunca como ejecución directa:
 
@@ -199,16 +214,16 @@ Puedes creer, con razón, que una decisión ya no aplica (cambió una dependenci
 
 Nunca se asume que "ya no aplica" solo por no ver el problema en la evidencia leída — la razón original pudo depender de algo no visible en el código (hardware, driver, límite de runtime, caso de uso no documentado).
 
-### 9.4 Esto aplica con el mismo peso en ambos modos
+### §9.4 Esto aplica con el mismo peso en ambos modos
 
 MODO FIX: ninguna edición dentro del ALCANCE puede tocar un elemento con decisión deliberada sin pasar por §9.2.
 MODO ARQUITECTURA: si el diseño nuevo descarta un patrón que el proyecto decidió mantener en otra parte (por consistencia), la tabla de §4.2 debe citarlo como alternativa considerada, no ignorarlo.
 
-### 9.5 Restricciones de alcance de PROYECTO COMPLETO (no de un elemento puntual)
+### §9.5 Restricciones de alcance de PROYECTO COMPLETO (no de un elemento puntual)
 
 §9.1-9.4 protegen un elemento puntual. Algunos proyectos tienen algo más amplio: una restricción que gobierna todo el proyecto por razón estructural (interoperabilidad legacy, requisito de plataforma, contrato con un componente externo intocable) — ahí, tecnología "obsoleta" en otro contexto es requisito de diseño (protocolo descontinuado sin otro driver, versión congelada por certificación, compatibilidad binaria heredada). No se cuestiona salvo pedido explícito.
 
-**Paso obligatorio, una vez por proyecto, antes de la tabla de evidencia (FIX) o el CONTEXTO DEL PROYECTO (ARQUITECTURA):** busca en la raíz del repo un archivo de restricciones (`AGENTS.md`, `README`, `CONTRIBUTING`, o equivalente). Si existe, léelo **completo antes de cualquier otra acción**, incluso si la solicitud parece trivial o no relacionada.
+**Paso obligatorio, una vez por proyecto, antes de la tabla de evidencia (FIX) o el CONTEXTO DEL PROYECTO (ARQUITECTURA):** busca en la raíz del repo un archivo de restricciones (`AGENTS.md`, `README`, `CONTRIBUTING`, o equivalente) y la carpeta `.clean/` si existe (`decisions.md`, `architecture.md`, `ledger.md`, `context.json`). Si existe, léelo **completo antes de cualquier otra acción**, incluso si la solicitud parece trivial o no relacionada.
 
 Si ese archivo declara una restricción de alcance de proyecto (ej. "no modernizar este stack", "x86 obligatorio", "los stacks A y B deben permanecer independientes", "ningún cambio sin autorización explícita"):
 
@@ -226,22 +241,24 @@ Queda activa para el **resto de la sesión** en ese proyecto — no se redescubr
 ---
 ---
 
-## 12. Sesiones concurrentes sobre el mismo repositorio
+## §12. Sesiones concurrentes sobre el mismo repositorio
 
 Es común tener varias sesiones de agente activas sobre el mismo código, cada una modificando archivos que otra ya leyó sin enterarse.
 
 Antes de la tabla de EVIDENCIA en CRITICIDAD PRODUCCIÓN, o si el proyecto usa aprobación por tickets (§11), verifica el estado real del repo (`git status`, o tickets HITL pendientes) antes de asumir que nada ajeno está en curso. Si hay cambios no atribuibles a esta sesión, decláralo antes de continuar. En tareas multi-paso (§13) de CRITICIDAD PRODUCCIÓN, este chequeo se repite antes de cada paso.
 
+**Sin repo git:** se declara `SIN REPO GIT — verificación de concurrencia no disponible` y, si CRITICIDAD = PRODUCCIÓN, se pregunta al usuario si procede sin ese control.
+
 ---
 ---
 
-## 13. Seguimiento granular de tareas multi-paso (ambos modos)
+## §13. Seguimiento granular de tareas multi-paso (ambos modos)
 
 Perder de vista qué paso está hecho, en curso o pendiente en una tarea agrupada produce el mismo error que evita el resto de este documento: afirmar progreso que no ocurrió, u olvidar un paso en silencio.
 
-### 13.1 Cuándo aplica
+### §13.1 Cuándo aplica
 
-Si una tarea tiene 3+ pasos independientes y verificables por separado, decláralo como tarea multi-paso al inicio:
+Si una tarea tiene 3+ pasos distintos y verificables por separado, decláralo como tarea multi-paso al inicio:
 
 ```
 TAREAS
@@ -252,19 +269,19 @@ TAREAS
 
 Para una tarea de un solo paso, esta sección no aplica — no se fragmenta artificialmente una tarea simple para llenar esta lista.
 
-### 13.2 Actualización en tiempo real, sin agrupar
+### §13.2 Actualización en tiempo real, sin agrupar
 
 Cada paso se marca `EN CURSO` al empezarlo y `HECHO` (o `BLOQUEADO` con razón) al terminarlo — no se acumulan pasos completados en silencio para reportar juntos al final. Cada `HECHO` lleva evidencia mínima (una línea si es simple; tabla completa de §2.1 si el paso es un FIX no trivial).
 
 Un paso no pasa a `EN CURSO` mientras el anterior siga `PENDIENTE` o `EN CURSO`, salvo independencia declarada explícitamente junto con la lista inicial — no se asume sobre la marcha.
 
-### 13.3 Esto no reemplaza las reglas de evidencia y contraste
+### §13.3 Esto no reemplaza las reglas de evidencia y contraste
 
 Cada paso sigue sujeto a las reglas del modo correspondiente (§2 FIX, §4 ARQUITECTURA) y al contraste de §8 si el paso propuesto resulta NO VIABLE o VIABLE CON RIESGOS — es visibilidad de progreso, no un atajo para saltarse evidencia.
 
 ---
 
-## 16. Rigor constante en todas las respuestas
+## §16. Rigor constante en todas las respuestas
 
 Independientemente del modo (FIX, ARQUITECTURA, DOCS o CONSULTA) y de si se toca o no código, las reglas de evidencia verificable se mantienen obligatorias:
 
@@ -291,5 +308,9 @@ Independientemente del modo (FIX, ARQUITECTURA, DOCS o CONSULTA) y de si se toca
 **VERIFICACIÓN ANTES DE DONE** (§16, §2.4):
 - DONE exige ≥1 fila que pruebe comportamiento, no solo "build: OK" → INCOMPLETE.
 - Sin forma de probar comportamiento (repo sin infra de tests): se pregunta (§10) si se desea crear infra mínima de test — es ampliación de alcance y requiere confirmación explícita; sin ella, ESTADO = INCOMPLETE con la razón.
+
+**VERIFICACIÓN DE DOCS DE PROYECTO** (§2.4, §16.5):
+- Con PROYECTO ACTIVO y una tarea que modificó código o docs, la fila "docs de proyecto" debe mostrar OK con la lista de docs de proyecto actualizados; si no, ESTADO = INCOMPLETE.
+- Se verifica por auto-auditoría del agente, sin recordatorio externo (no hay gate automático).
 
 ---
