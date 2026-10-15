@@ -116,7 +116,7 @@ Si dudas de **cuánto** usar según el tamaño o la criticidad de tu proyecto, e
 ### Paso 0 — Solo la política de comportamiento (más barato, sin tocar nada del repo)
 
 1. Copia `docs/system-engineering-policy.SKILL.md` a la carpeta de skills de tu agente
-   (p. ej. `~/.claude/skills/system-engineering-policy/SKILL.md` para Claude Code). El kit la trae
+   (la que lea ese agente; `python tools/sync_skills.py --list` muestra las rutas conocidas). El kit la trae
    también en `kit/skills/system-engineering-policy/`, junto a su protocolo compañero
    (`protocolo-ingenieria-senior`); `sync_skills.py` (Paso 2) instala ambas con las demás skills.
 2. No requiere ningún archivo nuevo en el repo de trabajo. Gobierna el *comportamiento* del
@@ -140,7 +140,7 @@ Si dudas de **cuánto** usar según el tamaño o la criticidad de tu proyecto, e
 ### Paso 2 — Skills del kit (si tu agente soporta Agent Skills)
 
 ```bash
-python tools/sync_skills.py --agent claude-code   # o copilot, codex, cursor, generico, opencode
+python tools/sync_skills.py --agent <tu-agente>   # --list muestra los agentes conocidos y su carpeta
 ```
 
 Instala las 6 skills de proceso (`sgp-documento-requerimientos`, `sgp-especificar`, `sgp-qa-spec`,

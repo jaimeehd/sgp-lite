@@ -10,8 +10,7 @@ primera instalación:
 El registro de lo instalado vive en <destino>/.sgp-sync-state.json.
 
 Uso:
-    python tools/sync_skills.py --agent claude-code
-    python tools/sync_skills.py --agent copilot --scope personal
+    python tools/sync_skills.py --agent <tu-agente>
     python tools/sync_skills.py --list
 """
 import argparse

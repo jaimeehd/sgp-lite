@@ -36,7 +36,7 @@ Si solo tienes 10 minutos, empieza por la política (sección 4.1 de este manual
 - **Este kit descargado en tu computadora.** Descarga este repositorio desde la página donde lo encontraste (botón `Code` → `Download ZIP`; o `git clone` si sabes usarlo) y descomprímelo en una carpeta fija, por ejemplo `C:\ruta\a\sgp-lite`. La carpeta del kit es la subcarpeta `kit` de esa descarga; anota su ruta completa (la usarás en la sección 4).
 - **Python 3.8 o superior.** Para comprobarlo, abre una terminal y escribe `python --version`. Si aparece un número como `3.11.4`, está bien. Si dice que no lo encuentra, instálalo desde python.org (en Windows, marca la casilla "Add Python to PATH" durante la instalación).
 - **Git.** Comprueba con `git --version`. En Windows, instala "Git for Windows", que además trae "Git Bash" (una terminal que usaremos para un paso).
-- **Un asistente de IA que pueda leer y escribir archivos de tu proyecto** (por ejemplo Claude Code). Si tu asistente es solo un chat sin acceso a archivos, puedes usar igual los textos de `kit/prompts.md`, pegándolos a mano.
+- **Un asistente de IA que pueda leer y escribir archivos de tu proyecto** (cualquiera que sea: todo el kit es agnóstico). Si tu asistente es solo un chat sin acceso a archivos, puedes usar igual los textos de `kit/prompts.md`, pegándolos a mano.
 - **Un proyecto de código** donde quieras aplicarlo (una carpeta con tu programa). Para practicar, sirve una carpeta vacía.
 - **Saber abrir la terminal en la carpeta de tu proyecto.** Todos los comandos de este manual se ejecutan con la terminal "parada" en la raíz de tu proyecto. La forma fácil: abre la carpeta del proyecto en el Explorador de archivos, haz clic derecho sobre un espacio vacío y elige **"Abrir en Terminal"** (Windows 11) o **"Abrir ventana de PowerShell aquí"** (Windows 10); en macOS, clic derecho sobre la carpeta → **Servicios → Nueva terminal en la carpeta**. Si no aparece esa opción, abre una terminal y escribe `cd "C:\ruta\completa\de\tu proyecto"`. Los comandos que empiezan con `python` funcionan en PowerShell, en la Terminal de macOS/Linux o en Git Bash; los únicos que en Windows necesitan Git Bash son `cp` y `chmod` (un solo paso, sección 4.2).
 
@@ -63,7 +63,7 @@ Cada requisito lleva un código, por ejemplo `DESC-001`. Ese código es el hilo 
 
 ### 4.1 Opción mínima: solo la política (5 minutos)
 
-1. Localiza la carpeta de "skills" de tu asistente. En Claude Code suele ser `~/.claude/skills/` (en Windows: `C:\Users\TuUsuario\.claude\skills\`). Si usas otro asistente, usa la carpeta que ese asistente lea para sus skills (por ejemplo, en opencode es `~/.agents/skills/`).
+1. Localiza la carpeta de *skills* que lee tu asistente. Cada asistente tiene la suya; `python tools/sync_skills.py --list` muestra las rutas que conoce el kit.
 2. Dentro crea una carpeta llamada `system-engineering-policy`.
 3. Copia el archivo `docs/system-engineering-policy.SKILL.md` de este repositorio dentro de esa carpeta y renómbralo a `SKILL.md`.
 4. Recomendado: la política tiene un compañero (`protocolo-ingenieria-senior`) con el procedimiento detallado. Repite los pasos 2 y 3 con `docs/protocolo-ingenieria-senior.SKILL.md` en una carpeta `protocolo-ingenieria-senior`.
@@ -106,9 +106,9 @@ Dentro de tu proyecto:
    Este paso requiere que la carpeta ya sea un repositorio Git (si no lo es, ejecuta antes `git init`).
 5. **(Opcional) Instala las skills del kit** si tu asistente las soporta:
    ```bash
-   python tools/sync_skills.py --agent claude-code
+   python tools/sync_skills.py --agent <tu-agente>
    ```
-   Otros valores posibles: `copilot`, `codex`, `cursor`, `generico`, `opencode`. El comando `python tools/sync_skills.py --list` muestra las opciones. Instala las 8 skills del kit: 6 de proceso y 2 de comportamiento (la política y su protocolo).
+   `--list` muestra los agentes conocidos por el kit y la carpeta de cada uno. Instala las 8 skills del kit: 6 de proceso y 2 de comportamiento (la política y su protocolo).
 
    Puedes volver a ejecutarlo cuando el kit se actualice: las skills intactas desde la última instalación se refrescan solas; las que hayas editado a mano se conservan y el comando lo indica (usa `--force` si prefieres reemplazarlas). El registro de lo instalado vive en `<destino>/.sgp-sync-state.json`.
 
