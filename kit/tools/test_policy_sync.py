@@ -13,7 +13,7 @@ Chequeo local opcional contra la canónica viva de esta máquina (no puede vivir
 del repo porque `~/.config` no está en git): define SGP_POLICY_CANONICAL con la ruta de la
 política canónica y el test añade la comparación; sin la variable, ese caso se omite.
 
-    SGP_POLICY_CANONICAL="~/.config/opencode/system_prompt.md" python tools/test_policy_sync.py
+    SGP_POLICY_CANONICAL="~/.config/opencode/system-engineering-policy.md" python tools/test_policy_sync.py
 """
 import os
 import unittest

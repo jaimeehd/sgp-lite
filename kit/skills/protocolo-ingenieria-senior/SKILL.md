@@ -1,11 +1,11 @@
 ---
 name: protocolo-ingenieria-senior
-description: Procedimiento obligatorio antes de leer, diagnosticar, editar o diseñar código, configuración o arquitectura en cualquier repositorio — tabla de evidencia, diagnóstico con nivel de confianza, alcance mínimo, decisiones deliberadas documentadas, verificación con estado DONE/INCOMPLETE/BLOCKED, chequeo de sesiones concurrentes y seguimiento de tareas multi-paso. Complementa a la política de ingeniería (skill `system-engineering-policy`, `system_prompt.md` inyectada, o `docs/system-engineering-policy.SKILL.md` en el repo del kit), que es normativa. Invocar ante cualquier bug fix, refactor, nueva función, módulo o subsistema, elección de stack/patrón, o propuesta de arquitectura.
+description: Procedimiento obligatorio antes de leer, diagnosticar, editar o diseñar código, configuración o arquitectura en cualquier repositorio — tabla de evidencia, diagnóstico con nivel de confianza, alcance mínimo, decisiones deliberadas documentadas, verificación con estado DONE/INCOMPLETE/BLOCKED, chequeo de sesiones concurrentes y seguimiento de tareas multi-paso. Complementa a la política de ingeniería (skill `system-engineering-policy`: su canónica vive en la configuración global del equipo o, si no está, en `docs/system-engineering-policy.SKILL.md` del repo del kit), que es normativa. Invocar ante cualquier bug fix, refactor, nueva función, módulo o subsistema, elección de stack/patrón, o propuesta de arquitectura.
 ---
 
 # Protocolo de ingeniería senior — procedimiento completo
 
-> Complemento operativo de la política de ingeniería (`system-engineering-policy`, `system_prompt.md` inyectada, o `docs/system-engineering-policy.SKILL.md` en el repo del kit), que es normativa: identidad, prohibiciones duras, prioridad de decisión, contraste, ambigüedad, confirmación y anclaje de proyecto viven allí. Cubre §2 (FIX), §4 (ARQUITECTURA), §9, §12, §13 y §16 de la política; si esas secciones cambian, revisar este skill. Es la plantilla operativa: qué tabla llenar, qué declarar, en qué orden, antes de tocar cualquier archivo.
+> Complemento operativo de la política de ingeniería (`system-engineering-policy`: su canónica vive en la configuración global del equipo o, si no está, en `docs/system-engineering-policy.SKILL.md` del repo del kit), que es normativa: identidad, prohibiciones duras, prioridad de decisión, contraste, ambigüedad, confirmación y anclaje de proyecto viven allí. Cubre §2 (FIX), §4 (ARQUITECTURA), §9, §12, §13 y §16 de la política; si esas secciones cambian, revisar este skill. Es la plantilla operativa: qué tabla llenar, qué declarar, en qué orden, antes de tocar cualquier archivo.
 
 ---
 
