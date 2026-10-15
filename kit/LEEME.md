@@ -29,7 +29,7 @@ Si prefieres el método manual (sin updates), descomprime `sgp-lite.zip` en la r
 1. Copia al repo (o usa `sgp_kit.py init`, arriba): `docs/`, `specs/`, `changes/`, `tools/`, `skills/`, `AGENTS.md`, `CLAUDE.md`, `sgp.yaml`, `prompts.md`, `METODOLOGIA.md`, `ADOPCION.md`.
 2. Edita `docs/constitution.md`, `AGENTS.md` y los comandos de `sgp.yaml` (build, tests, lint y `test_por_requisito`).
 3. Hook: `cp tools/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit` (en Windows funciona con Git Bash).
-   Skills (opcional, si tu agente las soporta): `python tools/sync_skills.py --agent claude-code` (o `copilot`, `codex`, `cursor`, `generico`, `opencode`; `--list` muestra las opciones).
+   Skills (opcional, si tu agente las soporta): `python tools/sync_skills.py --agent claude-code` (o `copilot`, `codex`, `cursor`, `generico`, `opencode`; `--list` muestra las opciones). Se puede reejecutar: refresca solas las skills intactas y conserva las editadas a mano (`--force` las pisa).
 4. Primer cambio: (opcional) si el pedido es grande o confuso, redacta primero `docs/requerimientos.md` (skill `sgp-documento-requerimientos` / prompt 0); luego fase 1 especificar → 2 QA → 3 planificar (elige carril: rapido/normal/mayor) → 4 ejecutar (una tarea por sesión) → 5 validar. Usa las skills si las instalaste, o los prompts equivalentes de `prompts.md`.
 5. Verifica cuando quieras: `python tools/sgp_check.py` (rápido) · `--run` (con comandos) · `--stage pre-merge` (estricto, con trazabilidad).
 

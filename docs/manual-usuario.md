@@ -110,6 +110,8 @@ Dentro de tu proyecto:
    ```
    Otros valores posibles: `copilot`, `codex`, `cursor`, `generico`, `opencode`. El comando `python tools/sync_skills.py --list` muestra las opciones. Instala las 8 skills del kit: 6 de proceso y 2 de comportamiento (la política y su protocolo).
 
+   Puedes volver a ejecutarlo cuando el kit se actualice: las skills intactas desde la última instalación se refrescan solas; las que hayas editado a mano se conservan y el comando lo indica (usa `--force` si prefieres reemplazarlas). El registro de lo instalado vive en `<destino>/.sgp-sync-state.json`.
+
 Para comprobar que todo quedó bien, ejecuta:
 
 ```bash

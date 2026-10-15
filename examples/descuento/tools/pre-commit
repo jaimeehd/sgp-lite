@@ -7,3 +7,8 @@ cd "$ROOT" || exit 1
 if command -v python >/dev/null 2>&1; then PY=python; else PY=python3; fi
 "$PY" tools/sgp_check.py || exit 1
 "$PY" tools/sgp_check.py --ratchet || exit 1
+# Guarda de sincronía de la política: solo existe en el repo del kit; en proyectos
+# instalados el fichero no está y se omite sin más.
+for t in kit/tools/test_policy_sync.py tools/test_policy_sync.py; do
+    if [ -f "$t" ]; then "$PY" "$t" || exit 1; fi
+done
