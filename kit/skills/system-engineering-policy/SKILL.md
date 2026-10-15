@@ -160,7 +160,7 @@ VERIFICACIÓN
 |---|---|---|---|
 | build / lint / type-check | `cmd exacto` | OK/FALLA | output real |
 | test / smoke test | `cmd exacto` | OK/FALLA/NO EJECUTADO | output o razón |
-| docs de proyecto | `git diff --name-only` + revisión manual | OK | [lista de docs actualizadas (README, ARCHITECTURE, DOCUMENTATION, AGENTS.md, docs/*) o "ninguna afectada"] |
+| docs de proyecto | `git diff --name-only HEAD` + revisión manual | OK | [lista de docs actualizadas (README, ARCHITECTURE, DOCUMENTATION, AGENTS.md, CHANGELOG.md, docs/*) o "ninguna afectada"] |
 
 CONSIDERADO Y DESCARTADO: [qué se evaluó y por qué no se hizo; "Ninguno" si no hubo nada]
 ESTADO: DONE | INCOMPLETE | BLOCKED
@@ -169,7 +169,7 @@ ESTADO: DONE | INCOMPLETE | BLOCKED
 - **DONE** exige ≥1 fila que pruebe comportamiento (la fila "docs de proyecto" no cuenta como tal). Solo "build: OK" → INCOMPLETE.
   - Sin forma de probar comportamiento (repo sin infra de tests, en PRODUCCIÓN): se pregunta (§10) si se desea crear infra mínima de test — es ampliación de alcance y requiere confirmación explícita; sin ella, ESTADO = INCOMPLETE con la razón. No se destraba en silencio ni se degrada el estado a "DONE igual".
   - Criterio de BLOCKED: falta un requisito externo no resoluble por el agente (entorno, credencial, decisión/permiso del usuario).
-- **Verificación de docs de proyecto (obligatoria con PROYECTO ACTIVO cuando la tarea modificó código o docs del proyecto):** la fila "docs de proyecto" debe mostrar OK con lista concreta de archivos actualizados. Si la tarea modificó código del proyecto y `git diff --name-only` no incluye documentación de proyecto afectada → INCOMPLETE. Excepción: tarea que no toca el proyecto (consulta, config global, etc.) → "ninguna afectada" válido.
+- **Verificación de docs de proyecto (obligatoria con PROYECTO ACTIVO cuando la tarea modificó código o docs del proyecto):** la fila "docs de proyecto" debe mostrar OK con lista concreta de archivos actualizados. Si la tarea modificó código del proyecto y `git diff --name-only HEAD` no incluye documentación de proyecto afectada → INCOMPLETE. Excepción: tarea que no toca el proyecto (consulta, config global, etc.) → "ninguna afectada" válido. Si toca el proyecto pero no hay nada que cambiar, declararlo como "revisado, sin cambios necesarios" con el motivo — nunca "ninguna afectada" (protocolo de inventario y sincronización en §16.5).
 - "CONSIDERADO Y DESCARTADO" nunca vacío por omisión: si no hubo nada → "Ninguno".
 
 ---
@@ -188,7 +188,7 @@ DIAGNÓSTICO / SOLUCIÓN PROPUESTA / ALCANCE   (idénticos a §2.2-§2.3)
   | lectura de vuelta del diff o del archivo final | fragmento real del texto resultante |
   | comandos/enlaces citados: ejecutar o verificar que existen | output real |
   | lint de docs/markdown si existe en el repo | output real |
-  | docs de proyecto afectadas (`git diff --name-only` + revisión manual) | [lista de docs de proyecto actualizadas (README, ARCHITECTURE, DOCUMENTATION, AGENTS.md, docs/*) o "ninguna afectada"] |
+  | docs de proyecto afectadas (`git diff --name-only HEAD` + revisión manual) | [lista de docs de proyecto actualizadas (README, ARCHITECTURE, DOCUMENTATION, AGENTS.md, CHANGELOG.md, docs/*) o "ninguna afectada"] |
 - DONE en DOCS = diff leído + comandos/enlaces verificados + verificación de docs de proyecto (mismo criterio que FIX §2.4). Cambios en docs que alteran código (snippet que debe compilar) → se trata como FIX para su parte ejecutable.
 - CRITICIDAD aplica igual (un README de producción es PRODUCCIÓN/USUARIO FINAL).
 
@@ -227,7 +227,7 @@ CONTRATOS ENTRE MÓDULOS
 Ningún módulo depende de detalles internos de otro; lo compartido se declara en contrato.
 
 ### §4.4 Línea base sin justificación (siempre)
-Config/secretos fuera del código fuente · manejo de errores explícito en límites del sistema · un único punto de verdad por estado · pruebas de la lógica de negocio definidas con la estructura · logging/observabilidad mínima desde el primer commit en producción.
+Config/secretos fuera del código fuente · manejo de errores explícito en límites del sistema · un único punto de verdad por estado · pruebas de la lógica de negocio definidas con la estructura · logging/observabilidad mínima desde el primer commit en producción · doc mínima desde el primer commit: README (objetivo + build + test), CHANGELOG desde el inicio y AGENTS.md con los comandos del proyecto.
 
 ### §4.5 Verificación de diseño
 ```
@@ -500,4 +500,10 @@ Antes de entregar cualquier respuesta con afirmaciones sobre código: revisar ca
 ### §16.5 Igualar el rigor entre "análisis" y "ejecución"
 "SOLO ANÁLISIS SIN TOCAR CÓDIGO" no reduce el nivel de evidencia exigido — solo exime de aplicar cambios. La lectura completa, el conteo real y la tabla de evidencia son obligatorias igual.
 
-**Auto-verificación de docs:** el agente es responsable de cumplir la fila "docs de proyecto" en §2.4 y §3 sin recordatorio externo. Antes de declarar DONE en FIX/DOCS/ARQUITECTURA con PROYECTO ACTIVO, debe verificar que `git diff --name-only` incluye la documentación de proyecto afectada (README, ARCHITECTURE, DOCUMENTATION, AGENTS.md, `docs/*`); si no, ESTADO = INCOMPLETE. Esto elimina la dependencia de tooling frágil y hace el requisito falsable por auto-auditoría.
+**Auto-verificación de docs (protocolo de inventario y sincronización):** el agente es responsable de cumplir la fila "docs de proyecto" en §2.4 y §3 sin recordatorio externo. Antes de declarar DONE en FIX/DOCS/ARQUITECTURA con PROYECTO ACTIVO:
+1. **Inventario** — ejecutar `git diff --name-only HEAD` (con `HEAD`: sin él, los cambios staged no aparecen), extraer las funciones, comandos, rutas y comportamientos cambiados y hacer grep de esos términos en TODA la documentación de proyecto (README, CHANGELOG, ARCHITECTURE/DOCUMENTATION, AGENTS.md, `docs/*`). El resultado del grep es la lista de apariciones a revisar. Actualizar solo la doc "que se recuerde" es actualización parcial, no conformidad.
+2. **Sincronizar** todas las apariciones del comportamiento anterior, en todos los ficheros donde estén (docs as code: mismo commit que el código).
+3. **Entrega falsable** — la fila "docs de proyecto" (o la tabla VERIFICACIÓN de DOCS) debe ser `| Archivo | Sección | Qué cambió | Cómo lo verificaste |`, incluyendo los archivos revisados que no necesitaron cambios con su motivo en una línea. Sin esa tabla → INCOMPLETE.
+4. **Repo sin documentación** — si el PROYECTO ACTIVO no tiene doc de proyecto, declarar `REPO SIN DOCUMENTACIÓN DE PROYECTO` y proponer la doc mínima (README con objetivo + build + test, CHANGELOG desde el inicio, AGENTS.md con los comandos); sin autorización explícita no se crea y ESTADO = INCOMPLETE con esa razón. No se declara "ninguna afectada".
+5. **Fallback sin git** — `SIN REPO GIT — inventario por diff no disponible`: el inventario se construye con la lista de archivos que la propia tarea editó, más el mismo grep sobre la doc. Nunca se declara el paso cumplido sin ejecutarlo.
+Esto elimina la dependencia de tooling frágil y hace el requisito falsable por auto-auditoría.
