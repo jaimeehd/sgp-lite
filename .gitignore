@@ -1,6 +1,7 @@
 __pycache__/
 *.pyc
 .DS_Store
+.vs/
 
 # Sanitización: nunca versionar secretos ni logs
 *.log
