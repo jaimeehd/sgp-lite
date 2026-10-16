@@ -8,7 +8,7 @@ description: |
   refactor, función o módulo nuevo, elección de stack/patrón, propuesta de arquitectura).
   Si algo aquí contradice la política, manda la política (§0.2).
 metadata:
-  version: 2.0.0
+  version: 2.1.0
   category: engineering-process
 ---
 
@@ -25,7 +25,7 @@ metadata:
 - [ ] Restricciones de proyecto leídas una vez: `AGENTS.md`/`README`/`CONTRIBUTING` y `.clean/` si existe (§9.5).
       Si declara restricción de alcance total → bloque `RESTRICCIÓN DE PROYECTO ENCONTRADA` (§9.5).
 - [ ] MODO declarado (§1.1) · CRITICIDAD si es FIX/DOCS (§2.0) · REQUISITO con criterio de aceptación si es FIX (§2.0.1).
-- [ ] TAREAS si son 3+ pasos verificables por separado (§13).
+- [ ] Alcance del turno: si el pedido trae varias unidades, listarlas y ejecutar **una** (§13).
 
 ## MODO FIX (§2)
 - [ ] REQUISITO: pedido + criterio de aceptación observable (§2.0.1).
@@ -33,9 +33,10 @@ metadata:
 - [ ] DIAGNÓSTICO con confianza (HECHO/INFERENCIA/HIPÓTESIS); si no es HECHO, agotar la verificación barata antes de implementar (§2.2).
 - [ ] Decisiones deliberadas buscadas antes de tocar nada (§9.2) → bloque si aparece.
 - [ ] SOLUCIÓN PROPUESTA / ALCANCE / FUERA DE ALCANCE (§2.3); lo detectado fuera se reporta, no se ejecuta (§2.3.1).
+- [ ] Si el cambio se aplica con scripts, regex o sustituciones masivas: copia o repo limpio, inventario antes/después y **releer el fichero** — el resto del contenido no puede cambiar (§2.4).
 - [ ] VERIFICACIÓN: compilación o chequeo estático + **al menos una fila que pruebe comportamiento** + fila de docs de proyecto (§2.4).
+- [ ] Declaración obligatoria: `verificación independiente: EJECUTADA (fuente: subagente <id>) | NO EJECUTADA (motivo)` en PRODUCCIÓN; en blanco = INCOMPLETE (§2.0, §2.4).
 - [ ] `CONSIDERADO Y DESCARTADO` explícito + ESTADO (§2.4).
-- [ ] Si CRITICIDAD = PRODUCCIÓN: verificación independiente, o declararla como no ejecutada (§2.0).
 
 ## MODO ARQUITECTURA (§4)
 - [ ] CONTEXTO DEL PROYECTO completo; la vida útil esperada gobierna cuánta arquitectura se justifica (§4.1).
@@ -46,6 +47,14 @@ metadata:
 - [ ] Al implementar, cada archivo pasa a las reglas de FIX (§2).
 
 ## Transversal
+
+### Antes de cada commit (§2.4)
+- [ ] Regenerar los artefactos derivados (paquetes, índices, zips) → **suite completa** → commit.
+- [ ] **Nunca se commitea con una prueba en rojo**; si falla, se corrige antes.
+
+### Entorno del usuario (§11)
+- [ ] Instalar, actualizar o desinstalar herramientas; borrar o mover ficheros fuera del PROYECTO ACTIVO; tocar variables de entorno o el PATH: **confirmación explícita previa** y vuelta atrás declarada.
+- [ ] "Comprobar si hay versión nueva" **no** autoriza a actualizar. El resultado se comprueba con el comando real.
 
 ### Decisiones deliberadas (§9)
 - [ ] Antes de proponer cambiar, reemplazar o "modernizar": buscar razón documentada (§9.1-§9.2) → bloque `DECISIÓN DELIBERADA ENCONTRADA`.
@@ -62,6 +71,8 @@ metadata:
 
 ### Rigor en toda respuesta (§16)
 - [ ] Afirmaciones factuales con evidencia (§16.1) · negaciones absolutas con el método usado (§16.2) · "conté" frente a "estimé" (§16.3) · auto-revisión antes de enviar (§16.4).
+- [ ] Comprobaciones: solo métodos ya probados; una nueva se prueba con un caso conocido, declara qué NO comprueba y se guarda como prueba del repositorio; si contradice al método oficial, **gana el oficial** (§16.6).
+- [ ] Barridos (renombrados, movimientos): inventario antes y después, cierre a 0 (§16.7).
 - [ ] Análisis sin tocar código = mismo rigor (§16.5).
 - [ ] Docs de proyecto: inventario con `git diff --name-only HEAD`, grep de los términos cambiados en toda la doc y tabla `| Archivo | Sección | Qué cambió | Cómo lo verificaste |` (§16.5).
 
