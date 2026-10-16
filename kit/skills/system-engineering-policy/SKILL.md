@@ -163,9 +163,16 @@ VERIFICACIÓN
 | docs de proyecto | `git diff --name-only HEAD` + revisión manual | OK | [lista de docs actualizadas (README, ARCHITECTURE, DOCUMENTATION, AGENTS.md, CHANGELOG.md, docs/*) o "ninguna afectada"] |
 
 CONSIDERADO Y DESCARTADO: [qué se evaluó y por qué no se hizo; "Ninguno" si no hubo nada]
+verificación independiente: EJECUTADA (fuente: subagente <id>) | NO EJECUTADA (motivo)   ← obligatoria en PRODUCCIÓN (§2.0); en blanco = INCOMPLETE
 ESTADO: DONE | INCOMPLETE | BLOCKED
 ```
 - **Output real o no existe.** Prohibido transcribir output de comandos no ejecutados en esta sesión (REGLAS DURAS #6). Fallo de entorno (deps, permisos, sin red) = BLOCKED con la razón y lo que se necesitara; no se marca OK "probablemente".
+- **Integridad tras transformaciones programáticas** (scripts, regex, sustituciones masivas):
+  copia previa o repo limpio; inventario del antes y el después; y comprobación de que **el resto
+  del contenido no cambió** — no basta con que lo añadido sea correcto. Un fichero reescrito se
+  relee antes de darlo por bueno.
+- **Orden obligatorio antes de commitear**: regenerar los artefactos derivados (paquetes, índices,
+  zips) → ejecutar la suite completa → commitear. **Nunca se commitea con una prueba en rojo.**
 - **DONE** exige ≥1 fila que pruebe comportamiento (la fila "docs de proyecto" no cuenta como tal). Solo "build: OK" → INCOMPLETE.
   - Sin forma de probar comportamiento (repo sin infra de tests, en PRODUCCIÓN): se pregunta (§10) si se desea crear infra mínima de test — es ampliación de alcance y requiere confirmación explícita; sin ella, ESTADO = INCOMPLETE con la razón. No se destraba en silencio ni se degrada el estado a "DONE igual".
   - Criterio de BLOCKED: falta un requisito externo no resoluble por el agente (entorno, credencial, decisión/permiso del usuario).
@@ -190,6 +197,7 @@ DIAGNÓSTICO / SOLUCIÓN PROPUESTA / ALCANCE   (idénticos a §2.2-§2.3)
   | lint de docs/markdown si existe en el repo | output real |
   | docs de proyecto afectadas (`git diff --name-only HEAD` + revisión manual) | [lista de docs de proyecto actualizadas (README, ARCHITECTURE, DOCUMENTATION, AGENTS.md, CHANGELOG.md, docs/*) o "ninguna afectada"] |
 - DONE en DOCS = diff leído + comandos/enlaces verificados + verificación de docs de proyecto (mismo criterio que FIX §2.4). Cambios en docs que alteran código (snippet que debe compilar) → se trata como FIX para su parte ejecutable.
+En CRITICIDAD PRODUCCIÓN aplica también la declaración de verificación independiente de §2.0 (EJECUTADA con fuente o NO EJECUTADA con motivo).
 - CRITICIDAD aplica igual (un README de producción es PRODUCCIÓN/USUARIO FINAL).
 
 ---
@@ -384,6 +392,14 @@ Antes de commit, push, merge, rebase, aprobar ticket HITL (decisión humana en e
 
 Nunca se confirma solo porque el build pasó.
 
+**Operaciones sobre el entorno del usuario** (instalar, actualizar o desinstalar herramientas;
+borrar o mover ficheros fuera del PROYECTO ACTIVO; tocar variables de entorno o el PATH):
+exigen confirmación explícita previa y plan de vuelta atrás declarado. "Comprobar si hay versión
+nueva" **no** autoriza a actualizar. Si la operación puede dejar el entorno inutilizable, se
+verifica antes que existe reinstalación posible. El resultado se comprueba con el comando real —
+no con la intención del paso.
+
+
 ### §11.1 Preferencias persistentes
 "Siempre confirma en DONE" u otra preferencia fijada por el usuario se respeta sin repreguntar **durante la sesión**. Para persistir entre sesiones el usuario debe pedir explícitamente que se grabe en el AGENTS.md del proyecto (o en el AGENTS.md global del usuario); no se escribe sola. Mismo mecanismo para la exención §7.
 
@@ -409,6 +425,10 @@ TAREAS
 - Si la tarea declara pasos `— INDEPENDIENTE`, pueden avanzar en paralelo.
 - §13 no reemplaza evidencia/contraste: cada paso obedece su modo.
 - **ESTADO global**: la VERIFICACIÓN final (§2.4) es única y por tarea completa; los pasos intermedios solo acumulan evidencia, no emiten ESTADO DONE parcial.
+- **Una unidad de trabajo por turno**: una unidad es un cambio verificable por separado, con su
+  criterio de aceptación. Si el pedido trae varias, se listan y se ejecuta **una**; el resto queda
+  PENDIENTE. Si el usuario las pide todas juntas, el agente propone el orden y le pide elegir la
+  primera — ejecutar varias de golpe exige autorización expresa tras conocer el riesgo.
 
 ---
 
@@ -507,3 +527,15 @@ Antes de entregar cualquier respuesta con afirmaciones sobre código: revisar ca
 4. **Repo sin documentación** — si el PROYECTO ACTIVO no tiene doc de proyecto, declarar `REPO SIN DOCUMENTACIÓN DE PROYECTO` y proponer la doc mínima (README con objetivo + build + test, CHANGELOG desde el inicio, AGENTS.md con los comandos); sin autorización explícita no se crea y ESTADO = INCOMPLETE con esa razón. No se declara "ninguna afectada".
 5. **Fallback sin git** — `SIN REPO GIT — inventario por diff no disponible`: el inventario se construye con la lista de archivos que la propia tarea editó, más el mismo grep sobre la doc. Nunca se declara el paso cumplido sin ejecutarlo.
 Esto elimina la dependencia de tooling frágil y hace el requisito falsable por auto-auditoría.
+
+### §16.6 Herramientas de comprobación
+La verificación se hace con los métodos ya probados del proyecto (guardas, pruebas, hashes, `git`).
+Una comprobación nueva exige: (a) probarse con un caso conocido —debe fallar cuando debe fallar—;
+(b) declarar qué NO comprueba; y (c) si se va a repetir, **guardarse como prueba del repositorio**,
+no como script suelto. Si una comprobación propia contradice un resultado oficial, **gana el método
+oficial**; la propia se revisa antes de reportar nada.
+
+### §16.7 Barridos con inventario
+**Renombrados, movimientos y barridos**: antes de tocar nada, inventario de TODAS las apariciones
+(comando exacto y alcance declarados). Al cierre, el mismo inventario debe dar 0. "Donde me acordé"
+no es alcance; ambos inventarios van en la evidencia.
