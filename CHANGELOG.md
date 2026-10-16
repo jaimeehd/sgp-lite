@@ -1,0 +1,87 @@
+# Changelog
+
+Historial de versiones de **sgp-lite** (kit, política de ingeniería y protocolo).
+
+- Estilo: notas por versión con fechas, al estilo «Keep a Changelog».
+- Origen: el historial de git (commits y etiquetas), redactado el 2026-10-16. Cada entrada cita su
+  commit (`[abcdef0]`); nada se dedujo más allá de lo escrito en el mensaje de ese commit.
+- Criterio de selección: cambios relevantes para quien usa o adopta el kit; los commits internos
+  de trazabilidad y los planes (`docs/plan-*.md`, no publicados) se omiten. El detalle completo
+  está en `git log`.
+- La línea del kit posterior a `v1.5.0` avanza como `kit 1.6.x` en los mensajes de commit; la
+  versión vigente vive en `kit/VERSION`.
+
+## Sin publicar — `master` tras v1.5.0 (2026-10-11 → 2026-10-16)
+
+### 2026-10-16
+- kit 1.6.16: la plantilla `AGENTS.md` fija la precedencia 2026-10-16 —el proyecto manda si la
+  política global no le sirve o está incompleta—; ejemplo alineado. [d60f980]
+- kit 1.6.15: separación global↔proyecto — `test_policy_sync` solo intra-repo, cadena documental
+  reescrita, precedencia de proyecto. [e3d4d50]
+- Ignorar `.vs/` (artefactos locales de Visual Studio) en `.gitignore`. [d2c0bf8]
+
+### 2026-10-15
+- Política: enmiendas A1-A7 —entorno del usuario, integridad tras transformaciones, orden de
+  cierre, herramientas de comprobación, barridos con inventario, una unidad de trabajo por turno
+  y verificación independiente— (kit 1.6.12). [61a4d56]
+- Protocolo v2.0.0: runbook que solo cita a la política (opción A), con guarda de citas
+  (kit 1.6.9-1.6.10). [5ce3e1d, d36df18]
+- Política 1.2: el protocolo es el runbook, no quien establece el rigor (kit 1.6.10). [3d503aa]
+- Runbook: §13 sin subíndices, con las citas válidas (kit 1.6.11). [2cf8767]
+- kit 1.6.13-1.6.14: ítems operativos de las enmiendas A1-A7; métricas mínimas (§16.8) y
+  criticidad/verificación independiente reales (§2.0, §2.4). [b14f813, 9dd6309]
+- kit 1.6.3-1.6.8: `sync_skills` actualiza copias intactas con guarda en pre-commit; la plantilla
+  `AGENTS.md` ya no dice «instálalas una vez»; textos agnósticos de agente/modelo; la política
+  del proyecto queda como respaldo y sus reglas propias prevalecen al endurecer; nombre unificado
+  de la política global. [fbf62de … 88b2d73]
+- kit 1.6.2: sincronía con la política canónica viva (protocolo de docs). [0c0ad9c]
+- El guardián del repo del kit ejecuta la suite completa (`SGP_HOOK=off` la omite). [720a90c]
+
+### 2026-10-11
+- Independencia entre las políticas del equipo y las del proyecto: el repo es fuente solo de sus
+  propias copias; la configuración del equipo deja de depender del repo. [7c44fb6, 0991ef4]
+
+## v1.5.0 — 2026-10-09
+
+- Publicación solo bajo la licencia MIT: se retira la infraestructura de contribución
+  (CONTRIBUTING, código de conducta, plantillas de issues/PR). [1dc2602]
+- El repositorio queda en español neutro (salvo la licencia y el código); se retiran las
+  versiones en inglés. [983f784]
+- Los planes pasan a vivir solo en local, fuera del remoto. [6d95b28]
+- Las decisiones deliberadas se registran en `.clean/decisions.md`. [c8a08bb]
+- `sgp_check --version`; badges de CI y licencia en el README; sanitización de datos personales
+  y `AGENTS.md` del repo. [74401d2, d287474, 4d90f88]
+- Corrección de `strip_comment`: un `#` dentro de comillas no inicia comentario (kit, ejemplo y
+  zip). [061ca7f]
+- Subconjunto YAML de `sgp.yaml` documentado y probado; titular de la licencia MIT completado.
+  [313c4ec, a19f2fc]
+- Documento de requerimientos mejorado: prioridad, no funcionales, dominios candidatos y orden
+  de cambios. [9fc7589]
+
+## v1.4.0 — 2026-10-09 (versión declarada el 2026-10-07)
+
+- La política de ingeniería y su protocolo se distribuyen como skills del kit: copia única
+  `docs/` ↔ `kit/skills/` con guarda de sincronía y política v2 íntegra. [deef818]
+- CI con matriz Linux/Windows y Python 3.8/3.12 para el kit y el ejemplo. [d0df056]
+- `sgp-lite.zip` versionado, con guarda de consistencia `sgp-kit.manifest`. [0f254ba]
+- Prompt 0 / skill del documento de requerimientos y generador del zip `sgp_zip` (con pruebas).
+  [e771543]
+- Skill `protocolo-ingenieria-senior` sincronizado con la política v2. [9a79b48]
+
+## Antes de v1.4.0 — 2026-09-25 → 2026-10-06 (fundación)
+
+- Repo inicial: mapeo del SDLC al desarrollo continuo con agentes de IA, kit SGP Lite y ejemplo
+  ejecutable. [acb2ad1, a1192f3]
+- Política de ingeniería completa incluida (con §16, evidencia verificada); procedimiento de
+  implementación añadido al README. [4572f56, c7dc934]
+- Corrección del idioma: se revierte la neutralización sin tildes; solo se corrige el voseo
+  real. [dd294bf]
+- Manual de usuario para personas no expertas. [c8803a4]
+- Actualizador del kit (`sgp_kit` con pruebas) y guía de adopción por tamaño. [7d80007]
+- Decisión documentada: los `print()` de las CLIs son salida oficial, no debug. [e79a8b6]
+- Ejemplo sincronizado con el kit (salidas `->`, lista de agentes, pruebas de la CLI).
+  [5753939, 72f3e6c]
+
+---
+
+El detalle exacto de cada versión se ve con `git log` sobre su etiqueta, p. ej. `git log v1.5.0`.
