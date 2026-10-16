@@ -37,6 +37,9 @@ SGP Lite: metodología spec-driven para trabajar con agentes de IA, más la pol�
   `kit/skills/`) y `test_kit_consistency` (`kit/` ↔ `examples/descuento/` ↔ zip).
 - No se asume qué versión rige por el nombre, la ruta o la fecha de un archivo: se verifica por
   hash o diff, con finales de línea normalizados.
+- **Precedencia** (decisión 2026-10-16): si la política global del equipo no es la que este
+  proyecto requiere, no está completa o estas copias son mejores, rigen estas copias del
+  proyecto (citadas); la global no se impone. Excepción única: la seguridad nunca se relaja.
 
 ## Política de comportamiento
 Este repositorio sigue `docs/system-engineering-policy.SKILL.md` (norma) y

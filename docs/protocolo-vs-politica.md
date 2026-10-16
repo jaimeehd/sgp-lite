@@ -32,8 +32,10 @@ entre sí, no la política contra el protocolo.
 ## Hallazgos para revisar en el próximo cambio de la política
 - **Resuelto el 2026-10-15** (kit 1.6.10): la política, §1.2, decía del protocolo *"este skill
   establece el procedimiento de rigor"*. Ahora dice que el protocolo es el **runbook** ("no define
-  reglas: las cita de esta política") y que el rigor vive en la política. Se aplicó la cadena
-  completa: canónica → 3 copias del kit (byte a byte, guardadas) → 3 proyectos.
+  reglas: las cita de esta política") y que el rigor vive en la política. Se aplicó entonces la
+  cadena completa de propagación (canónica → copias del kit → proyectos), **retirada el
+  2026-10-16** por la decisión de separación global ↔ proyecto: hoy cada capa mantiene sus
+  copias y el repo es canónico solo para las suyas.
 - **Decisión (2026-10-15): opción A** — el runbook se conserva como **skill separado** (no como
   anexo de la política: anexarlo obligaría a cargar la chuleta en todas las sesiones y mezclaría
   obligaciones con listas prácticas). Para que no pueda desviarse en silencio:
