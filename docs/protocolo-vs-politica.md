@@ -30,8 +30,9 @@ entre sí, no la política contra el protocolo.
 - La política **no se modificó** (no había reglas que subir).
 
 ## Hallazgos para revisar en el próximo cambio de la política
-- La política, §1.2, dice del protocolo: *"este skill establece el procedimiento de rigor"*. Con el
-  runbook, quien establece el rigor es la política; conviene ajustar esa frase en el próximo cambio
-  (no se tocó ahora para no propagar la política por una línea).
+- **Resuelto el 2026-10-15** (kit 1.6.10): la política, §1.2, decía del protocolo *"este skill
+  establece el procedimiento de rigor"*. Ahora dice que el protocolo es el **runbook** ("no define
+  reglas: las cita de esta política") y que el rigor vive en la política. Se aplicó la cadena
+  completa: canónica → 3 copias del kit (byte a byte, guardadas) → 3 proyectos.
 - Revisar si el runbook sigue aportando valor como skill separado o debería ser un anexo de la
   política: decisión aparcada (paso 4) a propósito.
