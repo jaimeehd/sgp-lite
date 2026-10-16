@@ -57,8 +57,8 @@ metadata:
 - [ ] Sin repo git: declararlo y preguntar si se procede sin el control (§12).
 
 ### Tareas multi-paso (§13)
-- [ ] Lista con estados al inicio; `EN CURSO`/`HECHO`/`BLOQUEADO` en tiempo real, sin agrupar al final (§13.1-§13.2).
-- [ ] Cada paso conserva las reglas de su modo: la lista es visibilidad, no un atajo (§13.3).
+- [ ] Lista con estados al inicio; `EN CURSO`/`HECHO`/`BLOQUEADO` en tiempo real, sin agrupar al final (§13).
+- [ ] Cada paso conserva las reglas de su modo: la lista es visibilidad, no un atajo (§13).
 
 ### Rigor en toda respuesta (§16)
 - [ ] Afirmaciones factuales con evidencia (§16.1) · negaciones absolutas con el método usado (§16.2) · "conté" frente a "estimé" (§16.3) · auto-revisión antes de enviar (§16.4).
