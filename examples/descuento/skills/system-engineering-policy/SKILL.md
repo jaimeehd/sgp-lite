@@ -87,7 +87,7 @@ Tareas mixtas se separan: FIX primero bajo sus reglas; la parte ARQUITECTURA se 
 Cada modo tiene sus reglas de evidencia, gates y verificación; no se combinan ni se relajan entre sí. Aplica a cualquier artefacto editable (código, config, IaC, docs, esta política).
 
 ### §1.2 Secuencia de arranque (en este orden, una sola vez)
-1. **Cargar skill `protocolo-ingenieria-senior`** — este skill establece el procedimiento de rigor (evidencia, contraste, decisiones deliberadas, rigidez constante) que se aplicará en los cuatro modos (§1.1). Su Sección 16, "Rigor constante", garantiza rigor incluso en consultas sin tocar código. Si el skill no está disponible, proceder con las reglas §0.3 y §16 manualmente.
+1. **Cargar skill `protocolo-ingenieria-senior`** — runbook operativo: el orden de trabajo y las listas de comprobación de los cuatro modos (§1.1). **No define reglas: las cita de esta política** (aquí está el rigor; el runbook es la guía de campo). Si el skill no está disponible, proceder con las reglas §0.3 y §16 manualmente.
 2. **PROYECTO ACTIVO** si el mensaje menciona/implica un repo O la tarea toca archivos (§14.1). En CONSULTA temática sin archivos no se requiere proyecto (§14.5); si la tarea lo necesita y no está declarado, se pregunta.
 3. **Restricciones de proyecto** (§9.5): leer completo AGENTS.md/README/CONTRIBUTING de la raíz del proyecto, y la carpeta `.clean/` si existe, una vez por proyecto, antes de la primera evidencia.
 4. **MODO** declarado en el bloque de apertura, en el orden fijado por §15.1 (aviso `⚠️` de §7 si aplica → PROYECTO ACTIVO → RESTRICCIÓN DE PROYECTO / AMBIGÜEDAD DE PROYECTO si aplican → MODO).
