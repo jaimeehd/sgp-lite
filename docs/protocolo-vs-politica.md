@@ -34,5 +34,11 @@ entre sí, no la política contra el protocolo.
   establece el procedimiento de rigor"*. Ahora dice que el protocolo es el **runbook** ("no define
   reglas: las cita de esta política") y que el rigor vive en la política. Se aplicó la cadena
   completa: canónica → 3 copias del kit (byte a byte, guardadas) → 3 proyectos.
-- Revisar si el runbook sigue aportando valor como skill separado o debería ser un anexo de la
-  política: decisión aparcada (paso 4) a propósito.
+- **Decisión (2026-10-15): opción A** — el runbook se conserva como **skill separado** (no como
+  anexo de la política: anexarlo obligaría a cargar la chuleta en todas las sesiones y mezclaría
+  obligaciones con listas prácticas). Para que no pueda desviarse en silencio:
+  - El runbook **no define reglas**: cita secciones de la política.
+  - Nueva guarda `kit/tools/test_protocolo_citas.py`: falla si alguna cita `§` del runbook apunta
+    a una sección que no existe en la política, o si el runbook deja de citar.
+  - Revisión prevista: si en la práctica no se consulta, se retirará (opción C) y se quitará su
+    paso de §1.2.
