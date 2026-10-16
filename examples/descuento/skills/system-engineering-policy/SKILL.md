@@ -104,7 +104,7 @@ Cada modo tiene sus reglas de evidencia, gates y verificación; no se combinan n
 CRITICIDAD: PRODUCCIÓN/USUARIO FINAL | HERRAMIENTA INTERNA RECURRENTE | SCRIPT DESCARTABLE
 ```
 Solo modifica la profundidad de §2.4; no exime ninguna regla. Ante duda → PRODUCCIÓN.
-- PRODUCCIÓN: DONE exige test o smoke ejecutado. Además, antes de DONE, la tabla de evidencia debe verificarse contra el repo real por una sesión o subagente independiente cuando sea factible; si no lo es, se declara "verificación independiente: NO EJECUTADA".
+- PRODUCCIÓN: DONE exige **suite completa si existe** (no un solo test o smoke) y **vuelta atrás declarada** (§11). Antes de DONE, la tabla de evidencia debe verificarse contra el repo real por una sesión o subagente **independiente** (§2.4); el intento se documenta y **NO EJECUTADA ⇒ INCOMPLETE** — nunca DONE con "verificación independiente: NO EJECUTADA".
 - HERRAMIENTA/SCRIPT: DIAGNÓSTICO/SOLUCIÓN/VERIFICACIÓN pueden condensarse en pocas líneas, y solo si no hay decisión deliberada (§9) ni casilla marcada del CONTRASTE (§8.1). Evidencia y criticidad siguen obligatorias.
 
 ### §2.0.1 Requisito declarado
@@ -163,9 +163,10 @@ VERIFICACIÓN
 | docs de proyecto | `git diff --name-only HEAD` + revisión manual | OK | [lista de docs actualizadas (README, ARCHITECTURE, DOCUMENTATION, AGENTS.md, CHANGELOG.md, docs/*) o "ninguna afectada"] |
 
 CONSIDERADO Y DESCARTADO: [qué se evaluó y por qué no se hizo; "Ninguno" si no hubo nada]
-verificación independiente: EJECUTADA (fuente: subagente <id>) | NO EJECUTADA (motivo)   ← obligatoria en PRODUCCIÓN (§2.0); en blanco = INCOMPLETE
+verificación independiente: EJECUTADA (subagente <id> con solo REQUISITO + diff | método distinto: <comando>) | NO EJECUTADA (motivo)   ← obligatoria en PRODUCCIÓN (§2.0): NO EJECUTADA ⇒ INCOMPLETE; en blanco = INCOMPLETE
 ESTADO: DONE | INCOMPLETE | BLOCKED
 ```
+- **Independiente**: sin ver el razonamiento de la implementación: un subagente que recibe solo REQUISITO + diff (o un método distinto del que produjo el resultado). El mismo agente, o un subagente con el contexto completo de la sesión, no cuentan como verificación independiente.
 - **Output real o no existe.** Prohibido transcribir output de comandos no ejecutados en esta sesión (REGLAS DURAS #6). Fallo de entorno (deps, permisos, sin red) = BLOCKED con la razón y lo que se necesitara; no se marca OK "probablemente".
 - **Integridad tras transformaciones programáticas** (scripts, regex, sustituciones masivas):
   copia previa o repo limpio; inventario del antes y el después; y comprobación de que **el resto
@@ -539,3 +540,11 @@ oficial**; la propia se revisa antes de reportar nada.
 **Renombrados, movimientos y barridos**: antes de tocar nada, inventario de TODAS las apariciones
 (comando exacto y alcance declarados). Al cierre, el mismo inventario debe dar 0. "Donde me acordé"
 no es alcance; ambos inventarios van en la evidencia.
+
+### §16.8 Métricas mínimas
+- Toda "mejora" numérica se afirma con cifra ANTES/DESPUÉS + método de medición + unidad.
+  Sin las tres → no se afirma mejora: se dice "sin medir".
+- Al cerrar un cambio en PRODUCCIÓN o de proceso/guardas: declarar 2 indicadores verificables
+  con su comando (p. ej., pruebas en verde N, copias conformes X/Y, pendientes 0).
+- "Alcanzado" exige umbral declarado y medición que lo supera; sin umbral → "aproximado",
+  nunca "cumplido".

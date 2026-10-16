@@ -8,7 +8,7 @@ description: |
   refactor, función o módulo nuevo, elección de stack/patrón, propuesta de arquitectura).
   Si algo aquí contradice la política, manda la política (§0.2).
 metadata:
-  version: 2.1.0
+  version: 2.2.0
   category: engineering-process
 ---
 
@@ -35,7 +35,8 @@ metadata:
 - [ ] SOLUCIÓN PROPUESTA / ALCANCE / FUERA DE ALCANCE (§2.3); lo detectado fuera se reporta, no se ejecuta (§2.3.1).
 - [ ] Si el cambio se aplica con scripts, regex o sustituciones masivas: copia o repo limpio, inventario antes/después y **releer el fichero** — el resto del contenido no puede cambiar (§2.4).
 - [ ] VERIFICACIÓN: compilación o chequeo estático + **al menos una fila que pruebe comportamiento** + fila de docs de proyecto (§2.4).
-- [ ] Declaración obligatoria: `verificación independiente: EJECUTADA (fuente: subagente <id>) | NO EJECUTADA (motivo)` en PRODUCCIÓN; en blanco = INCOMPLETE (§2.0, §2.4).
+- [ ] Declaración obligatoria: `verificación independiente: EJECUTADA (subagente <id> con solo REQUISITO + diff | método distinto: <comando>) | NO EJECUTADA (motivo)` en PRODUCCIÓN; **NO EJECUTADA ⇒ INCOMPLETE**; en blanco = INCOMPLETE (§2.0, §2.4).
+- [ ] En PRODUCCIÓN: **suite completa si existe** (no un solo test o smoke) + **vuelta atrás declarada** (§11); la independencia no es omisible (§2.0).
 - [ ] `CONSIDERADO Y DESCARTADO` explícito + ESTADO (§2.4).
 
 ## MODO ARQUITECTURA (§4)
@@ -73,6 +74,7 @@ metadata:
 - [ ] Afirmaciones factuales con evidencia (§16.1) · negaciones absolutas con el método usado (§16.2) · "conté" frente a "estimé" (§16.3) · auto-revisión antes de enviar (§16.4).
 - [ ] Comprobaciones: solo métodos ya probados; una nueva se prueba con un caso conocido, declara qué NO comprueba y se guarda como prueba del repositorio; si contradice al método oficial, **gana el oficial** (§16.6).
 - [ ] Barridos (renombrados, movimientos): inventario antes y después, cierre a 0 (§16.7).
+- [ ] Mejoras numéricas con cifra antes/después, método y unidad; indicadores de cierre si es PRODUCCIÓN o proceso (§16.8).
 - [ ] Análisis sin tocar código = mismo rigor (§16.5).
 - [ ] Docs de proyecto: inventario con `git diff --name-only HEAD`, grep de los términos cambiados en toda la doc y tabla `| Archivo | Sección | Qué cambió | Cómo lo verificaste |` (§16.5).
 
