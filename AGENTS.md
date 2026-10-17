@@ -48,3 +48,19 @@ Este repositorio sigue `docs/system-engineering-policy.SKILL.md` (norma) y
 ## Al terminar una tarea que modifica archivos
 - Se ejecutan los tests del kit y el verificador del ejemplo, y se muestra la salida real antes de
   dar algo por terminado.
+
+## Agentes de verificación (si la máquina los tiene instalados)
+
+- Este repo puede aprovechar dos agentes globales de la configuración personal de quien lo
+  trabaja; **no se empaquetan en el kit ni se instalan con él**, por lo que esta sección aplica
+  solo si existen en la máquina:
+  - `independent-verifier`: subagente que comprueba con evidencia real que un cambio cumple su
+    criterio de aceptación, recibiendo **solo el criterio + el diff** — ignora y declara cualquier
+    razonamiento de la implementación que arrastre la instrucción.
+  - `senior-reviewer`: subagente de solo lectura que lista hallazgos de revisión por severidad
+    con `archivo:línea`.
+- Si existen: en tareas con CRITICIDAD PRODUCCIÓN, antes de declarar terminado, lanzar
+  `independent-verifier` con únicamente el criterio de aceptación + el diff; en cambios amplios,
+  pedir antes la revisión de `senior-reviewer`.
+- Si no existen: cumplir lo mismo con un subagente genérico que reciba únicamente el criterio de
+  aceptación + el diff, nunca el razonamiento de la implementación.

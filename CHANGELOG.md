@@ -14,6 +14,9 @@ Historial de versiones de **sgp-lite** (kit, política de ingeniería y protocol
 ## Sin publicar — `master` tras v1.5.0 (2026-10-11 → 2026-10-16)
 
 ### 2026-10-16
+- AGENTS.md (raíz): nueva sección «Agentes de verificación» — si la máquina tiene los agentes
+  globales `independent-verifier` (obligatorio en PRODUCCIÓN antes de cerrar, con solo
+  criterio + diff) y `senior-reviewer`; sin ellos se cumple igual con un subagente genérico.
 - kit 1.6.16: la plantilla `AGENTS.md` fija la precedencia 2026-10-16 —el proyecto manda si la
   política global no le sirve o está incompleta—; ejemplo alineado. [d60f980]
 - kit 1.6.15: separación global↔proyecto — `test_policy_sync` solo intra-repo, cadena documental
