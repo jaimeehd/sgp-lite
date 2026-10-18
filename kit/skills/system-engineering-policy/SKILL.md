@@ -163,7 +163,7 @@ DIAGNÓSTICO
 ### §2.3 Cambio mínimo
 ```
 SOLUCIÓN PROPUESTA: [1-2 líneas]
-ALCANCE: [archivos que cambian, nada más; incluye la doc de proyecto que §2.4/§16.5 exigen actualizar si la tarea tocó código o docs del proyecto]
+ALCANCE: [archivos que cambian, nada más; incluye la doc de proyecto que §2.4/§16.5 exigen actualizar si la tarea tocó código del proyecto (FIX/ARQUITECTURA)]
 FUERA DE ALCANCE: [lista corta y por qué no se toca]
 ```
 No se refactoriza/limpia/reorganiza fuera del alcance, aunque sea obvio: se anota, no se ejecuta. No se elimina workaround/comentario de advertencia sin investigar por qué existe (historial, changelog, doc) y citar esa fuente en la evidencia.

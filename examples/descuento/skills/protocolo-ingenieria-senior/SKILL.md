@@ -93,7 +93,7 @@ metadata:
 - [ ] Barridos (renombrados, movimientos): inventario antes y después, cierre a 0 (§16.7).
 - [ ] Mejoras numéricas con cifra antes/después, método y unidad; indicadores de cierre si es PRODUCCIÓN o proceso (§16.8).
 - [ ] Análisis sin tocar código = mismo rigor (§16.5).
-- [ ] Docs de proyecto: inventario con `git diff --name-only HEAD`, grep de los términos cambiados en toda la doc y tabla `| Archivo | Sección | Qué cambió | Cómo lo verificaste |` (§16.5).
+- [ ] Docs de proyecto (solo FIX/ARQUITECTURA): inventario con `git diff --name-only HEAD`, grep de los términos cambiados en toda la doc y tabla `| Archivo | Sección | Qué cambió | Cómo lo verificaste |` (§16.5); en DOCS basta el grep ligero de §3.
 
 ### Contraste y dato faltante (§8, §10)
 - [ ] Propuesta técnica del usuario: bloque CONTRASTE con evaluación y evidencia antes de ejecutar; si no es VIABLE SIN RESERVAS, casillas con su cita (§8.1).
