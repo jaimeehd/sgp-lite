@@ -43,11 +43,20 @@ python tools/sgp_check.py --root ../examples/descuento --stage pre-merge
 
 Si tu sistema usa `python3` en vez de `python`, ajusta el comando o `examples/descuento/sgp.yaml`.
 
+## Guardas opcionales (CI o revisión periódica)
+
+```bash
+python tools/sgp_links.py       # enlaces relativos y anclas de los .md (aviso)
+```
+
+`--strict` convierte los avisos en fallo (CI). Los enlaces externos (`http`/`https`) no se comprueban: para eso usa una herramienta de CI como lychee.
+
 ## Probar el kit
 
 ```bash
 python -m unittest tools/test_sgp_check.py -v     # pruebas del verificador
 python -m unittest tools/test_sgp_docs.py -v      # pruebas del auditor de documentación
+python -m unittest tools/test_sgp_links.py -v     # pruebas de la guarda de enlaces
 python -m unittest tools/test_sgp_kit.py -v       # pruebas del instalador/actualizador
 python -m unittest tools/test_sgp_zip.py -v       # pruebas del generador del zip
 python -m unittest discover -s tools -p "test_*.py" -v   # suite completa (incluye las guardas del repositorio del kit)
@@ -59,8 +68,8 @@ python -m unittest discover -s tools -p "test_*.py" -v   # suite completa (inclu
 VERSION  sgp-kit.manifest
 docs/constitution.md   docs/adr/_plantilla.md   specs/_plantilla-dominio/spec.md
 changes/_plantilla.md  AGENTS.md  CLAUDE.md  sgp.yaml  prompts.md  METODOLOGIA.md  ADOPCION.md
-tools/sgp_check.py  tools/sgp_docs.py  tools/pre-commit  tools/sync_skills.py
-tools/test_sgp_check.py  tools/test_sgp_docs.py  tools/test_sgp_kit.py
+tools/sgp_check.py  tools/sgp_docs.py  tools/sgp_links.py  tools/pre-commit  tools/sync_skills.py
+tools/test_sgp_check.py  tools/test_sgp_docs.py  tools/test_sgp_links.py  tools/test_sgp_kit.py
 tools/sgp_kit.py  tools/sgp_zip.py  tools/test_sgp_zip.py
 skills/sgp-documento-requerimientos  skills/sgp-especificar  skills/sgp-qa-spec  skills/sgp-planificar-cambio  skills/sgp-ejecutar-tarea  skills/sgp-validar-cerrar
 skills/system-engineering-policy  skills/protocolo-ingenieria-senior

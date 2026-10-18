@@ -102,6 +102,8 @@ python tools/sgp_check.py --help
 python -m unittest tools/test_sgp_check.py -v   # 32 pruebas del propio verificador
 ```
 
+Guardas opcionales: `python tools/sgp_links.py` (enlaces relativos y anclas; `--strict` para CI).
+
 Para instalar el kit en un repo propio, sigue `kit/LEEME.md`. Si prefieres no usar el instalador,
 descomprime `sgp-lite.zip` en la raíz de tu proyecto (o copia los archivos a mano). El zip se regenera
 con `python kit/tools/sgp_zip.py --source kit --dest sgp-lite.zip` cuando el kit cambie.
