@@ -8,7 +8,7 @@ description: |
   refactor, función o módulo nuevo, elección de stack/patrón, propuesta de arquitectura).
   Si algo aquí contradice la política, manda la política (§0.2).
 metadata:
-  version: 2.2.0
+  version: 2.4.0
   category: engineering-process
 ---
 
@@ -37,7 +37,18 @@ metadata:
 - [ ] VERIFICACIÓN: compilación o chequeo estático + **al menos una fila que pruebe comportamiento** + fila de docs de proyecto (§2.4).
 - [ ] Declaración obligatoria: `verificación independiente: EJECUTADA (subagente <id> con solo REQUISITO + diff | método distinto: <comando>) | NO EJECUTADA (motivo)` en PRODUCCIÓN; **NO EJECUTADA ⇒ INCOMPLETE**; en blanco = INCOMPLETE (§2.0, §2.4).
 - [ ] En PRODUCCIÓN: **suite completa si existe** (no un solo test o smoke) + **vuelta atrás declarada** (§11); la independencia no es omisible (§2.0).
+- [ ] Matriz por tier (§2.0): HERRAMIENTA INTERNA = suites de los módulos tocados si existen; SCRIPT DESCARTABLE = ejecución real con caso representativo.
+- [ ] En PRODUCCIÓN, fila de seguridad en VERIFICACIÓN (§2.4): obligatoria; "NO APLICA" solo si el diff no introduce dependencias ni toca credenciales/datos. Dependencias nuevas: auditarlas con el catálogo de `application-security` (§2.4). Si el diff toca datos biométricos: revisión de logs y errores y datos de prueba sintéticos (REGLAS DURAS #10, §2.4).
+- [ ] URGENCIA (§2.0.2): solo si la pide el usuario; relaja formato, nunca núcleo; caduca con evidencia reconstruida, causa raíz como tarea nueva y postmortem.
 - [ ] `CONSIDERADO Y DESCARTADO` explícito + ESTADO (§2.4).
+
+## MODO DOCS (§3)
+- [ ] EVIDENCIA con el formato de §2.1 (un README completo se puede leer completo; si es enorme, filas parciales justificadas) y DIAGNÓSTICO / SOLUCIÓN PROPUESTA / ALCANCE como en §2.2-§2.3 (§3).
+- [ ] CRITICIDAD declarada: aplica igual que en FIX; un README de producción es PRODUCCIÓN (§3, §2.0).
+- [ ] VERIFICACIÓN de DOCS: lectura de vuelta del diff o del archivo final, comandos y enlaces citados ejecutados o comprobados, lint de docs si existe y fila de docs de proyecto (§3).
+- [ ] Un cambio de docs que altera código (snippet que debe compilar) se trata como FIX en su parte ejecutable (§3).
+- [ ] En PRODUCCIÓN: declaración de verificación independiente (§3, §2.0).
+- [ ] Docs de proyecto: inventario con `git diff --name-only HEAD`, grep de los términos cambiados en toda la doc y tabla `| Archivo | Sección | Qué cambió | Cómo lo verificaste |` (§16.5).
 
 ## MODO ARQUITECTURA (§4)
 - [ ] CONTEXTO DEL PROYECTO completo; la vida útil esperada gobierna cuánta arquitectura se justifica (§4.1).
@@ -46,6 +57,14 @@ metadata:
 - [ ] Línea base del §4.4 (incluye la doc mínima: README con objetivo/build/test, CHANGELOG y AGENTS.md con los comandos).
 - [ ] VERIFICACIÓN DE DISEÑO (§4.5) y **esperar confirmación** antes de implementar, salvo autorización en el mismo pedido.
 - [ ] Al implementar, cada archivo pasa a las reglas de FIX (§2).
+
+## MODO CONSULTA (§5)
+- [ ] Sin ediciones: prohibido editar, crear o borrar archivos; si surge una necesidad de edición, se declara el cambio de MODO y se aplican sus reglas desde cero (§5, §1.1).
+- [ ] CONSULTA temática (sin repo): no requiere PROYECTO ACTIVO ni evidencia de repo; las fuentes externas se citan con enlace o se marcan «citado, no reverificado» (§5, §6, §14.5).
+- [ ] Sobre código o configuración del repo: tabla EVIDENCIA completa y `archivo:línea` en cada afirmación; sin fila de evidencia, se marca `[sin verificar]` o se retira (§5, §16.5).
+- [ ] Propuestas y planes: DIAGNÓSTICO con confianza y EVIDENCIA de cada archivo que tocarían y de sus consumidores, como si se ejecutaran ahora (§5).
+- [ ] Hallazgos no solicitados aparte, con `HALLAZGO NO SOLICITADO:`; no se corrigen (§2.3.1, §5).
+- [ ] Si el usuario propone una solución técnica y pide ejecutarla: CONTRASTE antes de pasar a FIX/DOCS (§8.1, §5).
 
 ## Transversal
 
@@ -77,6 +96,18 @@ metadata:
 - [ ] Mejoras numéricas con cifra antes/después, método y unidad; indicadores de cierre si es PRODUCCIÓN o proceso (§16.8).
 - [ ] Análisis sin tocar código = mismo rigor (§16.5).
 - [ ] Docs de proyecto: inventario con `git diff --name-only HEAD`, grep de los términos cambiados en toda la doc y tabla `| Archivo | Sección | Qué cambió | Cómo lo verificaste |` (§16.5).
+
+### Contraste y dato faltante (§8, §10)
+- [ ] Propuesta técnica del usuario: bloque CONTRASTE con evaluación y evidencia antes de ejecutar; si no es VIABLE SIN RESERVAS, casillas con su cita (§8.1).
+- [ ] Casilla SEGURIDAD marcada: no basta «procede con nota»; solo se avanza con aceptación escrita del riesgo concreto y nunca si implica exponer secretos o debilitar autenticación/autorización (§8.3).
+- [ ] Dato que una lectura dirigida no resuelve: bloque `DATO FALTANTE` y pregunta cerrada; nunca un «supuesto razonable» (§10).
+
+### Salida rápida (§7)
+- [ ] Solo si el usuario la pide explícitamente: primera línea `⚠️ Respuesta sin verificación completa — …`; exime el formato, nunca la lectura previa, el contraste, la criticidad ni el bloqueo de seguridad (§7).
+
+### Datos biométricos (REGLAS DURAS #10)
+- [ ] Rostros, huellas, iris, venas y plantillas: nunca en logs ni en mensajes de error; en pruebas y demos solo datos sintéticos; retención y borrado declarados por tipo de dato (REGLAS DURAS #10).
+- [ ] Cargar `proteccion-datos-personales` (tabla de dominios de `AGENTS.md`).
 
 ### Cierre (§15.4)
 - [ ] La respuesta termina con `FIN DE PROCESO` cuando cierra una tarea.
