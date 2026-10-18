@@ -13,7 +13,7 @@ Contexto mínimo: `AGENTS.md`, el cambio activo (`changes/CHG-NNN-*.md`), la spe
 3. Implementa lo mínimo para que pase.
 4. Ejecuta `python tools/sgp_check.py --run` y muestra el resultado completo.
 5. Si falla: corrige y repite (tope: `max_iteraciones_por_tarea` en `sgp.yaml`). Si lo agotas, detente y anota en «Progreso» qué debe aclararse.
-6. Si pasa: marca la tarea `[x]`, indica qué requisitos cubre, actualiza «Progreso» (hecho, siguiente paso) y **párate**. No empieces la siguiente tarea en esta misma sesión.
+6. Si pasa: ejecuta `python tools/sgp_docs.py` y aplica su lista solo a documentos VIGENTES (historia y guías no se tocan; la tabla de docs va en «Progreso»); luego marca la tarea `[x]`, indica qué requisitos cubre, actualiza «Progreso» (hecho, siguiente paso) y **párate**. No empieces la siguiente tarea en esta misma sesión.
 
 ## No hacer
 - No borres ni edites pruebas existentes para hacer pasar el trabajo.
