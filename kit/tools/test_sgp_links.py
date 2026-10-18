@@ -83,3 +83,15 @@ class EnlacesTests(unittest.TestCase):
 
     def test_root_inexistente(self):
         self.assertEqual(sgp_links.main(["--root", str(self.base / "no-existe")]), 2)
+
+    def test_no_edita_archivos(self):
+        escribir(self.base, "README.md", "[x](no-existe.md)\n")
+        escribir(self.base, "docs/uso.md", "# Uso\n")
+
+        def foto():
+            return {p.relative_to(self.base).as_posix(): p.read_bytes()
+                    for p in sorted(self.base.rglob("*")) if p.is_file()}
+
+        antes = foto()
+        sgp_links.revisar(self.base)
+        self.assertEqual(antes, foto())

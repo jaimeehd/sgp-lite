@@ -91,6 +91,18 @@ class FrescuraTests(unittest.TestCase):
     def test_root_inexistente(self):
         self.assertEqual(sgp_fresh.main(["--root", str(self.base / "no-existe")]), 2)
 
+    def test_no_edita_archivos(self):
+        escribir(self.base, "README.md",
+                 "<!-- freshness: owner=@equipo reviewed=2025-01-01 -->\n")
+
+        def foto():
+            return {p.relative_to(self.base).as_posix(): p.read_bytes()
+                    for p in sorted(self.base.rglob("*")) if p.is_file()}
+
+        antes = foto()
+        sgp_fresh.revisar(self.base, hoy=HOY)
+        self.assertEqual(antes, foto())
+
 
 if __name__ == "__main__":
     unittest.main()
