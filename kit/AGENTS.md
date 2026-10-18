@@ -21,7 +21,7 @@ Si tu agente soporta el estándar Agent Skills (SKILL.md), instálalas con `pyth
 
 ## Al terminar cualquier tarea
 - Ejecuta `python tools/sgp_check.py --run`, muestra el resultado, marca la tarea `[x]` solo si pasa y anota en "Progreso" qué hiciste y qué sigue.
-- Ejecuta `python tools/sgp_docs.py` y procesa su lista: actualiza los documentos VIGENTES afectados por el cambio, **nunca** la historia (CHANGELOG y decisiones: solo se añade entrada nueva) ni las guías; adjunta la tabla «Archivo | Sección | Qué cambió | Cómo lo verificaste». Si la máquina tiene el agente `docs-syncer`, pásale la lista, el diff y el cambio activo (`changes/CHG-*.md`); si no, aplica tú la misma regla.
+- Ejecuta `python tools/sgp_docs.py` cuando la tarea tocó código o implementó un diseño (FIX/ARQUITECTURA; en tareas solo documentales no se ejecuta) y procesa su lista: actualiza los documentos VIGENTES afectados por el cambio, **nunca** la historia (CHANGELOG y decisiones: solo se añade entrada nueva) ni las guías; adjunta la tabla «Archivo | Sección | Qué cambió | Cómo lo verificaste». Si la máquina tiene el agente `docs-syncer`, pásale la lista, el diff y el cambio activo (`changes/CHG-*.md`); si no, aplica tú la misma regla.
 
 ## Convenciones
 <Solo lo que no se deduce leyendo el código.>

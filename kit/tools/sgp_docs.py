@@ -14,6 +14,9 @@ Secciones de salida:
   3) plantilla de la tabla de cierre prellenada.
 Sin git: imprime el guion de inventario manual de §16.5 punto 5.
 
+Se ejecuta al cerrar tareas de FIX/ARQUITECTURA (§16.5); en DOCS rige la comprobación
+ligera de §3 y en CONSULTA no hay ediciones.
+
 Solo librería estándar (Python 3.8+). Código de salida: 0 si se pudo leer el
 proyecto (es un aviso, no bloquea); 2 si la carpeta no existe.
 """
