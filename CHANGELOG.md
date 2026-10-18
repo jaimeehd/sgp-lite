@@ -35,6 +35,9 @@ Historial de versiones de **sgp-lite** (kit, política de ingeniería y protocol
   manual de usuario. [ae760fe]
 - kit 1.8.0: la plantilla `AGENTS.md` ejecuta el auditor de documentación solo en tareas con
   código (FIX/ARQUITECTURA); en tareas solo documentales no se ejecuta. [8f1c9ed]
+- Copias actualizadas a U6: la política añade la capa de sistemas (§17: línea base de sistema,
+  interfaces con contrato y modo de fallo, verificación y validación de sistema) y el protocolo
+  sube a 2.4.2 con su checklist. [e54f484]
 
 ### 2026-10-16
 - AGENTS.md (raíz): nueva sección «Agentes de verificación» — si la máquina tiene los agentes
