@@ -8,7 +8,7 @@ description: |
   refactor, función o módulo nuevo, elección de stack/patrón, propuesta de arquitectura).
   Si algo aquí contradice la política, manda la política (§0.2).
 metadata:
-  version: 2.4.0
+  version: 2.4.1
   category: engineering-process
 ---
 
@@ -45,11 +45,9 @@ metadata:
 ## MODO DOCS (§3)
 - [ ] EVIDENCIA con el formato de §2.1 (un README completo se puede leer completo; si es enorme, filas parciales justificadas) y DIAGNÓSTICO / SOLUCIÓN PROPUESTA / ALCANCE como en §2.2-§2.3 (§3).
 - [ ] CRITICIDAD declarada: aplica igual que en FIX; un README de producción es PRODUCCIÓN (§3, §2.0).
-- [ ] VERIFICACIÓN de DOCS: lectura de vuelta del diff o del archivo final, comandos y enlaces citados ejecutados o comprobados, lint de docs si existe y fila de docs de proyecto (§3).
+- [ ] VERIFICACIÓN de DOCS: lectura de vuelta del diff o del archivo final, comandos y enlaces citados ejecutados o comprobados, lint de docs si existe y grep ligero de los términos cambiados en la documentación del proyecto (§3).
 - [ ] Un cambio de docs que altera código (snippet que debe compilar) se trata como FIX en su parte ejecutable (§3).
 - [ ] En PRODUCCIÓN: declaración de verificación independiente (§3, §2.0).
-- [ ] Docs de proyecto: inventario con `git diff --name-only HEAD`, grep de los términos cambiados en toda la doc y tabla `| Archivo | Sección | Qué cambió | Cómo lo verificaste |` (§16.5).
-
 ## MODO ARQUITECTURA (§4)
 - [ ] CONTEXTO DEL PROYECTO completo; la vida útil esperada gobierna cuánta arquitectura se justifica (§4.1).
 - [ ] DECISIONES DE ARQUITECTURA: una fila por patrón/capa añadido, con alternativa y costo aceptado (§4.2). YAGNI/KISS por defecto.
