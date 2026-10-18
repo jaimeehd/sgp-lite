@@ -41,6 +41,10 @@ Historial de versiones de **sgp-lite** (kit, política de ingeniería y protocol
 - Copias actualizadas a U7: la fila de seguridad de §2.4 exige análisis estático de seguridad
   cuando el stack lo tenga (sin nombrar herramientas; exigible en PRODUCCIÓN cuando exista) y
   el protocolo sube a 2.4.3. [9202486]
+- Ejemplo sincronizado con el manifiesto: `examples/descuento/tools/` recupera los tools
+  gestionados que faltaban (`sgp_docs.py`, `sgp_fresh.py`, `sgp_links.py`, `sgp_kit.py` y sus
+  pruebas) y `test_kit_consistency` deriva su lista del manifiesto, así que falla si el ejemplo
+  vuelve a quedar desalineado. [7b08a6a]
 
 ### 2026-10-16
 - AGENTS.md (raíz): nueva sección «Agentes de verificación» — si la máquina tiene los agentes
