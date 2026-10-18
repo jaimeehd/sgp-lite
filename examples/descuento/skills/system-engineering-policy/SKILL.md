@@ -6,7 +6,9 @@ description: "Cargar en TODA tarea de ingeniería: código, depuración, correcc
 # SYSTEM ENGINEERING POLICY v2
 > Evidencia verificable · cambio mínimo · arquitectura deliberada · cero complacencia · cero inferencia sin consulta
 
-Documento único. Índice: §0 prelación y reglas base · §1 modos y arranque · §2 FIX · §3 DOCS · §4 ARQUITECTURA · §5 CONSULTA · §6 prohibiciones · §7 salida rápida · §8 contraste · §9 decisiones deliberadas · §10 dato faltante · §11 confirmación de cambios · §12 sesiones concurrentes · §13 multi-paso · §14 anclaje de proyecto · §15 formato de salida · §16 evidencia verificada.
+**Alcance:** ingeniería de software; la capa de sistemas (§17) aplica solo cuando se cruza la frontera del sistema.
+
+Documento único. Índice: §0 prelación y reglas base · §1 modos y arranque · §2 FIX · §3 DOCS · §4 ARQUITECTURA · §5 CONSULTA · §6 prohibiciones · §7 salida rápida · §8 contraste · §9 decisiones deliberadas · §10 dato faltante · §11 confirmación de cambios · §12 sesiones concurrentes · §13 multi-paso · §14 anclaje de proyecto · §15 formato de salida · §16 evidencia verificada · §17 capa de sistemas (cuando aplica).
 
 ---
 
@@ -82,7 +84,7 @@ MODO: ARQUITECTURA — proyecto nuevo, módulo/subsistema nuevo, rediseño estru
 MODO: DOCS         — edición menor de documentación: README, CHANGELOG, comentarios, docstrings, guía interna
 MODO: CONSULTA     — análisis, comparación, revisión, explicación, investigación o complemento de un tema. SIN ediciones. No requiere proyecto activo salvo lectura de archivos (§14.5).
 ```
-Señales: FIX = tocar comportamiento existente. ARQUITECTURA = diseñar lo que aún no existe. DOCS = cambiar texto documental sin tocar lógica. CONSULTA = el pedido no requiere escribir ni modificar archivos — incluye chat especializado: analizar, consultar, complementar o investigar un tema, con o sin anclaje en un repo.
+Señales: FIX = tocar comportamiento existente. ARQUITECTURA = diseñar lo que aún no existe. DOCS = cambiar texto documental sin tocar lógica. CONSULTA = el pedido no requiere escribir ni modificar archivos — incluye chat especializado: analizar, consultar, complementar o investigar un tema, con o sin anclaje en un repo. ARQUITECTURA incluye la capa de sistemas de §17 cuando se cruza la frontera del sistema.
 
 Tareas mixtas se separan: FIX primero bajo sus reglas; la parte ARQUITECTURA se propone aparte con confirmación explícita. Si CONSULTA revela que hace falta editar, se declara el cambio de modo y se aplican sus reglas desde ese punto — nunca se edita "de paso".
 
@@ -189,6 +191,7 @@ ESTADO: DONE | INCOMPLETE | BLOCKED
 - **Independiente**: sin ver el razonamiento de la implementación: un subagente que recibe solo REQUISITO + diff (o un método distinto del que produjo el resultado). El mismo agente, o un subagente con el contexto completo de la sesión, no cuentan como verificación independiente.
 - **Output real o no existe.** Prohibido transcribir output de comandos no ejecutados en esta sesión (REGLAS DURAS #6). Fallo de entorno (deps, permisos, sin red) = BLOCKED con la razón y lo que se necesitara; no se marca OK "probablemente".
 - **Seguridad en la verificación**: en PRODUCCIÓN la fila de seguridad es obligatoria; "NO APLICA" solo si el diff no introduce dependencias ni toca credenciales, datos o su tratamiento. Si el diff toca datos biométricos (REGLAS DURAS #10), la fila incluye revisión de logs y mensajes de error sin biométricos ni plantillas, y de los datos de prueba (solo sintéticos). Un hallazgo de seguridad no es un OK con matiz: es §8.3.
+- **Capa de sistemas (§17):** si el cambio toca la frontera, una interfaz externa o el comportamiento de extremo a extremo, la verificación incluye §17.3.
 - **Integridad tras transformaciones programáticas** (scripts, regex, sustituciones masivas):
   copia previa o repo limpio; inventario del antes y el después; y comprobación de que **el resto
   del contenido no cambió** — no basta con que lo añadido sea correcto. Un fichero reescrito se
@@ -235,7 +238,7 @@ CONTEXTO DEL PROYECTO
 - Escala esperada: [orden de magnitud]
 - Vida útil esperada: [prototipo descartable / producción / largo plazo]
 ```
-La vida útil gobierna cuánta arquitectura se justifica. No se asume el caso más complejo.
+La vida útil gobierna cuánta arquitectura se justifica. No se asume el caso más complejo. Si el diseño cruza la frontera del sistema, el contexto de §17.1 es la base de este apartado.
 
 ### §4.2 Decisiones con justificación
 ```
@@ -574,3 +577,37 @@ no es alcance; ambos inventarios van en la evidencia.
   con su comando (p. ej., pruebas en verde N, copias conformes X/Y, pendientes 0).
 - "Alcanzado" exige umbral declarado y medición que lo supera; sin umbral → "aproximado",
   nunca "cumplido".
+
+---
+
+## §17. Capa de sistemas (cuando aplica)
+
+Aplica si la tarea cambia la frontera del sistema, una interfaz externa o el comportamiento de extremo a extremo. Un cambio interno de componente no la dispara.
+
+### §17.1 Línea base de sistema (una vez por proyecto)
+
+```
+CONTEXTO DE SISTEMA
+- Frontera: qué incluye y qué no; sistemas y actores externos.
+- Entorno operativo: despliegue, red, energía, condiciones, usuarios.
+- Restricciones duras: normativa, seguridad, interoperabilidad, físicas.
+- Necesidades de los interesados: [cada una con criterio de aceptación]
+```
+
+Se escribe una vez en un único documento canónico del proyecto (por defecto `docs/sistema.md`; si ya existe `.clean/architecture.md`, ese es el canónico y no se duplica), se enlaza desde el `AGENTS.md` del proyecto y lleva marcador de frescura con dueño y fecha (`tools/sgp_fresh.py` si el proyecto lo tiene). Se lee como restricción del proyecto (§9.5); no se rehace por tarea.
+
+### §17.2 Interfaces
+
+```
+INTERFACES
+| Interfaz | Contrato (protocolo/formato/versión) | Timing | Modo de fallo |
+|---|---|---|---|
+```
+
+Una interfaz externa publicada se versiona; cambiarla exige análisis de impacto y confirmación del usuario (§11). Toda interfaz declara su modo de fallo y el estado seguro resultante.
+
+### §17.3 Verificación y validación de sistema
+
+- **Verificación:** ¿se construyó lo especificado? (contra requisitos).
+- **Validación:** ¿resuelve la necesidad declarada en el entorno real? (contra §17.1); en PRODUCCIÓN la acepta el usuario, no el agente.
+- **Integración:** plan con orden y dependencias; prueba de extremo a extremo con entorno representativo; si es simulador, se declara la fidelidad y qué queda sin probar. Evidencia real o no se declara (REGLAS DURAS #6).

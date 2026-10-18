@@ -8,7 +8,7 @@ description: |
   refactor, función o módulo nuevo, elección de stack/patrón, propuesta de arquitectura).
   Si algo aquí contradice la política, manda la política (§0.2).
 metadata:
-  version: 2.4.1
+  version: 2.4.2
   category: engineering-process
 ---
 
@@ -55,6 +55,12 @@ metadata:
 - [ ] Línea base del §4.4 (incluye la doc mínima: README con objetivo/build/test, CHANGELOG y AGENTS.md con los comandos).
 - [ ] VERIFICACIÓN DE DISEÑO (§4.5) y **esperar confirmación** antes de implementar, salvo autorización en el mismo pedido.
 - [ ] Al implementar, cada archivo pasa a las reglas de FIX (§2).
+
+## Capa de sistemas (§17, si aplica)
+- [ ] Disparador: ¿cambia la frontera, una interfaz externa o el comportamiento de extremo a extremo? Si no, no se aplica (§17).
+- [ ] §17.1: línea base de sistema existente y leída (documento canónico único, enlazado desde `AGENTS.md`, con marcador de frescura); si no existe, se crea una vez.
+- [ ] §17.2: interfaces tocadas con contrato, versión y modo de fallo; cambiar una interfaz externa exige impacto + confirmación (§11).
+- [ ] §17.3: verificación y validación; integración con orden; E2E con entorno representativo o fidelidad declarada; evidencia real (REGLAS DURAS #6).
 
 ## MODO CONSULTA (§5)
 - [ ] Sin ediciones: prohibido editar, crear o borrar archivos; si surge una necesidad de edición, se declara el cambio de MODO y se aplican sus reglas desde cero (§5, §1.1).
