@@ -4,11 +4,13 @@
 
 managed tools/sgp_check.py
 managed tools/sgp_docs.py
+managed tools/sgp_fresh.py
 managed tools/sgp_links.py
 managed tools/sync_skills.py
 managed tools/pre-commit
 managed tools/test_sgp_check.py
 managed tools/test_sgp_docs.py
+managed tools/test_sgp_fresh.py
 managed tools/test_sgp_links.py
 managed tools/sgp_kit.py
 managed tools/test_sgp_kit.py

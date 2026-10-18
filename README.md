@@ -1,5 +1,7 @@
 # Del SDLC en cascada al desarrollo continuo con agentes de IA
 
+<!-- freshness: owner=@jaimeehd reviewed=2026-10-18 -->
+
 > Cómo las etapas clásicas del ciclo de vida del software (requerimientos → especificación →
 > etapas → pruebas → despliegue → mantenimiento) se comprimieron en un ciclo continuo por
 > cambio, y qué mecanismos concretos reemplazan a cada etapa cuando quien construye es
@@ -102,7 +104,7 @@ python tools/sgp_check.py --help
 python -m unittest tools/test_sgp_check.py -v   # 32 pruebas del propio verificador
 ```
 
-Guardas opcionales: `python tools/sgp_links.py` (enlaces relativos y anclas; `--strict` para CI).
+Guardas opcionales: `python tools/sgp_links.py` (enlaces relativos y anclas) y `python tools/sgp_fresh.py --require README.md` (frescura con dueño); `--strict` las convierte en fallo para CI.
 
 Para instalar el kit en un repo propio, sigue `kit/LEEME.md`. Si prefieres no usar el instalador,
 descomprime `sgp-lite.zip` en la raíz de tu proyecto (o copia los archivos a mano). El zip se regenera
