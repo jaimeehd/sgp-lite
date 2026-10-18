@@ -38,6 +38,9 @@ Historial de versiones de **sgp-lite** (kit, política de ingeniería y protocol
 - Copias actualizadas a U6: la política añade la capa de sistemas (§17: línea base de sistema,
   interfaces con contrato y modo de fallo, verificación y validación de sistema) y el protocolo
   sube a 2.4.2 con su checklist. [e54f484]
+- Copias actualizadas a U7: la fila de seguridad de §2.4 exige análisis estático de seguridad
+  cuando el stack lo tenga (sin nombrar herramientas; exigible en PRODUCCIÓN cuando exista) y
+  el protocolo sube a 2.4.3. [9202486]
 
 ### 2026-10-16
 - AGENTS.md (raíz): nueva sección «Agentes de verificación» — si la máquina tiene los agentes
