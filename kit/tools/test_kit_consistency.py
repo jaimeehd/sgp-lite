@@ -72,12 +72,12 @@ class EjemploTests(unittest.TestCase):
             )
 
     def test_tools_del_ejemplo_iguales_al_kit(self):
-        """Todo archivo `managed tools/…` del manifiesto debe estar en el ejemplo, sin diferencias
-        más allá del final de línea.
+        """Todo archivo `managed tools/…` del manifiesto debe estar en el ejemplo.
 
         La lista esperada sale del manifiesto, no de un listado del disco; el contenido se
-        compara, archivo por archivo, entre el kit y el ejemplo (con CRLF→LF normalizado): si el
-        kit gana un tool nuevo, esta guarda falla hasta que el ejemplo se resincronice.
+        compara, archivo por archivo, entre el kit y el ejemplo (con CRLF→LF normalizado, igual
+        que el resto del archivo): si el kit gana un tool nuevo, esta guarda falla hasta que el
+        ejemplo se resincronice.
 
         Qué NO comprueba: dentro de `tools/` se ignora todo lo que esté bajo un directorio
         `__pycache__` (no solo los `.pyc`), y cualquier otro archivo presente en `tools/` que no
