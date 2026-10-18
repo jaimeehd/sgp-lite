@@ -25,6 +25,14 @@ Historial de versiones de **sgp-lite** (kit, política de ingeniería y protocol
 - Documentación alineada: README (32 pruebas del verificador), LEEME (auditor y suite completa),
   ejemplo práctico (sin zip inexistente; árbol del ejemplo actual) y `.clean/decisions.md`
   (entradas 2026-10-16 y 2026-10-18). [8020305]
+- Copias actualizadas a la revisión U5 de la política y al protocolo 2.4.1: el barrido de
+  documentación al cerrar queda para FIX y ARQUITECTURA; DOCS usa una comprobación ligera de
+  términos y CONSULTA no edita. [0dd982a, 3520be1]
+- kit 1.7.0: guarda de enlaces relativos y anclas (`tools/sgp_links.py`, aviso; `--strict`
+  para CI). [58e3e8a]
+- kit 1.8.0: guarda de frescura con dueño (`tools/sgp_fresh.py`, aviso o `--strict`); el
+  marcador de frescura se documenta en el propio kit y hay ejemplos aplicados en README y
+  manual de usuario. [ae760fe]
 
 ### 2026-10-16
 - AGENTS.md (raíz): nueva sección «Agentes de verificación» — si la máquina tiene los agentes
