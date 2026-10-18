@@ -72,23 +72,29 @@ class EjemploTests(unittest.TestCase):
             )
 
     def test_tools_del_ejemplo_iguales_al_kit(self):
-        """Todo archivo `managed tools/…` del manifiesto debe estar en el ejemplo, byte a byte.
+        """Todo archivo `managed tools/…` del manifiesto debe estar en el ejemplo, sin diferencias
+        más allá del final de línea.
 
         La lista esperada sale del manifiesto, no de un listado del disco; el contenido se
-        compara, archivo por archivo, entre el kit y el ejemplo (con LF normalizado): si el kit
-        gana un tool nuevo, esta guarda falla hasta que el ejemplo se resincronice.
+        compara, archivo por archivo, entre el kit y el ejemplo (con CRLF→LF normalizado): si el
+        kit gana un tool nuevo, esta guarda falla hasta que el ejemplo se resincronice.
 
-        Qué NO comprueba: se ignora todo lo que esté bajo un directorio `__pycache__` (no solo
-        los `.pyc`), y cualquier otro archivo presente en `tools/` que no esté en el manifiesto
-        cuenta como sobrante y hace fallar la guarda.
+        Qué NO comprueba: dentro de `tools/` se ignora todo lo que esté bajo un directorio
+        `__pycache__` (no solo los `.pyc`), y cualquier otro archivo presente en `tools/` que no
+        esté en el manifiesto cuenta como sobrante y hace fallar la guarda. El filtro mira la
+        ruta relativa a `tools/`, así que la ubicación del clon no influye.
         """
         managed, _ = sgp_kit.load_manifest(KIT)
         esperados = sorted(rel for entry in managed if entry.startswith("tools/")
                            for rel in sgp_kit.expand(KIT, entry))
         self.assertTrue(esperados, "el manifiesto no declara ningún tools/ gestionado")
-        presentes = sorted(p.relative_to(EJEMPLO).as_posix()
-                           for p in (EJEMPLO / "tools").rglob("*")
-                           if p.is_file() and "__pycache__" not in p.parts)
+        base = EJEMPLO / "tools"
+        presentes = []
+        for p in base.rglob("*"):
+            rel = p.relative_to(base)
+            if p.is_file() and "__pycache__" not in rel.parts:
+                presentes.append(f"tools/{rel.as_posix()}")
+        presentes.sort()
         self.assertEqual(esperados, presentes,
                          "examples/descuento/tools/ no tiene exactamente los tools gestionados del kit")
         for rel in esperados:
