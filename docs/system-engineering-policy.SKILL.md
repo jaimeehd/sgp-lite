@@ -180,7 +180,7 @@ VERIFICACIÓN
 |---|---|---|---|
 | build / lint / type-check | `cmd exacto` | OK/FALLA | output real |
 | test / smoke test | `cmd exacto` | OK/FALLA/NO EJECUTADO | output o razón |
-| seguridad (obligatoria en PRODUCCIÓN) | revisión del diff: secretos/credenciales; dependencias nuevas auditadas con el método declarado de la skill `application-security` (catálogo de comandos por stack) | OK/FALLA/NO APLICA | output real del comando de auditoría del stack, o "sin secretos ni dependencias nuevas en el diff" |
+| seguridad (obligatoria en PRODUCCIÓN) | revisión del diff: secretos/credenciales; dependencias nuevas auditadas con el método declarado de la skill `application-security` (catálogo de comandos por stack); análisis estático de seguridad cuando el stack lo tenga | OK/FALLA/NO APLICA | output real del comando de auditoría del stack, o "sin secretos ni dependencias nuevas en el diff" |
 | docs de proyecto | `git diff --name-only HEAD` + revisión manual | OK | [lista de docs actualizadas (README, ARCHITECTURE, DOCUMENTATION, AGENTS.md, CHANGELOG.md, docs/*) o "ninguna afectada"] |
 
 CONSIDERADO Y DESCARTADO: [qué se evaluó y por qué no se hizo; "Ninguno" si no hubo nada]
@@ -190,7 +190,7 @@ ESTADO: DONE | INCOMPLETE | BLOCKED
 ```
 - **Independiente**: sin ver el razonamiento de la implementación: un subagente que recibe solo REQUISITO + diff (o un método distinto del que produjo el resultado). El mismo agente, o un subagente con el contexto completo de la sesión, no cuentan como verificación independiente.
 - **Output real o no existe.** Prohibido transcribir output de comandos no ejecutados en esta sesión (REGLAS DURAS #6). Fallo de entorno (deps, permisos, sin red) = BLOCKED con la razón y lo que se necesitara; no se marca OK "probablemente".
-- **Seguridad en la verificación**: en PRODUCCIÓN la fila de seguridad es obligatoria; "NO APLICA" solo si el diff no introduce dependencias ni toca credenciales, datos o su tratamiento. Si el diff toca datos biométricos (REGLAS DURAS #10), la fila incluye revisión de logs y mensajes de error sin biométricos ni plantillas, y de los datos de prueba (solo sintéticos). Un hallazgo de seguridad no es un OK con matiz: es §8.3.
+- **Seguridad en la verificación**: en PRODUCCIÓN la fila de seguridad es obligatoria; "NO APLICA" solo si el diff no introduce dependencias ni toca credenciales, datos o su tratamiento. Si el stack tiene analizador estático de seguridad declarado (catálogo de la skill `application-security` o del propio proyecto), se ejecuta y se adjunta su salida; en PRODUCCIÓN es exigible cuando exista. Si el diff toca datos biométricos (REGLAS DURAS #10), la fila incluye revisión de logs y mensajes de error sin biométricos ni plantillas, y de los datos de prueba (solo sintéticos). Un hallazgo de seguridad no es un OK con matiz: es §8.3.
 - **Capa de sistemas (§17):** si el cambio toca la frontera, una interfaz externa o el comportamiento de extremo a extremo, la verificación incluye §17.3.
 - **Integridad tras transformaciones programáticas** (scripts, regex, sustituciones masivas):
   copia previa o repo limpio; inventario del antes y el después; y comprobación de que **el resto

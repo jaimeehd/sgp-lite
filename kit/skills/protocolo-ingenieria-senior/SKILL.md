@@ -8,7 +8,7 @@ description: |
   refactor, función o módulo nuevo, elección de stack/patrón, propuesta de arquitectura).
   Si algo aquí contradice la política, manda la política (§0.2).
 metadata:
-  version: 2.4.2
+  version: 2.4.3
   category: engineering-process
 ---
 
@@ -38,7 +38,7 @@ metadata:
 - [ ] Declaración obligatoria: `verificación independiente: EJECUTADA (subagente <id> con solo REQUISITO + diff | método distinto: <comando>) | NO EJECUTADA (motivo)` en PRODUCCIÓN; **NO EJECUTADA ⇒ INCOMPLETE**; en blanco = INCOMPLETE (§2.0, §2.4).
 - [ ] En PRODUCCIÓN: **suite completa si existe** (no un solo test o smoke) + **vuelta atrás declarada** (§11); la independencia no es omisible (§2.0).
 - [ ] Matriz por tier (§2.0): HERRAMIENTA INTERNA = suites de los módulos tocados si existen; SCRIPT DESCARTABLE = ejecución real con caso representativo.
-- [ ] En PRODUCCIÓN, fila de seguridad en VERIFICACIÓN (§2.4): obligatoria; "NO APLICA" solo si el diff no introduce dependencias ni toca credenciales/datos. Dependencias nuevas: auditarlas con el catálogo de `application-security` (§2.4). Si el diff toca datos biométricos: revisión de logs y errores y datos de prueba sintéticos (REGLAS DURAS #10, §2.4).
+- [ ] En PRODUCCIÓN, fila de seguridad en VERIFICACIÓN (§2.4): obligatoria; "NO APLICA" solo si el diff no introduce dependencias ni toca credenciales/datos. Dependencias nuevas: auditarlas con el catálogo de `application-security` (§2.4). Análisis estático de seguridad cuando el stack lo tenga (mismo catálogo); en PRODUCCIÓN es exigible cuando exista. Si el diff toca datos biométricos: revisión de logs y errores y datos de prueba sintéticos (REGLAS DURAS #10, §2.4).
 - [ ] URGENCIA (§2.0.2): solo si la pide el usuario; relaja formato, nunca núcleo; caduca con evidencia reconstruida, causa raíz como tarea nueva y postmortem.
 - [ ] `CONSIDERADO Y DESCARTADO` explícito + ESTADO (§2.4).
 
