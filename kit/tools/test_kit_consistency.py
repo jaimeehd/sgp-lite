@@ -74,8 +74,13 @@ class EjemploTests(unittest.TestCase):
     def test_tools_del_ejemplo_iguales_al_kit(self):
         """Todo archivo `managed tools/…` del manifiesto debe estar en el ejemplo, byte a byte.
 
-        La lista se deriva del manifiesto, no de nombres fijos: si el kit gana un tool nuevo,
-        esta guarda falla hasta que el ejemplo se resincronice.
+        La lista esperada sale del manifiesto, no de un listado del disco; el contenido se
+        compara, archivo por archivo, entre el kit y el ejemplo (con LF normalizado): si el kit
+        gana un tool nuevo, esta guarda falla hasta que el ejemplo se resincronice.
+
+        Qué NO comprueba: se ignora todo lo que esté bajo un directorio `__pycache__` (no solo
+        los `.pyc`), y cualquier otro archivo presente en `tools/` que no esté en el manifiesto
+        cuenta como sobrante y hace fallar la guarda.
         """
         managed, _ = sgp_kit.load_manifest(KIT)
         esperados = sorted(rel for entry in managed if entry.startswith("tools/")
