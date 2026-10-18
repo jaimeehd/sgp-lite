@@ -33,6 +33,8 @@ Historial de versiones de **sgp-lite** (kit, política de ingeniería y protocol
 - kit 1.8.0: guarda de frescura con dueño (`tools/sgp_fresh.py`, aviso o `--strict`); el
   marcador de frescura se documenta en el propio kit y hay ejemplos aplicados en README y
   manual de usuario. [ae760fe]
+- kit 1.8.0: la plantilla `AGENTS.md` ejecuta el auditor de documentación solo en tareas con
+  código (FIX/ARQUITECTURA); en tareas solo documentales no se ejecuta. [8f1c9ed]
 
 ### 2026-10-16
 - AGENTS.md (raíz): nueva sección «Agentes de verificación» — si la máquina tiene los agentes
