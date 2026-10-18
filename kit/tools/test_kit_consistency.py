@@ -72,12 +72,24 @@ class EjemploTests(unittest.TestCase):
             )
 
     def test_tools_del_ejemplo_iguales_al_kit(self):
-        for rel in ("sgp_check.py", "sync_skills.py"):
-            self.assertEqual(
-                normalizado((KIT / "tools" / rel).read_bytes()),
-                normalizado((EJEMPLO / "tools" / rel).read_bytes()),
-                f"examples/descuento/tools/{rel} difiere del kit",
-            )
+        """Todo archivo `managed tools/…` del manifiesto debe estar en el ejemplo, byte a byte.
+
+        La lista se deriva del manifiesto, no de nombres fijos: si el kit gana un tool nuevo,
+        esta guarda falla hasta que el ejemplo se resincronice.
+        """
+        managed, _ = sgp_kit.load_manifest(KIT)
+        esperados = sorted(rel for entry in managed if entry.startswith("tools/")
+                           for rel in sgp_kit.expand(KIT, entry))
+        self.assertTrue(esperados, "el manifiesto no declara ningún tools/ gestionado")
+        presentes = sorted(p.relative_to(EJEMPLO).as_posix()
+                           for p in (EJEMPLO / "tools").rglob("*")
+                           if p.is_file() and "__pycache__" not in p.parts)
+        self.assertEqual(esperados, presentes,
+                         "examples/descuento/tools/ no tiene exactamente los tools gestionados del kit")
+        for rel in esperados:
+            self.assertEqual(normalizado((KIT / rel).read_bytes()),
+                             normalizado((EJEMPLO / rel).read_bytes()),
+                             f"examples/descuento/{rel} difiere del kit")
 
     def test_agents_del_ejemplo_lista_las_skills_del_kit(self):
         texto = (EJEMPLO / "AGENTS.md").read_text(encoding="utf-8")
