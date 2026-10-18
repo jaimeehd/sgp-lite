@@ -99,7 +99,7 @@ el kit define por sí solo.
 ```bash
 cd kit
 python tools/sgp_check.py --help
-python -m unittest tools/test_sgp_check.py -v   # 29 pruebas del propio verificador
+python -m unittest tools/test_sgp_check.py -v   # 32 pruebas del propio verificador
 ```
 
 Para instalar el kit en un repo propio, sigue `kit/LEEME.md`. Si prefieres no usar el instalador,

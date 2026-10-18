@@ -47,8 +47,10 @@ Si tu sistema usa `python3` en vez de `python`, ajusta el comando o `examples/de
 
 ```bash
 python -m unittest tools/test_sgp_check.py -v     # pruebas del verificador
+python -m unittest tools/test_sgp_docs.py -v      # pruebas del auditor de documentación
 python -m unittest tools/test_sgp_kit.py -v       # pruebas del instalador/actualizador
 python -m unittest tools/test_sgp_zip.py -v       # pruebas del generador del zip
+python -m unittest discover -s tools -p "test_*.py" -v   # suite completa (incluye las guardas del repositorio del kit)
 ```
 
 ## Contenido
@@ -57,8 +59,9 @@ python -m unittest tools/test_sgp_zip.py -v       # pruebas del generador del zi
 VERSION  sgp-kit.manifest
 docs/constitution.md   docs/adr/_plantilla.md   specs/_plantilla-dominio/spec.md
 changes/_plantilla.md  AGENTS.md  CLAUDE.md  sgp.yaml  prompts.md  METODOLOGIA.md  ADOPCION.md
-tools/sgp_check.py  tools/pre-commit  tools/sync_skills.py  tools/test_sgp_check.py
-tools/sgp_kit.py  tools/test_sgp_kit.py  tools/sgp_zip.py  tools/test_sgp_zip.py
+tools/sgp_check.py  tools/sgp_docs.py  tools/pre-commit  tools/sync_skills.py
+tools/test_sgp_check.py  tools/test_sgp_docs.py  tools/test_sgp_kit.py
+tools/sgp_kit.py  tools/sgp_zip.py  tools/test_sgp_zip.py
 skills/sgp-documento-requerimientos  skills/sgp-especificar  skills/sgp-qa-spec  skills/sgp-planificar-cambio  skills/sgp-ejecutar-tarea  skills/sgp-validar-cerrar
 skills/system-engineering-policy  skills/protocolo-ingenieria-senior
 ```

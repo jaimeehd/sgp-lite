@@ -2,18 +2,18 @@
 
 Un proyecto real, chico, ejecutado con la metodología completa: constitución → spec → QA → cambio → tareas → validación → cierre, más un bugfix en carril `rapido` y una demostración en vivo del ratchet de pruebas. Cada bloque de código de abajo es la **salida real** de correr los comandos, no una simulación redactada — incluye un error genuino que cometí a mitad de camino y cómo el propio verificador lo detectó.
 
-**El proyecto:** una función que calcula el precio final con descuento para la librería, algo que podrías usar de verdad en `BookStore`. Repo completo (con historial de git) en `demo-descuento.zip`.
+**El proyecto:** una función que calcula el precio final con descuento para la librería, algo que podrías usar de verdad en `BookStore`. El proyecto completo y ejecutable vive en `examples/descuento/` de este mismo repositorio.
 
 ---
 
 ## 0. Instalar el kit
 
 ```text
-demo-descuento/
+examples/descuento/
 ├── AGENTS.md  CLAUDE.md  sgp.yaml
 ├── docs/constitution.md  docs/adr/_plantilla.md
 ├── specs/  changes/_plantilla.md
-├── skills/sgp-{especificar,qa-spec,planificar-cambio,ejecutar-tarea,validar-cerrar}/SKILL.md
+├── skills/sgp-{especificar,qa-spec,planificar-cambio,ejecutar-tarea,validar-cerrar}/SKILL.md  skills/{system-engineering-policy,protocolo-ingenieria-senior}/SKILL.md
 └── tools/sgp_check.py  tools/sync_skills.py  tools/pre-commit
 ```
 

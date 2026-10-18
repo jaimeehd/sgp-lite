@@ -142,3 +142,40 @@ decisión, razones (sin reinterpretar) y consecuencias. Nada aquí se toca "de p
      y `test_kit_consistency` (`kit/` ↔ `examples/descuento/` ↔ zip).
   3. Las actualizaciones del proyecto se propagan con `sgp_kit update` + `sync_skills.py`, sin asumir
      autoridad sobre la configuración global del equipo.
+
+## 2026-10-16 — Separación global ↔ proyecto: el repo deja de sincronizarse con la configuración global del equipo
+
+- **Contexto**: la decisión 2026-10-11 independizó las capas, pero la plantilla del kit y varios
+  ficheros citaban una cadena de sincronía con la configuración global del equipo. El 2026-10-16
+  esa configuración retiró sus pasos de propagación y fijó que cada capa es autónoma, con su
+  propia política.
+- **Decisión**: el repositorio es fuente solo de sus propias copias (`docs/` → `kit/skills/` →
+  `examples/descuento/skills/` → `sgp-lite.zip`). Si la política global del equipo no es la que
+  este proyecto requiere, no está completa o estas copias son mejores, rigen las reglas y copias
+  del proyecto (citándolas); la global no se impone. Excepción única: la seguridad nunca se
+  relaja. `test_policy_sync` deja de comparar con la configuración global y verifica solo la
+  sincronía interna del repo.
+- **Razones**: el proyecto debe instalarse en equipos sin las políticas globales sin depender de
+  su ubicación; la configuración del equipo no debe quedar atada al proyecto, y viceversa.
+- **Consecuencias**:
+  1. Las referencias a la «precedencia 2026-10-16» de `AGENTS.md`, `kit/AGENTS.md` y el
+     `CHANGELOG` apuntan a esta decisión, registrada aquí.
+  2. No hay propagación automática desde la configuración global: las copias del repo se
+     actualizan por revisión deliberada del autor, con verificación por diff.
+  3. La consistencia interna la cubren `test_policy_sync` y `test_kit_consistency`.
+
+## 2026-10-18 — Copias de la política y del protocolo refrescadas desde la global (mantenimiento puntual)
+
+- **Contexto**: las copias del repo eran del 2026-10-15 y la configuración global del equipo había
+  seguido evolucionando: 31 líneas de diferencia en la política y 32 en el protocolo (contadas por
+  diff, con finales de línea normalizados). Al ser capas independientes no había regla de
+  caducidad; la seguridad ya quedaba cubierta por la excepción (la global nunca se relaja), pero
+  quien leyera solo el kit veía reglas desactualizadas.
+- **Decisión**: el autor decide refrescar las copias del repo con la versión global vigente, por la
+  cadena interna (`docs/` → `kit/skills/` → `examples/` → zip), como mantenimiento puntual. No se
+  establece sincronía permanente ni automática.
+- **Razones**: decisión del autor; los lectores del kit no deben leer reglas desactualizadas.
+- **Consecuencias**:
+  1. Misma versión en las cuatro copias internas y en el zip, verificada por las guardas.
+  2. Futuros refrescos: diff global vs copia → edición → suite del kit → commit.
+  3. La independencia de capas no cambia: la global sigue siendo la del equipo.
