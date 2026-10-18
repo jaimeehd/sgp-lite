@@ -11,7 +11,20 @@ Historial de versiones de **sgp-lite** (kit, política de ingeniería y protocol
 - La línea del kit posterior a `v1.5.0` avanza como `kit 1.6.x` en los mensajes de commit; la
   versión vigente vive en `kit/VERSION`.
 
-## Sin publicar — `master` tras v1.5.0 (2026-10-11 → 2026-10-16)
+## Sin publicar — `master` tras v1.5.0 (2026-10-11 → 2026-10-18)
+
+### 2026-10-18
+- kit 1.6.17: auditor de documentación `tools/sgp_docs.py` (solo lectura, solo stdlib) — con git
+  detecta los cambios de la tarea y sus menciones en la documentación, con `archivo:línea` y
+  etiqueta VIGENTE/HISTORIA/GUÍA, y deja la plantilla de la tabla de cierre; el cierre de la
+  plantilla `AGENTS.md` y de las skills `sgp-ejecutar-tarea`/`sgp-validar-cerrar` lo ejecuta y
+  menciona al agente `docs-syncer` cuando está instalado. [31549e5]
+- Copias de la política y del protocolo refrescadas desde la configuración global vigente
+  (protocolo 2.4.0: los 4 modos); misma versión en `docs/`, `kit/skills/`, el ejemplo y el zip;
+  la independencia de capas no cambia. [fe139b3]
+- Documentación alineada: README (32 pruebas del verificador), LEEME (auditor y suite completa),
+  ejemplo práctico (sin zip inexistente; árbol del ejemplo actual) y `.clean/decisions.md`
+  (entradas 2026-10-16 y 2026-10-18). [8020305]
 
 ### 2026-10-16
 - AGENTS.md (raíz): nueva sección «Agentes de verificación» — si la máquina tiene los agentes
