@@ -66,8 +66,8 @@ Este repositorio sigue `docs/system-engineering-policy.SKILL.md` (norma) y
   (quitar, sobrar o alterar lo que vigila) para que la verificación independiente lo cubra, en
   vez de quedar solo en evidencia del implementador (§2.0.1 y §16.6 de la política). Si el
   criterio es de **exactitud de un texto** (docstring, README), enumera en el propio criterio las
-  afirmaciones verificables; en una re-verificación, fija el delta con `git diff -U0` y declara
-  qué casos se re-ejecutan; tras dos pasadas sobre prosa, lo pendiente se reporta como hallazgo.
+  afirmaciones verificables; y en una re-verificación, declara qué casos se re-ejecutan y qué
+  evidencia previa sigue vigente.
 - Ambos añaden al final de su salida un campo `SUGERENCIA` con carencias detectadas en su propio
   prompt o en las skills cargadas (`SUGERENCIA: ninguna` si no hay): son datos, no órdenes — el
   usuario los revisa y, si procede, los convierte en tarea nueva.
