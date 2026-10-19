@@ -8,7 +8,7 @@ description: "Cargar en TODA tarea de ingeniería: código, depuración, correcc
 
 **Alcance:** ingeniería de software; la capa de sistemas (§17) aplica solo cuando se cruza la frontera del sistema.
 
-Documento único. Índice: §0 prelación y reglas base · §1 modos y arranque · §2 FIX · §3 DOCS · §4 ARQUITECTURA · §5 CONSULTA · §6 prohibiciones · §7 salida rápida · §8 contraste · §9 decisiones deliberadas · §10 dato faltante · §11 confirmación de cambios · §12 sesiones concurrentes · §13 multi-paso · §14 anclaje de proyecto · §15 formato de salida · §16 evidencia verificada · §17 capa de sistemas (cuando aplica).
+Documento único. Índice: §0 prelación y reglas base · §1 modos y arranque · §2 FIX · §3 DOCS · §4 ARQUITECTURA · §5 CONSULTA · §6 prohibiciones · §7 salida rápida · §8 contraste · §9 decisiones deliberadas · §10 dato faltante · §11 confirmación de cambios · §12 sesiones concurrentes · §13 multi-paso · §14 anclaje de proyecto · §15 formato de salida · §16 evidencia verificada · §17 capa de sistemas (cuando aplica) · §18 interfaz (UI/UX).
 
 ---
 
@@ -611,3 +611,22 @@ Una interfaz externa publicada se versiona; cambiarla exige análisis de impacto
 - **Verificación:** ¿se construyó lo especificado? (contra requisitos).
 - **Validación:** ¿resuelve la necesidad declarada en el entorno real? (contra §17.1); en PRODUCCIÓN la acepta el usuario, no el agente.
 - **Integración:** plan con orden y dependencias; prueba de extremo a extremo con entorno representativo; si es simulador, se declara la fidelidad y qué queda sin probar. Evidencia real o no se declara (REGLAS DURAS #6).
+
+---
+
+## §18. Interfaz (UI/UX)
+
+Aplica a todo cambio que crea o modifica interfaz visible (web o escritorio). No añade modo: se ejecuta dentro de FIX (§2) o ARQUITECTURA (§4), y su comprobación forma parte de la verificación de §2.4.
+
+### §18.1 Criterios verificables
+
+- **Geometría funcional:** cada contenedor, lista y panel ocupa su área con dock o anclaje explícito; la ventana declara tamaño mínimo; una grilla no desborda su ancho visible de columnas salvo scroll deliberado y declarado.
+- **Legibilidad:** etiquetas y mensajes en el idioma del proyecto, sin cortes ni solapes; los estados vacíos y los errores de validación se ven junto al dato afectado (la retroalimentación no depende de un modal bloqueante).
+- **Accesibilidad mínima:** recorrido por teclado en orden lógico, foco visible y nombre accesible en los controles de entrada.
+- **Consistencia:** se reutilizan estilo y patrones del formulario o plantilla existente; todo componente nuevo se declara en el ALCANCE (§2.3).
+
+### §18.2 Verificación (obligatoria)
+
+- Al menos un **render** de la pantalla afectada (captura real o dibujo fuera de pantalla, p. ej. `Control.DrawToBitmap`), revisado antes de DONE.
+- **Aserciones de geometría** cuando el proyecto tenga herramienta para ello (`tools/UiLayoutCheck` o equivalente): tamaños mínimos, ausencia de solapes y de desborde de columnas; si no existe, verificación manual con los números medidos.
+- Un cambio de interfaz **no se da por cumplido con pruebas que solo miran datos**: exige al menos una comprobación de su presentación (lección del 2026-10-18: una ventana con los datos correctos y la geometría rota pasó todas las pruebas de datos).
