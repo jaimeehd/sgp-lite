@@ -11,7 +11,15 @@ Historial de versiones de **sgp-lite** (kit, política de ingeniería y protocol
 - La línea del kit posterior a `v1.5.0` avanza como `kit 1.6.x` en los mensajes de commit; la
   versión vigente vive en `kit/VERSION`.
 
-## Sin publicar — `master` tras v1.5.0 (2026-10-11 → 2026-10-18)
+## Sin publicar — `master` tras v1.5.0 (2026-10-11 → 2026-10-19)
+
+### 2026-10-19
+- Copias de la política refrescadas a U8: **§18 Interfaz (UI/UX)** —criterios verificables y
+  verificación obligatoria (render revisado y aserciones de geometría)— en `docs/`, `kit/skills/`,
+  el ejemplo y el zip. El bloque de §18 del runbook queda pendiente: debe nacer en la capa de la
+  config, que es donde vive el runbook. README: árbol de `tools/` completo (faltaban `sgp_docs.py`,
+  `sgp_fresh.py`, `sgp_links.py` y las pruebas; el auditor no aparecía en el README) y ejemplo
+  práctico con la cifra del verificador corregida (29 → 32). [36fb9ae]
 
 ### 2026-10-18
 - kit 1.6.17: auditor de documentación `tools/sgp_docs.py` (solo lectura, solo stdlib) — con git
