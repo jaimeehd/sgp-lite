@@ -20,6 +20,10 @@ Historial de versiones de **sgp-lite** (kit, política de ingeniería y protocol
   config, que es donde vive el runbook. README: árbol de `tools/` completo (faltaban `sgp_docs.py`,
   `sgp_fresh.py`, `sgp_links.py` y las pruebas; el auditor no aparecía en el README) y ejemplo
   práctico con la cifra del verificador corregida (29 → 32). [36fb9ae]
+- Runbook 2.4.4: bloque de interfaz (UI/UX) que cita §18 (disparador, criterios verificables de
+  §18.1 y verificación obligatoria de §18.2), nacido en la capa de la config y propagado a las tres
+  copias del repo (`docs/`, `kit/skills/`, `examples/descuento/skills/`) y al zip. Cierra el
+  pendiente de §18 en el runbook.
 
 ### 2026-10-18
 - kit 1.6.17: auditor de documentación `tools/sgp_docs.py` (solo lectura, solo stdlib) — con git

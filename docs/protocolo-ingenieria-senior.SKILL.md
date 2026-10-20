@@ -8,7 +8,7 @@ description: |
   refactor, función o módulo nuevo, elección de stack/patrón, propuesta de arquitectura).
   Si algo aquí contradice la política, manda la política (§0.2).
 metadata:
-  version: 2.4.3
+  version: 2.4.4
   category: engineering-process
 ---
 
@@ -61,6 +61,12 @@ metadata:
 - [ ] §17.1: línea base de sistema existente y leída (documento canónico único, enlazado desde `AGENTS.md`, con marcador de frescura); si no existe, se crea una vez.
 - [ ] §17.2: interfaces tocadas con contrato, versión y modo de fallo; cambiar una interfaz externa exige impacto + confirmación (§11).
 - [ ] §17.3: verificación y validación; integración con orden; E2E con entorno representativo o fidelidad declarada; evidencia real (REGLAS DURAS #6).
+
+## Interfaz (UI/UX) (§18, si aplica)
+- [ ] Disparador: ¿el cambio crea o modifica interfaz visible (web o escritorio)? No añade modo: su comprobación va dentro de FIX (§2) o ARQUITECTURA (§4) (§18).
+- [ ] §18.1: geometría funcional (anclaje explícito, tamaño mínimo de la ventana, sin desborde de columnas), legibilidad (idioma del proyecto, sin cortes ni solapes, retroalimentación junto al dato afectado), accesibilidad mínima (recorrido por teclado, foco visible, nombre accesible) y consistencia (reutilizar el estilo y los patrones existentes; componentes nuevos declarados en el ALCANCE, §2.3).
+- [ ] §18.2: al menos un render real de la pantalla afectada revisado antes de DONE (captura o dibujo fuera de pantalla) y aserciones de geometría con la herramienta del proyecto (`tools/UiLayoutCheck` o equivalente); si no hay herramienta, verificación manual con los números medidos.
+- [ ] Un cambio de interfaz no se da por cumplido con pruebas que solo miran los datos: exige al menos una comprobación de su presentación (§18.2).
 
 ## MODO CONSULTA (§5)
 - [ ] Sin ediciones: prohibido editar, crear o borrar archivos; si surge una necesidad de edición, se declara el cambio de MODO y se aplican sus reglas desde cero (§5, §1.1).
