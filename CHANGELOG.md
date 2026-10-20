@@ -25,7 +25,10 @@ Historial de versiones de **sgp-lite** (kit, política de ingeniería y protocol
   recorre el árbol. `ls-files` se invoca con `-z`: sin él, git entrecomilla en octal las rutas con
   caracteres no ASCII y esos ficheros versionados se salían del universo en silencio, sin detectar
   sus enlaces rotos (caso cubierto por una prueba con `Índice.md` y `carpeta ñ/guía.md`, que falla
-  con la variante sin `-z`). 17 pruebas en el fichero. Propagado al ejemplo y al zip.
+  con la variante sin `-z`). La exclusión de directorios ignorados se evalúa sobre la ruta
+  **relativa** al proyecto revisado: antes se comparaba con la ruta absoluta y un proyecto que
+  viviera bajo un directorio llamado `venv` (por ejemplo `.../venv/mi-proyecto`) dejo de revisarse
+  entero. 18 pruebas en el fichero. Propagado al ejemplo y al zip.
 
 ### 2026-10-19
 - Copias de la política refrescadas a U8: **§18 Interfaz (UI/UX)** —criterios verificables y

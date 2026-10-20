@@ -158,6 +158,17 @@ class GitignoreTests(unittest.TestCase):
         self.assertEqual(sorted(h[0] for h in hallazgos),
                          ["carpeta ñ/guía.md", "Índice.md"])
 
+    def test_revisa_el_proyecto_bajo_un_directorio_venv(self):
+        """La exclusión de directorios es relativa al root.
+
+        Si el proyecto vive bajo un directorio llamado `venv` (por ejemplo
+        `.../venv/mi-proyecto`), sus .md se revisan igual: solo se descarta
+        un `venv/` DENTRO del proyecto.
+        """
+        padre = self.base / "venv" / "mi-proyecto"
+        escribir(padre, "README.md", "[x](no-existe.md)\n")
+        self.assertEqual(len(sgp_links.revisar(padre)), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

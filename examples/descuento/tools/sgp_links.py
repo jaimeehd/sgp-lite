@@ -64,8 +64,12 @@ def _archivos_md(root):
         candidatos = [root / r for r in rutas if (root / r).is_file()]
     else:
         candidatos = sorted(root.rglob("*" + EXT))
+    # La exclusión se evalúa sobre la ruta RELATIVA al root: así se descarta
+    # un `venv/` dentro del proyecto sin descartar el proyecto entero cuando
+    # vive bajo un directorio padre que se llama `venv`.
     return [p for p in candidatos
-            if not any(parte in DIRS_IGNORADOS for parte in p.parts)]
+            if not any(parte in DIRS_IGNORADOS
+                       for parte in p.relative_to(root).parts)]
 
 
 def _slug(texto):
