@@ -11,7 +11,21 @@ Historial de versiones de **sgp-lite** (kit, política de ingeniería y protocol
 - La línea del kit posterior a `v1.5.0` avanza como `kit 1.6.x` en los mensajes de commit; la
   versión vigente vive en `kit/VERSION`.
 
-## Sin publicar — `master` tras v1.5.0 (2026-10-11 → 2026-10-19)
+## Sin publicar — `master` tras v1.5.0 (2026-10-11 → 2026-10-20)
+
+### 2026-10-20
+- kit 1.8.1: la guarda de enlaces `sgp_links.py` revisa **el universo que git considera del
+  proyecto** (`git ls-files`, incluidos los no seguidos y excluyendo lo que marca el `.gitignore`),
+  como ya hacía el auditor `sgp_docs.py`; sin git, sigue recorriendo el árbol. Se descartan además
+  los directorios de `DIRS_IGNORADOS` (`venv` incluido). Con esto dejan de aparecer avisos sobre
+  ficheros de terceros en `venv/` y sobre ficheros locales no versionados. En la misma versión,
+  `test_sgp_links.py` recuprea el bloque `unittest.main()` que le faltaba: el hook del repo ejecuta
+  cada prueba del kit por separado y ese comando salía con 0 sin correr nada (falso verde). Pruebas
+  nuevas: lo ignorado por git no se revisa, lo no seguido sí, `venv/` se descarta y sin git se
+  recorre el árbol. `ls-files` se invoca con `-z`: sin él, git entrecomilla en octal las rutas con
+  caracteres no ASCII y esos ficheros versionados se salían del universo en silencio, sin detectar
+  sus enlaces rotos (caso cubierto por una prueba con `Índice.md` y `carpeta ñ/guía.md`, que falla
+  con la variante sin `-z`). 17 pruebas en el fichero. Propagado al ejemplo y al zip.
 
 ### 2026-10-19
 - Copias de la política refrescadas a U8: **§18 Interfaz (UI/UX)** —criterios verificables y

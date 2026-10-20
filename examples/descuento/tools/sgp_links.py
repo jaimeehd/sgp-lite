@@ -13,19 +13,59 @@ No edita nada. Aviso por defecto; `--strict` devuelve 1 si hay hallazgos (para C
 Solo librería estándar (Python 3.8+). Los enlaces externos no se comprueban: para
 eso usa una herramienta de CI (p. ej. lychee).
 
+El universo de ficheros es el que git considera del proyecto: `git ls-files`
+(seguidos y no seguidos) respeta el `.gitignore`, así que `venv/`, `dist/` o un
+fichero local de pruebas no generan avisos. Sin git, se recorre el árbol como
+antes, menos los directorios de `DIRS_IGNORADOS`.
+
     python tools/sgp_links.py
     python tools/sgp_links.py --root . --strict
 """
 import argparse
 import re
+import subprocess
 from pathlib import Path
 from urllib.parse import unquote
 
-DIRS_IGNORADOS = {".git", "node_modules", ".venv", "__pycache__", ".sgp-kit-backup"}
+DIRS_IGNORADOS = {".git", "node_modules", ".venv", "venv", "__pycache__", ".sgp-kit-backup"}
 EXT = ".md"
 PATRON_ENLACE = re.compile(r"!?\[[^\]]*\]\(\s*([^)\s]+)(?:\s+[\"'][^\"']*[\"'])?\s*\)")
 PATRON_CODIGO = re.compile(r"`[^`]*`")
 PATRON_ENCABEZADO = re.compile(r"^(#{1,6})\s+(.+?)\s*#*\s*$")
+
+
+def _ejecutar_git(root, *args):
+    """Ejecuta git de solo lectura; devuelve stdout o None si git falla."""
+    try:
+        r = subprocess.run(["git", "-C", str(root)] + list(args),
+                           capture_output=True, text=True,
+                           encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+    return r.stdout if r.returncode == 0 else None
+
+
+def _archivos_md(root):
+    """Ficheros .md del proyecto.
+
+    Con git: los que git conoce (seguidos y no seguidos, excluyendo lo que el
+    `.gitignore` marca), de modo que lo ignorado no se revisa. Sin git: el
+    árbol entero. En ambos casos se descartan los directorios de
+    `DIRS_IGNORADOS` (por ejemplo un `venv/` que git no llega a ignorar).
+
+    `ls-files` se invoca con `-z` porque, sin él, git entrecomilla las rutas
+    con caracteres no ASCII (en octal) y esos ficheros se quedarían fuera del
+    universo sin avisar.
+    """
+    if _ejecutar_git(root, "rev-parse", "--is-inside-work-tree") is not None:
+        salida = _ejecutar_git(root, "ls-files", "-z", "--cached", "--others",
+                               "--exclude-standard", "--", "*" + EXT) or ""
+        rutas = [r for r in salida.split("\0") if r]
+        candidatos = [root / r for r in rutas if (root / r).is_file()]
+    else:
+        candidatos = sorted(root.rglob("*" + EXT))
+    return [p for p in candidatos
+            if not any(parte in DIRS_IGNORADOS for parte in p.parts)]
 
 
 def _slug(texto):
@@ -66,9 +106,7 @@ def revisar(root):
     """Devuelve [(archivo, linea, mensaje)] con los enlaces rotos encontrados."""
     root = Path(root)
     hallazgos = []
-    for archivo in sorted(root.rglob("*" + EXT)):
-        if any(parte in DIRS_IGNORADOS for parte in archivo.parts):
-            continue
+    for archivo in _archivos_md(root):
         rel = archivo.relative_to(root).as_posix()
         try:
             lineas = archivo.read_text(encoding="utf-8", errors="replace").splitlines()
