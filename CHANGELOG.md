@@ -53,6 +53,15 @@ Historial de versiones de **sgp-lite** (kit, política de ingeniería y protocol
   Al actualizar desde ≤1.9.0: revisa los cambios `hecho` históricos (si les falta la sección de
   criterios o tienen criterios abiertos, marca `[x]` lo que ya se cumplió; no reabras un cambio
   histórico solo por esto).
+- kit 1.10.1: **robustez de los hooks y del arnés**. El hook `tools/commit-msg` comprueba que el
+  verificador instalado soporte `--commit-msg` y, si es viejo, falla cerrado con «actualiza
+  tools/ del kit» (antes: `unrecognized arguments`). El ratchet cuenta los **binarios vigilados**
+  (`--numstat` da `-\t-`): modificar o borrar uno existente bloquea, darlo de alta no. El arnés de
+  pruebas fija salida UTF-8 y decodifica UTF-8: con `PYTHONIOENCODING` exportado la suite daba
+  falsos rojos por mojibake y ahora pasa en ambos entornos. `SECURITY.md` declara que el sello es
+  **evidencia, no control** (`git commit --no-verify` omite los hooks) y el `--help` de
+  `--commit-msg` aclara que es uso interno del hook. 3 pruebas nuevas (69 en
+  `test_sgp_check.py`). Propagado al ejemplo y al zip.
 
 ### 2026-10-20
 - kit 1.8.1: la guarda de enlaces `sgp_links.py` revisa **el universo que git considera del

@@ -376,6 +376,14 @@ def _universo_versionado(root, env):
     return rutas
 
 
+def _rutas_head(root, env):
+    """Rutas del árbol de HEAD: un binario borrado o modificado no aparece como líneas en
+    `--numstat`, hay que saber si ya existía para no confundir un alta con una retirada."""
+    p = subprocess.run(["git", "ls-tree", "-r", "-z", "--name-only", "HEAD"], cwd=root,
+                       capture_output=True, text=True, encoding="utf-8", errors="replace", env=env)
+    return set(f for f in p.stdout.split("\0") if f) if p.returncode == 0 else set()
+
+
 def ratchet(root, cfg):
     """Devuelve (rc, detalle): el detalle alimenta el sello del commit-msg. Si no hay
     pruebas vigiladas NO se calla: avisa y lo deja escrito en el sello (nunca verde silencioso)."""
@@ -389,6 +397,7 @@ def ratchet(root, cfg):
         print("[ERROR] ratchet: no se pudo ejecutar git; no se puede verificar el staged (falla cerrado).")
         return 1, "sin-git"
     vigilados = [f for f in universo if any(_cubierto(f, p) for p in patrones)]
+    en_head = _rutas_head(root, env)
     if not vigilados:
         print(f"[AVISO] ratchet: nada que vigilar; ningún fichero versionado sigue la ruta "
               f"'{', '.join(patrones)}'.")
@@ -412,15 +421,21 @@ def ratchet(root, cfg):
             i += 3
             if not any(_cubierto(vieja, q) for q in patrones):
                 continue                           # no era una prueba vigilada
-            borradas = int(p[1]) if p[1].isdigit() else 0
+            borradas = int(p[1]) if p[1].isdigit() else (1 if p[1] == "-" else 0)
             if borradas > 0:
                 bad.append((f"{vieja} (renombrada y modificada)", borradas))
             elif not any(_cubierto(nueva, q) for q in patrones):
                 bad.append((f"{vieja} -> {nueva} (fuera de la ruta vigilada)", 0))
             continue
         i += 1
-        if len(p) == 3 and p[1].isdigit() and int(p[1]) > 0 and any(_cubierto(p[2], q) for q in patrones):
+        if len(p) != 3:
+            continue
+        cubierto = any(_cubierto(p[2], q) for q in patrones)
+        if p[1].isdigit() and int(p[1]) > 0 and cubierto:
             bad.append((p[2], int(p[1])))
+        elif p[1] == "-" and cubierto and p[2] in en_head:
+            # binario vigilado modificado o borrado: no hay líneas que contar (un alta no cuenta)
+            bad.append((f"{p[2]} (binario vigilado modificado o borrado)", 0))
     if not bad:
         return 0, "0 bloq"
     print(f"[ERROR] ratchet de pruebas: el commit elimina o modifica líneas existentes en "
@@ -578,7 +593,7 @@ def main():
     ap.add_argument("--run", action="store_true", help="ejecuta build/tests/lint de sgp.yaml")
     ap.add_argument("--ratchet", action="store_true")
     ap.add_argument("--commit-msg", metavar="FICHERO", dest="commit_msg",
-                    help="valida y sella el mensaje de commit (hook commit-msg)")
+                    help="valida y sella el mensaje de commit (uso interno del hook: Git pasa .git/COMMIT_EDITMSG)")
     ap.add_argument("--nuevo", metavar="NOMBRE")
     ap.add_argument("--today", help="AAAA-MM-DD (pruebas)")
     ap.add_argument("--version", action="store_true", help="muestra la versión del kit y sale")

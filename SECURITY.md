@@ -12,5 +12,6 @@ Este kit ejecuta comandos que declares en `sgp.yaml` usando `shell=True`
 Consecuencias:
 
 - No instales ni ejecutes el kit sobre un repositorio cuyo `sgp.yaml` o `tools/` no hayas revisado.
+- El sello `Gate:` que añade el hook `commit-msg` es **evidencia, no control**: `git commit --no-verify` omite ambos hooks y el mensaje se puede editar después. Sirve para auditar qué puertas pasaron en ese commit, no para impedir un bypass.
 - El kit asume que el repositorio donde vive es de confianza; no es un sandbox.
 - No incluyas secretos en `sgp.yaml`, `specs/`, `changes/` ni en la salida de los sensores.

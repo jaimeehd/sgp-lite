@@ -35,9 +35,11 @@ def sgp_yaml(ratchet=None, **cmd):
 
 
 def _env(extra=None):
-    """Entorno de las pruebas: hermético frente al SGP_TESTS_APPROVED del shell (el escape
-    del ratchet se pasa explícito en cada prueba que lo necesita)."""
+    """Entorno de las pruebas: hermético frente a SGP_TESTS_APPROVED del shell (el escape del
+    ratchet se pasa explícito en cada prueba) y con salida UTF-8 fija (el padre decodifica
+    UTF-8; si el shell exporta PYTHONIOENCODING=cp1252, el hijo escribe en UTF-8 igualmente)."""
     e = {k: v for k, v in os.environ.items() if k != "SGP_TESTS_APPROVED"}
+    e["PYTHONIOENCODING"] = "utf-8"
     e.update(extra or {})
     return e
 
@@ -59,7 +61,8 @@ class Base(unittest.TestCase):
 
     def run_check(self, root, *args, env=None):
         p = subprocess.run([PY, CHECK, "--root", root, "--today", "2026-09-24", *args],
-                           capture_output=True, text=True, env=_env(env))
+                           capture_output=True, text=True, encoding="utf-8", errors="replace",
+                           env=_env(env))
         return p.returncode, p.stdout + p.stderr
 
     def git(self, root, *a):
@@ -72,7 +75,8 @@ class Estructura(Base):
         self.assertEqual(rc, 0, out)
 
     def test_cli_version(self):
-        p = subprocess.run([PY, CHECK, "--version"], capture_output=True, text=True)
+        p = subprocess.run([PY, CHECK, "--version"], capture_output=True, text=True,
+                           encoding="utf-8", errors="replace", env=_env())
         self.assertEqual(p.returncode, 0)
         self.assertTrue(p.stdout.strip())
 
@@ -310,6 +314,27 @@ class Git(Base):
         rc, out = self.run_check(r, "--ratchet")
         self.assertEqual(rc, 1); self.assertIn("renombrada y modificada", out)
 
+    def test_ratchet_bloquea_binario_modificado(self):
+        # Binario vigilado: `--numstat` da `-\t-` (sin líneas que contar). Si ya existía en
+        # HEAD, modificarlo o borrarlo es retirar cobertura y no puede pasar en verde.
+        r = self.repo({"tests/test_core.py": "def test_a():\n    assert 1 == 1\n"})
+        (Path(r) / "tests/fixture.bin").write_bytes(b"\x00\x01\x02")
+        self.git(r, "init", "-q"); self.git(r, "config", "user.email", "a@b.c"); self.git(r, "config", "user.name", "t")
+        self.git(r, "add", "-A")
+        p = self.git(r, "-c", "commit.gpgsign=false", "commit", "-qm", "base")
+        self.assertEqual(p.returncode, 0, p.stderr)
+        (Path(r) / "tests/fixture.bin").write_bytes(b"\x00\x03")
+        self.git(r, "add", "-A")
+        rc, out = self.run_check(r, "--ratchet")
+        self.assertEqual(rc, 1); self.assertIn("binario vigilado", out)
+
+    def test_ratchet_permite_binario_nuevo(self):
+        r = self.repo_git({"tests/test_core.py": "def test_a():\n    assert 1 == 1\n"})
+        (Path(r) / "tests/fixture.bin").write_bytes(b"\x00\x01")
+        self.git(r, "add", "-A")
+        rc, out = self.run_check(r, "--ratchet")
+        self.assertEqual(rc, 0, out)
+
     def test_ratchet_varias_rutas_por_coma(self):
         r = self.repo_git({"sgp.yaml": sgp_yaml(ratchet="tests, extras"),
                            "tests/test_core.py": "def test_a():\n    assert 1 == 1\n",
@@ -376,7 +401,7 @@ class CommitMsg(Base):
 
     def test_sin_fichero_falla_cerrado(self):
         p = subprocess.run([PY, CHECK, "--root", self.repo({}), "--commit-msg", ""], capture_output=True,
-                           text=True, env=_env())
+                           text=True, encoding="utf-8", errors="replace", env=_env())
         self.assertEqual(p.returncode, 1)
         self.assertIn("fichero del mensaje", p.stdout + p.stderr)
 
@@ -483,6 +508,25 @@ class HookSh(Base):
                            env=_env({"PYTHONIOENCODING": "utf-8"}))
         self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
         self.assertIn("Gate: sgp_check 0 err", msg.read_text(encoding="utf-8"))
+
+    @unittest.skipUnless(shutil.which("sh"), "sin sh en PATH: se omite el wrapper")
+    def test_wrapper_avisa_si_las_herramientas_son_viejas(self):
+        # Hook nuevo sobre tools/ viejo: falla cerrado, pero con instrucción de actualización.
+        r = self.repo({"changes/CHG-001-x.md": change()})
+        tools = Path(r) / "tools"
+        tools.mkdir()
+        (tools / "sgp_check.py").write_text("print('usage: sgp_check.py')\n", encoding="utf-8")
+        shutil.copy2(Path(__file__).with_name("commit-msg"), tools / "commit-msg")
+        self.git(r, "init", "-q"); self.git(r, "config", "user.email", "a@b.c"); self.git(r, "config", "user.name", "t")
+        self.git(r, "add", "-A")
+        p = self.git(r, "-c", "commit.gpgsign=false", "commit", "-qm", "base")
+        self.assertEqual(p.returncode, 0, p.stderr)
+        msg = Path(r) / "_msg.tmp"
+        msg.write_text("feat: x\n", encoding="utf-8")
+        p = subprocess.run(["sh", "tools/commit-msg", str(msg)], cwd=r, capture_output=True, text=True,
+                           encoding="utf-8", errors="replace", env=_env())
+        self.assertEqual(p.returncode, 1)
+        self.assertIn("actualiza tools/ del kit", p.stdout + p.stderr)
 
 
 class Hecho(Base):

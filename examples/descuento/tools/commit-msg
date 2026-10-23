@@ -2,7 +2,8 @@
 # Hook de SGP. Instalar:  cp tools/commit-msg .git/hooks/commit-msg && chmod +x .git/hooks/commit-msg
 # Valida el mensaje (convención tipo[alcance]: asunto, un solo CHG-NNN), re-ejecuta las tres
 # puertas (estructura, revisión, ratchet) y SELLA el resultado:  Gate: sgp_check ... | sgp_review ... | ratchet ...
-# Los merge/revert/rebase se aceptan sin sellar. Falla cerrado: sin fichero no se valida nada.
+# Los merge/revert/fixup/squash se aceptan sin sellar. Falla cerrado: sin fichero no se valida nada.
+# Si el verificador instalado es viejo (no conoce --commit-msg), lo dice y no deja pasar el commit.
 [ -n "$1" ] || { echo "[ERROR] commit-msg: git no ha pasado el fichero del mensaje; sin mensaje no se valida nada."; exit 1; }
 ROOT=$(git rev-parse --show-toplevel) || { echo "[ERROR] commit-msg: no se pudo determinar la raíz del repo."; exit 1; }
 cd "$ROOT" || exit 1
@@ -14,5 +15,9 @@ else
     echo "[ERROR] commit-msg: no encuentro sgp_check.py (ni en tools/ ni en kit/tools/)."; exit 1
 fi
 if command -v python >/dev/null 2>&1; then PY=python; else PY=python3; fi
+if ! "$PY" "$TOOLS/sgp_check.py" --help 2>&1 | grep -q -- "--commit-msg"; then
+    echo "[ERROR] commit-msg: actualiza tools/ del kit: este verificador no soporta --commit-msg."
+    exit 1
+fi
 "$PY" "$TOOLS/sgp_check.py" --commit-msg "$1" || exit 1
 exit 0
