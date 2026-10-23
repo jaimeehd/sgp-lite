@@ -100,7 +100,7 @@ Dentro de tu proyecto:
    ```
    Si no sabes cuáles son, pregúntale a tu asistente: "¿Qué comandos uso para compilar y para correr las pruebas de este proyecto?".
 3. **Abre `AGENTS.md`** y escribe dos o tres líneas sobre qué es tu proyecto y qué comandos usa.
-4. **Instala el candado de pruebas** (evita que se borren pruebas por accidente). En Git Bash, desde la raíz del proyecto:
+4. **Instala el candado de pruebas** (evita que se borren pruebas por accidente; el hook también ejecuta el verificador y, si tu proyecto usa `docs/LOG-PROCESO.md`, la puerta de revisión). En Git Bash, desde la raíz del proyecto:
    ```bash
    cp tools/pre-commit .git/hooks/pre-commit
    chmod +x .git/hooks/pre-commit
@@ -185,7 +185,7 @@ Reglas de oro de esta fase:
 - **Una tarea por sesión.** Es mejor abrir una conversación nueva para cada tarea.
 - **La prueba primero.** Debe fallar antes de programar (eso demuestra que la prueba sirve).
 - **El nombre de la prueba lleva el código del requisito con guion bajo**, por ejemplo `test_DESC_001_calcula_con_descuento`. Así el verificador sabe qué requisito comprueba.
-- El asistente marca la tarea como hecha (`[x]`) **solo si** el verificador no da errores.
+- El asistente marca la tarea como hecha (`[x]`) **solo si** el verificador no da errores (y, si el proyecto usa `docs/LOG-PROCESO.md`, con su ronda de revisión registrada).
 
 ### Fase 5. Validar y cerrar (tú apruebas el cierre)
 

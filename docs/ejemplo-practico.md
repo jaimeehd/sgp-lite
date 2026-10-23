@@ -14,9 +14,9 @@ examples/descuento/
 ├── docs/constitution.md  docs/adr/_plantilla.md
 ├── specs/  changes/_plantilla.md
 ├── skills/sgp-{especificar,qa-spec,planificar-cambio,ejecutar-tarea,validar-cerrar}/SKILL.md  skills/{system-engineering-policy,protocolo-ingenieria-senior}/SKILL.md
-└── tools/sgp_check.py  tools/sgp_docs.py  tools/sgp_fresh.py  tools/sgp_links.py
+└── tools/sgp_check.py  tools/sgp_docs.py  tools/sgp_fresh.py  tools/sgp_links.py  tools/sgp_review.py
     tools/sgp_kit.py  tools/sync_skills.py  tools/pre-commit
-    tools/test_sgp_{check,docs,fresh,links,kit}.py
+    tools/test_sgp_{check,docs,fresh,links,review,kit}.py
 ```
 
 `docs/constitution.md`:

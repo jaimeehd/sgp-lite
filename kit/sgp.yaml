@@ -10,6 +10,13 @@ rutas:
   specs: specs
   cambios: changes
   tests: tests
+# Puerta de revisión (tools/sgp_review.py): claves opcionales con estos mismos
+# valores por defecto. Sin `log_proceso` apuntando a un archivo existente, la
+# puerta avisa que está inactiva y no exige la ronda de revisión.
+# revision:
+#   log_proceso: docs/LOG-PROCESO.md   # registro de rondas de revisión (fila: | fecha | # | tipo | qué | estado | referencia |)
+#   corte_fuente: 2026-10-23           # desde esta fecha, toda fila exige citar `subagente <id>`
+#   subagentes: senior-reviewer, independent-verifier, docs-syncer
 comandos:                    # vacío = sensor sin configurar (error en pre-merge)
   build: ""                  # ej.: dotnet build -c Release | npm run build
   tests: ""                  # ej.: dotnet test | python -m pytest -q

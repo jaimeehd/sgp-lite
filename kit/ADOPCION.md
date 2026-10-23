@@ -12,7 +12,7 @@ La regla es la de la industria: **empezar por lo mínimo y subir solo cuando due
 | **1. Solo la política** | Casi nunca tocas código, o no quieres cambiar nada del repo | La skill de comportamiento del agente (`system-engineering-policy`; el kit la instala en `skills/`) | — |
 | **2. Spec primero** (*spec-first*) | Cambio no obvio en un proyecto chico | Una spec breve antes de codificar + `AGENTS.md` corto | Tests (si hay) o prueba manual |
 | **3. Spec anclada** (*spec-anchored*) | El proyecto vive y evoluciona; hay requisitos que conviene mantener y auditar | `specs/`, `changes/`, `docs/constitution.md`, `sgp_check` | `python tools/sgp_check.py --run` |
-| **4. Kit completo** (*spec-as-source* + gobierno) | Ruta crítica, compliance, varios agentes/personas, regresiones costosas | Skills, `pre-commit`/ratchet, ADR, presupuestos, trazabilidad por requisito | `python tools/sgp_check.py --stage pre-merge` |
+| **4. Kit completo** (*spec-as-source* + gobierno) | Ruta crítica, compliance, varios agentes/personas, regresiones costosas | Skills, `pre-commit`/ratchet, puerta de revisión (`docs/LOG-PROCESO.md`), ADR, presupuestos, trazabilidad por requisito | `python tools/sgp_check.py --stage pre-merge` |
 
 No son fases obligatorias: son **puntos de entrada**. Puedes quedarte en cualquiera y seguir en un estado útil.
 

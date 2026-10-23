@@ -63,7 +63,7 @@ Contexto mínimo: `AGENTS.md`, el cambio activo, la spec de los requisitos de la
 Implementa SOLO la tarea <TNNN> de changes/<CHG-NNN>.md. Escribe primero la prueba (su nombre incluye el ID, p. ej. test_EXP_001_...) y verifica que falla; luego el código.
 NO borres ni edites pruebas existentes. NO amplíes el alcance (ideas nuevas → «Notas»). Si un requisito es ambiguo, para y pregunta.
 Ejecuta `python tools/sgp_check.py --run` y MUÉSTRAME el resultado. Si falla, corrige (máx. iteraciones: sgp.yaml); si las agotas, detente y anota en «Progreso» qué debe aclararse.
-Al pasar: marca la tarea [x], indica qué requisitos cubre, actualiza «Progreso» y PÁRATE. No empieces la siguiente tarea.
+Al pasar: registra la ronda de revisión en `docs/LOG-PROCESO.md` si el proyecto usa ese log (fila de tipo «revisión», cerrada, que cite la tarea y el cambio; `python tools/sgp_review.py` la exige en el pre-commit), marca la tarea [x], indica qué requisitos cubre, actualiza «Progreso» y PÁRATE. No empieces la siguiente tarea.
 ```
 
 ## 5. Validar y cerrar — apruebas el merge
@@ -72,4 +72,5 @@ Contexto: el cambio, la spec y el resultado de `python tools/sgp_check.py --stag
 Recorre los requisitos del cambio uno por uno. Para cada uno indica: qué prueba lo cubre, el resultado de ejecutarla y si la prueba comprueba de verdad
 el comportamiento (o es trivial). Revisa los «Criterios de finalización» y que specs/ refleje el comportamiento final. Señala pruebas borradas o debilitadas y todo lo que se salga del alcance.
 Da un veredicto: ¿el cambio está cumplido? NO apruebes tú el merge: lista lo que debo revisar.
+Cuando el humano apruebe: registra la ronda de revisión en `docs/LOG-PROCESO.md` (fila de tipo «revisión», cerrada, que cite la tarea y el cambio) y ejecuta `python tools/sgp_review.py`; solo si sale en verde, cambia `estado: hecho`.
 ```

@@ -11,7 +11,24 @@ Historial de versiones de **sgp-lite** (kit, política de ingeniería y protocol
 - La línea del kit posterior a `v1.5.0` avanza como `kit 1.6.x` en los mensajes de commit; la
   versión vigente vive en `kit/VERSION`.
 
-## Sin publicar — `master` tras v1.5.0 (2026-10-11 → 2026-10-20)
+## Sin publicar — `master` tras v1.5.0 (2026-10-11 → 2026-10-22)
+
+### 2026-10-22
+- kit 1.9.0: **puerta de revisión** (`tools/sgp_review.py`, con `test_sgp_review.py`): ninguna tarea
+  se cierra sin su ronda registrada. El commit que marca una tarea `[x]` debe traer, en
+  `docs/LOG-PROCESO.md`, una fila de tipo «revisión» **cerrada** que cite la tarea y el cambio y
+  mencione a un subagente; desde `revision.corte_fuente` (2026-10-23 por defecto) la fila exige
+  además `subagente <id>` (el nombre del papel solo era auto-atestación). Las filas malformadas o
+  con fecha inválida **fallan y dicen cuál es** (no se ignoran en silencio), los pipes del texto se
+  escriben escapados (`\|`) y una fila `pendiente` no cuenta. Diseño aprendido del piloto aomarket:
+  si el proyecto no tiene el log, la puerta **se declara inactiva con aviso** (no finge verde) y se
+  activa al crear el archivo; un log presente pero sin versionar también falla (la confirmación debe
+  viajar con el commit). Exenciones heredadas en `tools/revisiones-baseline.txt` (opcional). Cableada
+  en `tools/pre-commit`; configuración opcional en `sgp.yaml` (`revision.log_proceso`,
+  `revision.corte_fuente`, `revision.subagentes`). Las skills `sgp-ejecutar-tarea` y
+  `sgp-validar-cerrar`, `prompts.md` y la plantilla `AGENTS.md` dejan de ordenar marcar `[x]` /
+  `estado: hecho` sin esa ronda: un cierre sin registro apagaba los sensores del verificador.
+  Propagado al ejemplo y al zip.
 
 ### 2026-10-20
 - kit 1.8.1: la guarda de enlaces `sgp_links.py` revisa **el universo que git considera del

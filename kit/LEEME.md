@@ -28,7 +28,7 @@ Si prefieres el método manual (sin updates), descomprime `sgp-lite.zip` en la r
 
 1. Copia al repo (o usa `sgp_kit.py init`, arriba): `docs/`, `specs/`, `changes/`, `tools/`, `skills/`, `AGENTS.md`, `CLAUDE.md`, `sgp.yaml`, `prompts.md`, `METODOLOGIA.md`, `ADOPCION.md`.
 2. Edita `docs/constitution.md`, `AGENTS.md` y los comandos de `sgp.yaml` (build, tests, lint y `test_por_requisito`).
-3. Hook: `cp tools/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit` (en Windows funciona con Git Bash). En **este** repositorio (el del kit), el guardián ya instalado ejecuta además la **suite completa del kit** en cada commit; esa parte se omite con `SGP_HOOK=off git commit`.
+3. Hook: `cp tools/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit` (en Windows funciona con Git Bash). El hook ejecuta el verificador, la **puerta de revisión** (`tools/sgp_review.py`: ninguna tarea se cierra sin su ronda registrada en `docs/LOG-PROCESO.md`; si el proyecto no tiene ese archivo, la puerta avisa que está inactiva y sigue) y el ratchet de pruebas. En **este** repositorio (el del kit), el guardián ya instalado ejecuta además la **suite completa del kit** en cada commit; esa parte se omite con `SGP_HOOK=off git commit`.
    Skills (opcional, si tu agente las soporta): `python tools/sync_skills.py --agent <tu-agente>` (`--list` muestra los agentes conocidos y su carpeta). Se puede reejecutar: refresca solas las skills intactas y conserva las editadas a mano (`--force` las pisa).
 4. Primer cambio: (opcional) si el pedido es grande o confuso, redacta primero `docs/requerimientos.md` (skill `sgp-documento-requerimientos` / prompt 0); luego fase 1 especificar → 2 QA → 3 planificar (elige carril: rapido/normal/mayor) → 4 ejecutar (una tarea por sesión) → 5 validar. Usa las skills si las instalaste, o los prompts equivalentes de `prompts.md`.
 5. Verifica cuando quieras: `python tools/sgp_check.py` (rápido) · `--run` (con comandos) · `--stage pre-merge` (estricto, con trazabilidad).
@@ -63,6 +63,7 @@ python -m unittest tools/test_sgp_check.py -v     # pruebas del verificador
 python -m unittest tools/test_sgp_docs.py -v      # pruebas del auditor de documentación
 python -m unittest tools/test_sgp_fresh.py -v     # pruebas de la guarda de frescura
 python -m unittest tools/test_sgp_links.py -v     # pruebas de la guarda de enlaces
+python -m unittest tools/test_sgp_review.py -v    # pruebas de la puerta de revisión
 python -m unittest tools/test_sgp_kit.py -v       # pruebas del instalador/actualizador
 python -m unittest tools/test_sgp_zip.py -v       # pruebas del generador del zip
 python -m unittest discover -s tools -p "test_*.py" -v   # suite completa (incluye las guardas del repositorio del kit)
@@ -74,8 +75,8 @@ python -m unittest discover -s tools -p "test_*.py" -v   # suite completa (inclu
 VERSION  sgp-kit.manifest
 docs/constitution.md   docs/adr/_plantilla.md   specs/_plantilla-dominio/spec.md
 changes/_plantilla.md  AGENTS.md  CLAUDE.md  sgp.yaml  prompts.md  METODOLOGIA.md  ADOPCION.md
-tools/sgp_check.py  tools/sgp_docs.py  tools/sgp_fresh.py  tools/sgp_links.py  tools/pre-commit  tools/sync_skills.py
-tools/test_sgp_check.py  tools/test_sgp_docs.py  tools/test_sgp_fresh.py  tools/test_sgp_links.py  tools/test_sgp_kit.py
+tools/sgp_check.py  tools/sgp_docs.py  tools/sgp_fresh.py  tools/sgp_links.py  tools/sgp_review.py  tools/pre-commit  tools/sync_skills.py
+tools/test_sgp_check.py  tools/test_sgp_docs.py  tools/test_sgp_fresh.py  tools/test_sgp_links.py  tools/test_sgp_review.py  tools/test_sgp_kit.py
 tools/sgp_kit.py  tools/sgp_zip.py  tools/test_sgp_zip.py
 skills/sgp-documento-requerimientos  skills/sgp-especificar  skills/sgp-qa-spec  skills/sgp-planificar-cambio  skills/sgp-ejecutar-tarea  skills/sgp-validar-cerrar
 skills/system-engineering-policy  skills/protocolo-ingenieria-senior

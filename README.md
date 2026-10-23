@@ -82,9 +82,10 @@ más frecuencia y más rápido que antes.
 │       ├── sgp_fresh.py         — guarda de frescura con dueño (aviso; --strict para CI)
 │       ├── sgp_kit.py           — instala y ACTUALIZA el kit en un proyecto (init/update/status)
 │       ├── sgp_links.py         — guarda de enlaces relativos y anclas (aviso; --strict para CI)
+│       ├── sgp_review.py        — puerta de revisión: ninguna tarea se cierra sin su ronda registrada
 │       ├── sgp_zip.py           — genera sgp-lite.zip (misma lista de archivos que el instalador)
 │       ├── sync_skills.py       — instala las skills en la ruta de tu agente
-│       ├── pre-commit           — hook de git que bloquea pruebas borradas o debilitadas
+│       ├── pre-commit           — hook de git: verificador, puerta de revisión y ratchet de pruebas
 │       └── test_*.py            — pruebas de los tools y guardas de este repositorio
 └── examples/
     └── descuento/                — proyecto real y ejecutable de punta a punta (ver docs/ejemplo-practico.md)

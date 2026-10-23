@@ -12,7 +12,7 @@
 | `docs/requerimientos.md` | Opcional: documento de apoyo para aclarar el pedido **antes** de la spec (solo documentación) |
 | `changes/CHG-NNN-nombre.md` | **Un archivo por cambio**: propuesta, criterios de finalización, tareas, progreso |
 | `sgp.yaml` | Comandos de build/tests/lint y cómo ejecutar las pruebas de un requisito |
-| `tools/sgp_check.py`, `tools/pre-commit` | Verificador y hook (ratchet de pruebas) |
+| `tools/sgp_check.py`, `tools/sgp_review.py`, `tools/pre-commit` | Verificador, puerta de revisión y hook (ratchet de pruebas) |
 | `prompts.md` | 6 prompts de proceso: uno opcional de documentación y cinco de fase (para agentes sin soporte de skills) |
 | `skills/*/SKILL.md` | 8 Agent Skills (6 de proceso + 2 de comportamiento: la política y su protocolo); `tools/sync_skills.py` las instala en tu agente |
 
@@ -60,7 +60,7 @@ Reglas: la respuesta es **observable** (mensaje, código de salida, estado); el 
 
 ## Escalera de «hecho»
 
-- **Tarea:** su línea «Hecho cuando:» se cumple y los sensores pasan.
+- **Tarea:** su línea «Hecho cuando:» se cumple, los sensores pasan y su ronda de revisión queda registrada en `docs/LOG-PROCESO.md` (si el proyecto usa ese log; la comprueba `tools/sgp_review.py`).
 - **Cambio:** sus «Criterios de finalización» están marcados y `sgp_check --stage pre-merge` no da errores.
 - **Spec:** cada requisito tiene una prueba que lo ejercita (o una fila `OK` en «Verificación manual»).
 
