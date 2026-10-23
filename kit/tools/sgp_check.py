@@ -14,6 +14,8 @@ saque una prueba de la ruta vigilada cuenta como retirada. `--commit-msg` valida
 del asunto y que se cite un solo `CHG-NNN`, re-ejecuta las tres puertas y sella el mensaje.
 `estado: hecho` exige consistencia de cierre (criterios y tareas marcados); sus cruces externos
 con specs/ y carril se omiten a propósito, porque pueden cambiar después de cerrado el cambio.
+La política de commit (tope de tamaño, token de autorización y campos del sello) se configura en
+`sgp.yaml` bajo `commit:` (`max_lineas`, `autorizacion`, `sello`).
 """
 import argparse, datetime, fnmatch, os, re, subprocess, sys, tempfile
 from pathlib import Path
@@ -30,7 +32,8 @@ VAGAS = ("adecuad", "rápid", "rapid", "intuitiv", "fácil", "facil", "robust", 
 SIN_PRUEBAS = re.compile(r"Ran 0 tests|no tests ran|collected 0 items|0 tests? (found|ran)|Total tests: 0"
                          r"|No test matches|Ninguna prueba coincide", re.I)  # las dos últimas: dotnet test con filtro sin coincidencias (código 0)
 DEFAULTS = {"max_iteraciones_por_tarea": "5", "max_lineas_constitucion": "20",
-            "specs": "specs", "cambios": "changes", "tests": "tests"}
+            "specs": "specs", "cambios": "changes", "tests": "tests",
+            "max_lineas": "0", "autorizacion": "Tamano-OK", "sello": "sgp_check, revision, ratchet"}
 
 
 def read_version(kit_dir):
@@ -534,10 +537,59 @@ def _puerta_revision(root):
     return ("INACTIVA" if "INACTIVA" in p.stdout else "OK"), 0
 
 
+CAMPOS_SELLO = ("sgp_check", "revision", "ratchet", "tamano", "ficheros")
+
+
+def _campos_sello(cfg):
+    """Campos del sello configurados en `commit.sello` (por defecto, los tres clásicos)."""
+    crudo = cfg.get("sello") or "sgp_check, revision, ratchet"
+    return [c.strip() for c in crudo.split(",") if c.strip()]
+
+
+def _tamano_staged(root, env):
+    """(líneas cambiadas, ficheros) del índice. `--numstat` da `-` en binarios: cuentan 1."""
+    p = subprocess.run(["git", "diff", "--cached", "--numstat", "-z"], cwd=root, capture_output=True,
+                       text=True, encoding="utf-8", errors="replace", env=env)
+    if p.returncode != 0:
+        return None
+    lineas = ficheros = 0
+    regs = [r for r in p.stdout.split("\0") if r]
+    i = 0
+    while i < len(regs):
+        parts = regs[i].split("\t", 2)
+        i += 1
+        if len(parts) != 3:
+            continue
+        if parts[2] == "" and i + 1 < len(regs):   # renombrado: `-z` añade vieja y nueva
+            i += 2
+        ficheros += 1
+        if parts[0] == "-" or parts[1] == "-":     # binario
+            lineas += 1
+        else:
+            lineas += int(parts[0] or 0) + int(parts[1] or 0)
+    return lineas, ficheros
+
+
+def _sello(campos, n_err, verd, detalle, lineas, ficheros, max_lineas):
+    piezas = []
+    for c in campos:
+        if c == "sgp_check":
+            piezas.append(f"sgp_check {n_err} err")
+        elif c == "revision":
+            piezas.append(f"sgp_review {verd}")
+        elif c == "ratchet":
+            piezas.append(f"ratchet {detalle}")
+        elif c == "tamano":
+            piezas.append(f"tamano {lineas}/{max_lineas if max_lineas > 0 else '-'}")
+        elif c == "ficheros":
+            piezas.append(f"ficheros {ficheros}")
+    return "Gate: " + " | ".join(piezas)
+
+
 def commit_msg(fichero, root, cfg, today=None):
-    """Puerta del mensaje de commit (hook commit-msg): valida el mensaje, re-ejecuta las tres
-    puertas (estructura sobre el índice, revisión y ratchet) y SELLA el resultado (Gate: ...).
-    Falla cerrado: sin fichero de mensaje no se valida nada."""
+    """Puerta del mensaje de commit (hook commit-msg): valida el mensaje, mide el tamaño del
+    staged, re-ejecuta las tres puertas (estructura sobre el índice, revisión y ratchet) y SELLA
+    el resultado (Gate: ...) con los campos de `commit.sello`. Falla cerrado."""
     if not fichero or not Path(fichero).is_file():
         print("[ERROR] commit-msg: no llega el fichero del mensaje; sin mensaje no se puede validar ni sellar.")
         print("        Cómo corregirlo: reinstala el hook (cp tools/commit-msg .git/hooks/commit-msg).")
@@ -567,6 +619,26 @@ def commit_msg(fichero, root, cfg, today=None):
         print(f"[ERROR] commit-msg: el mensaje menciona {len(chgs)} cambios distintos ({', '.join(chgs)});")
         print("        Un commit = un alcance. Divide el trabajo en commits separados.")
         return 1
+    campos = _campos_sello(cfg)
+    desconocidos = [c for c in campos if c not in CAMPOS_SELLO]
+    if desconocidos:
+        print(f"[ERROR] commit-msg: campo(s) de sello desconocido(s) en `commit.sello`: "
+              f"{', '.join(desconocidos)}; usa: {', '.join(CAMPOS_SELLO)}.")
+        return 1
+    env = dict(os.environ, PYTHONIOENCODING="utf-8")
+    max_lineas = as_int(cfg.get("max_lineas"), 0) or 0
+    token = (cfg.get("autorizacion") or "Tamano-OK").strip() or "Tamano-OK"
+    tam = _tamano_staged(root, env)
+    if tam is None:
+        print("[ERROR] commit-msg: no se pudo medir el staged (git diff); no se puede verificar "
+              "el tamaño (falla cerrado).")
+        return 1
+    lineas, ficheros = tam
+    if max_lineas > 0 and lineas > max_lineas and not re.search(rf"^{re.escape(token)}:\s*\S", texto, re.M):
+        print(f"[ERROR] commit-msg: el commit cambia {lineas} línea(s) y el tope es {max_lineas}.")
+        print(f"        Cómo corregirlo: divide el commit, o autorízalo con una línea "
+              f"«{token}: autorizado por <quien> · <motivo>».")
+        return 1
     n_err = _puerta_estructura(root, today)
     if n_err is None:
         return 1
@@ -576,7 +648,7 @@ def commit_msg(fichero, root, cfg, today=None):
     rc, detalle = ratchet(root, cfg)
     if rc != 0:
         return 1
-    sello = f"Gate: sgp_check {n_err} err | sgp_review {verd} | ratchet {detalle}"
+    sello = _sello(campos, n_err, verd, detalle, lineas, ficheros, max_lineas)
     try:
         Path(fichero).write_text(_sin_sello(texto) + "\n" + sello + "\n", encoding="utf-8")
     except OSError as exc:

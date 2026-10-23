@@ -3,10 +3,12 @@
 
     python -m unittest tools/test_sgp_kit.py -v
 """
+import io
 import os
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -106,6 +108,33 @@ class SgpKitTests(unittest.TestCase):
         rc = sgp_kit.status(self.kit, self.dest)
         self.assertEqual(0, rc)
         self.assertEqual("A1", (self.dest / "tools" / "a.py").read_text(encoding="utf-8"))
+
+    def test_status_reporta_conflicto_si_el_archivo_no_esta_registrado(self):
+        # Fichero gestionado que existe pero no consta en el marcador (un hook propio del
+        # proyecto): `apply` lo respalda y lo sustituye, y `status` debe anunciarlo así.
+        (self.dest / "tools").mkdir()
+        (self.dest / "tools" / "a.py").write_text("MIO", encoding="utf-8")
+        out = io.StringIO()
+        with redirect_stdout(out):
+            rc = sgp_kit.status(self.kit, self.dest)
+        self.assertEqual(0, rc)
+        self.assertIn("conflicto", out.getvalue())
+        self.assertIn("sin registrar", out.getvalue())
+        self.assertNotIn("actualización disponible", out.getvalue())
+
+    def test_status_y_update_coinciden_para_archivo_no_registrado(self):
+        (self.dest / "tools").mkdir()
+        (self.dest / "tools" / "a.py").write_text("MIO", encoding="utf-8")
+        out = io.StringIO()
+        with redirect_stdout(out):
+            sgp_kit.status(self.kit, self.dest)
+        self.assertIn("conflicto", out.getvalue())
+        with redirect_stdout(io.StringIO()):
+            sgp_kit.apply(self.kit, self.dest)
+        self.assertEqual("A1", (self.dest / "tools" / "a.py").read_text(encoding="utf-8"))
+        backups = list((self.dest / sgp_kit.BACKUP).rglob("a.py"))
+        self.assertEqual(1, len(backups))
+        self.assertEqual("MIO", backups[0].read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":

@@ -180,14 +180,20 @@ def status(source: Path, dest: Path):
             old = recorded.get(rel)
             if cur == src_hash:
                 state = "al día"
-            elif old is None or cur == old:
+            elif old is None:
+                # existe en el proyecto pero no consta en el marcador (p. ej. un hook propio):
+                # `apply` lo trata como conflicto (backup + sustitución), y status debe decirlo.
+                state = "archivo tuyo sin registrar (update: conflicto, se respalda y se sustituye)"
+                modified += 1
+            elif cur == old:
                 state = "actualización disponible"
                 pending += 1
             else:
                 state = "editado localmente (kit cambió)"
                 modified += 1
             print(f"  [{state}] {rel}")
-    print(f"\n{missing} faltan, {pending} con actualización, {modified} editados (conflicto potencial).")
+    print(f"\n{missing} faltan, {pending} con actualización, "
+          f"{modified} conflicto(s) al actualizar (se respalda tu versión).")
     return 0
 
 

@@ -473,6 +473,55 @@ class CommitMsg(Base):
         rc, _, texto = self.run_msg(self.repo_msg(), "Merge branch 'algo' en main\n")
         self.assertEqual(rc, 0); self.assertNotIn("Gate:", texto)
 
+    def test_tamano_bloquea_sin_autorizacion(self):
+        y = sgp_yaml().replace("comandos:", "commit:\n  max_lineas: 10\ncomandos:")
+        r = self.repo_msg({"sgp.yaml": y})
+        (Path(r) / "docs/notas.md").write_text("x\n" * 40, encoding="utf-8")
+        self.git(r, "add", "-A")
+        rc, out, texto = self.run_msg(r, "feat: x\n")
+        self.assertEqual(rc, 1); self.assertIn("tope es 10", out); self.assertNotIn("Gate:", texto)
+
+    def test_tamano_permite_con_autorizacion_y_lo_sella(self):
+        y = sgp_yaml().replace("comandos:",
+                               "commit:\n  max_lineas: 10\n  sello: sgp_check, tamano, ficheros\ncomandos:")
+        r = self.repo_msg({"sgp.yaml": y})
+        (Path(r) / "docs/notas.md").write_text("x\n" * 40, encoding="utf-8")
+        self.git(r, "add", "-A")
+        rc, out, texto = self.run_msg(r, "feat: x\n\nTamano-OK: autorizado por QA · migracion\n")
+        self.assertEqual(rc, 0, out)
+        self.assertIn("tamano 40/10", texto); self.assertIn("ficheros 1", texto)
+
+    def test_autorizacion_configurable(self):
+        y = sgp_yaml().replace("comandos:",
+                               "commit:\n  max_lineas: 10\n  autorizacion: Ratchet-OK\ncomandos:")
+        r = self.repo_msg({"sgp.yaml": y})
+        (Path(r) / "docs/notas.md").write_text("x\n" * 40, encoding="utf-8")
+        self.git(r, "add", "-A")
+        rc, out, _ = self.run_msg(r, "feat: x\n\nTamano-OK: autorizado por QA · x\n")
+        self.assertEqual(rc, 1); self.assertIn("Ratchet-OK", out)
+        rc, out, texto = self.run_msg(r, "feat: x\n\nRatchet-OK: autorizado por QA · x\n")
+        self.assertEqual(rc, 0, out); self.assertIn("Gate: ", texto)
+
+    def test_sello_configurable(self):
+        y = sgp_yaml().replace("comandos:", "commit:\n  sello: ratchet, ficheros\ncomandos:")
+        r = self.repo_msg({"sgp.yaml": y})
+        rc, out, texto = self.run_msg(r, "feat: x\n")
+        self.assertEqual(rc, 0, out)
+        self.assertIn("Gate: ratchet ", texto); self.assertIn(" | ficheros ", texto)
+        self.assertNotIn("sgp_check", texto)
+
+    def test_sello_con_campo_desconocido_falla(self):
+        y = sgp_yaml().replace("comandos:", "commit:\n  sello: foo\ncomandos:")
+        r = self.repo_msg({"sgp.yaml": y})
+        rc, out, texto = self.run_msg(r, "feat: x\n")
+        self.assertEqual(rc, 1); self.assertIn("sello", out); self.assertNotIn("Gate:", texto)
+
+    def test_sin_tope_por_defecto_pasa(self):
+        r = self.repo_msg({"docs/notas.md": "x\n" * 40})
+        self.git(r, "add", "-A")
+        rc, out, texto = self.run_msg(r, "feat: x\n")
+        self.assertEqual(rc, 0, out); self.assertNotIn("tamano", texto)
+
     def test_estructura_en_rojo_rechaza_sin_sello(self):
         r = self.repo_msg({"sgp.yaml": None})
         rc, out, texto = self.run_msg(r, "feat: x\n")

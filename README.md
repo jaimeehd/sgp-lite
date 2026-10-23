@@ -107,7 +107,7 @@ el kit define por sí solo.
 ```bash
 cd kit
 python tools/sgp_check.py --help
-python -m unittest tools/test_sgp_check.py -v   # 69 pruebas del propio verificador
+python -m unittest tools/test_sgp_check.py -v   # 75 pruebas del propio verificador
 ```
 
 Guardas: `python tools/sgp_links.py` (enlaces relativos y anclas) y `python tools/sgp_fresh.py --require README.md` (frescura con dueño); `--strict` las convierte en fallo y este repo ya las ejecuta en CI (job `guardas`).

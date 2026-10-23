@@ -22,6 +22,14 @@ rutas:
 #   log_proceso: docs/LOG-PROCESO.md   # registro de rondas de revisión (fila: | fecha | # | tipo | qué | estado | referencia |)
 #   corte_fuente: 2026-10-23           # desde esta fecha, toda fila exige citar `subagente <id>`
 #   subagentes: senior-reviewer, independent-verifier, docs-syncer
+# Política de commit (tools/commit-msg). Con `max_lineas` > 0, un commit que cambie más líneas
+# que ese tope exige una línea «<autorizacion>: autorizado por <quien> · <motivo>».
+# `sello` elige los campos del sello final, en este orden: sgp_check, revision, ratchet,
+# tamano, ficheros (por defecto, los tres primeros).
+# commit:
+#   max_lineas: 0
+#   autorizacion: Tamano-OK
+#   sello: sgp_check, revision, ratchet
 comandos:                    # vacío = sensor sin configurar (error en pre-merge)
   build: ""                  # ej.: dotnet build -c Release | npm run build
   tests: ""                  # ej.: dotnet test | python -m pytest -q

@@ -62,6 +62,17 @@ Historial de versiones de **sgp-lite** (kit, política de ingeniería y protocol
   **evidencia, no control** (`git commit --no-verify` omite los hooks) y el `--help` de
   `--commit-msg` aclara que es uso interno del hook. 3 pruebas nuevas (69 en
   `test_sgp_check.py`). Propagado al ejemplo y al zip.
+- kit 1.11.0: **política de commit configurable y actualización sin sorpresas**. `sgp.yaml` gana
+  `commit.max_lineas` (0 = sin tope), `commit.autorizacion` (token de la línea
+  «…: autorizado por <quien> · <motivo>») y `commit.sello` (campos: `sgp_check`, `revision`,
+  `ratchet`, `tamano`, `ficheros`; por defecto, los tres clásicos). El hook `commit-msg` mide el
+  staged (`--numstat`, binarios como 1 línea), rechaza los commits que superan el tope sin
+  autorización y compone el sello con los campos configurados; un campo desconocido falla cerrado.
+  `sgp_kit.py status` ya no disfraza de «actualización disponible» un archivo gestionado que existe
+  y no consta en el registro: lo reporta como conflicto (lo que `update` hará: respaldo +
+  sustitución). Así un proyecto conserva su política de commits (tope + autorización + sello) sin
+  bifurcar ficheros gestionados. 8 pruebas nuevas (75 en `test_sgp_check.py`, 10 en
+  `test_sgp_kit.py`). Propagado al ejemplo y al zip.
 
 ### 2026-10-20
 - kit 1.8.1: la guarda de enlaces `sgp_links.py` revisa **el universo que git considera del
