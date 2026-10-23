@@ -93,6 +93,10 @@ Historial de versiones de **sgp-lite** (kit, política de ingeniería y protocol
   herramienta fuera del flujo SGP (sin ficha de cambio ni fila de revisión; se valida con la suite,
   el ejemplo y la revisión de código). 2 pruebas nuevas (78 en `test_sgp_check.py`, 25 en
   `test_sgp_review.py`). Propagado al ejemplo y al zip (1.13.0).
+- kit 1.13.1: **el instalador no respalda lo que ya está al día**. Si el archivo del proyecto ya
+  coincide con el del kit pero el registro es viejo (p. ej. fichero añadido al manifiesto después),
+  `update` lo cuenta como al día en vez de abrir un conflicto y respaldar una copia idéntica. 1
+  prueba nueva (12 en `test_sgp_kit.py`). Propagado al ejemplo y al zip.
 - kit 1.12.1: **el instalador no confunde CRLF con ediciones**. `sgp_kit.py` normaliza los
   finales de línea (CRLF→LF) al calcular el hash de un archivo gestionado: en Windows, un
   checkout con `core.autocrlf` dejaba CRLF en el árbol y `update` lo reportaba como «editado

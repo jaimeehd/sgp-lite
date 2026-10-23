@@ -128,6 +128,8 @@ def apply(source: Path, dest: Path):
             elif src_hash == old:                 # el kit no cambió: manda tu edición
                 notes.append(f"  [local]  {rel} (editado; el kit no cambió, se conserva)")
                 kept += 1
+            elif cur_hash == src_hash:            # ya coincide con el kit (registro viejo)
+                kept += 1
             else:                                 # ambos cambiaron: conflicto
                 rel_backup = backup(dest, rel, stamp)
                 shutil.copy2(src, dst)

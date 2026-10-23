@@ -96,6 +96,17 @@ class SgpKitTests(unittest.TestCase):
         b.write_bytes(b"uno\r\ndos\r\n")
         self.assertEqual(sgp_kit.sha256(a), sgp_kit.sha256(b))
 
+    def test_update_no_conflicta_si_ya_coincide_con_el_kit(self):
+        # Registro obsoleto pero el archivo ya tiene el contenido del kit: al día, sin
+        # respaldo ni conflicto (antes se respaldaba y copiaba lo mismo: ruido).
+        sgp_kit.apply(self.kit, self.dest)
+        marker = sgp_kit.read_marker(self.dest)
+        marker["managed"]["tools/a.py"] = "hash-viejo"
+        sgp_kit.write_marker(self.dest, marker)
+        with redirect_stdout(io.StringIO()):
+            sgp_kit.apply(self.kit, self.dest)
+        self.assertFalse((self.dest / sgp_kit.BACKUP).exists())
+
     def test_cli_version_sin_accion_ni_source(self):
         # --version funciona solo: informa la versión del kit sin exigir acción ni --source
         rc = sgp_kit.main(["--version"])
