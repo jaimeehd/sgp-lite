@@ -13,9 +13,10 @@ Esta puerta lo comprueba de forma mecánica:
     id de la tarea y el del cambio), esté CERRADA y mencione a un subagente;
   * desde `revision.corte_fuente` (2026-10-23 por defecto), la fila debe citar
     además `subagente <id>` (no basta el nombre del subagente: eso era
-    auto-atestación) y `diff: <hash>` (el hash que imprime
-    `python tools/sgp_check.py --diff-hash`), para atar la revisión al contenido
-    revisado y no a una versión anterior;
+    auto-atestación), `diff: <hash>` (el hash que imprime
+    `python tools/sgp_check.py --diff-hash`) y **al menos un requisito** de los que
+    declara el cambio en `requisitos:`: la revisión se ancla a la spec, no solo a la
+    tarea;
   * una fila malformada no se ignora: se rechaza y se dice qué línea es.
 
 Inactivación declarada: si el proyecto NO tiene el log, la puerta lo dice (aviso
@@ -201,6 +202,20 @@ def diff_ok(fila: dict, corte: str, hash_actual: str) -> bool:
     return bool(m) and hash_actual.startswith(m.group(1).lower())
 
 
+def requisitos_del_cambio(texto: str) -> list:
+    """IDs del frontmatter `requisitos:` del cambio (los que la revisión debe citar)."""
+    m = re.search(r"^requisitos:\s*(.*)$", texto, re.MULTILINE)
+    return re.findall(r"\b[A-Z]{2,5}-\d{3}\b", m.group(1)) if m else []
+
+
+def requisito_ok(fila: dict, corte: str, requisitos: list) -> bool:
+    """Desde el corte, la fila cita al menos un requisito del cambio (si los tiene)."""
+    if fila["fecha"] < corte or not requisitos:
+        return True
+    texto = fila["que"] + " " + fila["ref"]
+    return any(r in texto for r in requisitos)
+
+
 def revisar(raiz: Path, cfg: dict) -> int:
     cambios = ficheros_cambiados(raiz, f"{cfg['cambios']}/*.md")
     if not cambios:
@@ -253,6 +268,7 @@ def revisar(raiz: Path, cfg: dict) -> int:
         ]
         if not cerradas:
             continue
+        requisitos = requisitos_del_cambio(texto_staged)
         id_cambio = re.search(r"^id:\s*(CHG-\d+)", texto_staged, re.MULTILINE)
         id_cambio = id_cambio.group(1) if id_cambio else ""
         for tid, _linea in cerradas:
@@ -292,6 +308,12 @@ def revisar(raiz: Path, cfg: dict) -> int:
                     f"contenido revisado (obligatorio desde {corte}); calcula el hash con "
                     f"`python tools/sgp_check.py --diff-hash`"
                 )
+            elif not requisito_ok(fila, corte, requisitos):
+                faltantes.append(
+                    f"{cambio}: la fila de revisión de {tid} no cita ningún requisito del "
+                    f"cambio ({', '.join(requisitos)}); desde {corte} debe citar al menos uno "
+                    f"(la revisión se ancla a la spec)"
+                )
             else:
                 for otro in subagentes:
                     if otro not in fila["que"]:
@@ -305,7 +327,7 @@ def revisar(raiz: Path, cfg: dict) -> int:
         print(f"  (una tarea se cierra con {', '.join(subagentes)} y su confirmación "
               f"queda en {log_ruta}:")
         print("   fila de tipo «revisión» CERRADA, que cite la tarea y el cambio,")
-        print(f"   y desde {corte} cite `subagente <id>` y `diff: <hash>`).")
+        print(f"   y desde {corte} cite `subagente <id>`, `diff: <hash>` y un requisito del cambio).")
         return 1
 
     print("[revisión] OK: toda tarea cerrada por este commit tiene su fila de "

@@ -242,12 +242,6 @@ def check_change(path, reqs, rep_main, today, cfg):
         rep.error(name, f"contiene marcas {PENDING} sin resolver", "resuélvelas con el humano y elimina la marca")
     if "## Criterios de finalización" not in text:
         rep.error(name, "falta la sección «## Criterios de finalización»", "copia la sección de changes/_plantilla.md")
-    if estado == "revision" and ids and "## Criterios de finalización" in text:
-        mm = re.search(r"^##\s+Criterios de finalización[^\n]*\n(.*?)(?=^##\s|\Z)", text, re.S | re.M)
-        if mm and not re.search(r"^\s*[-*+]\s*\[[ xX]\].*specs/", mm.group(1), re.M):
-            rep.error(name, "estado 'revision' sin criterio que cubra `specs/`: la spec debe "
-                            "reflejar el cierre",
-                      "añade «- [ ] `specs/` refleja el comportamiento final (o «sin cambios: motivo»)»")
     if carril == "mayor":
         if "## Diseño" not in text or not re.search(r"##\s*Diseño.{0,400}Alternativa", text, re.S | re.I):
             rep.error(name, "carril 'mayor' sin sección «## Diseño» con una alternativa descartada",

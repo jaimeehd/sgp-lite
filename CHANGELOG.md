@@ -84,6 +84,15 @@ Historial de versiones de **sgp-lite** (kit, política de ingeniería y protocol
   del humano). (4) Se retira `max_iteraciones_por_tarea`: era una regla declarada sin sensor y pasa
   a ser una guía de trabajo sin clave de configuración. 6 pruebas nuevas (79 en
   `test_sgp_check.py`, 23 en `test_sgp_review.py`). Propagado al ejemplo y al zip.
+- kit 1.13.0: **la revisión se ancla a la spec y el menú se alinea**. (1) Desde
+  `revision.corte_fuente`, la fila de revisión cita además **al menos un requisito** del cambio
+  (`requisitos:`): la revisión declara qué requisito verificó (trazabilidad requisito↔revisión).
+  Se retira el criterio de presencia de `specs/`, que solo comprobaba que la frase existiera (una
+  casilla, no un sensor). (2) Los hooks se presentan como parte de la forma 4 de ADOPCION, no como
+  instalación por defecto; las formas 1-3 funcionan sin ellos. (3) El repositorio del kit se declara
+  herramienta fuera del flujo SGP (sin ficha de cambio ni fila de revisión; se valida con la suite,
+  el ejemplo y la revisión de código). 2 pruebas nuevas (78 en `test_sgp_check.py`, 25 en
+  `test_sgp_review.py`). Propagado al ejemplo y al zip (1.13.0).
 - kit 1.12.1: **el instalador no confunde CRLF con ediciones**. `sgp_kit.py` normaliza los
   finales de línea (CRLF→LF) al calcular el hash de un archivo gestionado: en Windows, un
   checkout con `core.autocrlf` dejaba CRLF en el árbol y `update` lo reportaba como «editado

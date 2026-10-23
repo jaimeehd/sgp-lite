@@ -20,7 +20,7 @@ Si tu agente soporta el estándar Agent Skills (SKILL.md), instálalas con `pyth
 - Nada fuera del alcance del cambio: las ideas nuevas van a su sección "Notas".
 
 ## Al terminar cualquier tarea
-- Ejecuta `python tools/sgp_check.py --run`, muestra el resultado, marca la tarea `[x]` solo si pasa (y, si el proyecto usa `docs/LOG-PROCESO.md`, con su ronda de revisión registrada: `python tools/sgp_review.py` lo exige en el pre-commit; la fila cita la tarea, el cambio, el subagente y, desde `revision.corte_fuente`, `diff: <hash>` de `python tools/sgp_check.py --diff-hash`) y anota en "Progreso" qué hiciste y qué sigue.
+- Ejecuta `python tools/sgp_check.py --run`, muestra el resultado, marca la tarea `[x]` solo si pasa (y, si instalaste la puerta de revisión de la forma 4 y el proyecto usa `docs/LOG-PROCESO.md`, con su ronda registrada: `python tools/sgp_review.py` lo exige en el pre-commit; la fila cita la tarea, el cambio, el subagente, `diff: <hash>` de `python tools/sgp_check.py --diff-hash` y al menos un requisito del cambio) y anota en "Progreso" qué hiciste y qué sigue.
 - Ejecuta `python tools/sgp_docs.py` cuando la tarea tocó código o implementó un diseño (FIX/ARQUITECTURA; en tareas solo documentales no se ejecuta) y procesa su lista: actualiza los documentos VIGENTES afectados por el cambio, **nunca** la historia (CHANGELOG y decisiones: solo se añade entrada nueva) ni las guías; adjunta la tabla «Archivo | Sección | Qué cambió | Cómo lo verificaste». Si la máquina tiene el agente `docs-syncer`, pásale la lista, el diff y el cambio activo (`changes/CHG-*.md`); si no, aplica tú la misma regla.
 
 ## Convenciones

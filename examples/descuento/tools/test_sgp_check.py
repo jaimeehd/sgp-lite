@@ -112,13 +112,6 @@ class Estructura(Base):
         rc, out = self.run_check(r)
         self.assertEqual(rc, 1); self.assertIn("T001a no tiene «Hecho cuando:»", out)
 
-    def test_revision_exige_criterio_de_specs(self):
-        r = self.repo({"changes/CHG-001-x.md": change(estado="revision", criterios="- [ ] x\n")})
-        rc, out = self.run_check(r)
-        self.assertEqual(rc, 1); self.assertIn("sin criterio que cubra `specs/`", out)
-        r = self.repo({"changes/CHG-001-x.md": change(estado="revision")})
-        self.assertEqual(self.run_check(r)[0], 0)
-
     def test_tarea_sin_requisito(self):
         r = self.repo({"changes/CHG-001-x.md": change(tasks="- [x] T001 uno\n  Hecho cuando: ok\n- [x] T002 [EXP-002] d\n  Hecho cuando: ok\n")})
         rc, out = self.run_check(r)

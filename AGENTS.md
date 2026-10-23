@@ -22,6 +22,15 @@ SGP Lite: metodología spec-driven para trabajar con agentes de IA, más la pol�
 - Los tools son solo-stdlib (Python 3.8+): no se agregan dependencias.
 - Un cambio equivale a un alcance declarado; lo demás se reporta, no se mezcla.
 
+## El kit como herramienta (fuera del flujo SGP)
+
+Este repositorio es la **caja de herramientas** del método, no un proyecto gestionado con el propio
+método: no tiene `changes/CHG-*` ni `docs/LOG-PROCESO.md`, y sus cambios no llevan ficha de cambio ni
+fila de revisión. Se validan con la suite del kit (`cd kit && python -m unittest discover -s tools -p "test_*.py"`),
+el verificador del ejemplo y la revisión de código; el hook `commit-msg` sella el resultado como
+prueba de que esas puertas corrieron. Los proyectos que adoptan el kit sí siguen el flujo, según su
+forma de ADOPCION.
+
 ## Idioma y convenciones
 - La documentación se escribe en **español neutro**: sin voseo ni regionalismos.
 - El código (nombres, identificadores y comentarios técnicos) puede escribirse en inglés.

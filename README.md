@@ -107,7 +107,7 @@ el kit define por sí solo.
 ```bash
 cd kit
 python tools/sgp_check.py --help
-python -m unittest tools/test_sgp_check.py -v   # 79 pruebas del propio verificador
+python -m unittest tools/test_sgp_check.py -v   # 78 pruebas del propio verificador
 ```
 
 Guardas: `python tools/sgp_links.py` (enlaces relativos y anclas) y `python tools/sgp_fresh.py --require README.md` (frescura con dueño); `--strict` las convierte en fallo y este repo ya las ejecuta en CI (job `guardas`).
@@ -145,7 +145,7 @@ Si dudas de **cuánto** usar según el tamaño o la criticidad de tu proyecto, e
    `kit/prompts.md`, `kit/METODOLOGIA.md`, `kit/ADOPCION.md`.)
 2. Edita `docs/constitution.md`, `AGENTS.md` y los comandos de `sgp.yaml` (build, tests, lint,
    `test_por_requisito`) para tu stack.
-3. Instala los hooks: `cp tools/pre-commit .git/hooks/pre-commit && cp tools/commit-msg .git/hooks/commit-msg && chmod +x .git/hooks/pre-commit .git/hooks/commit-msg` (el `commit-msg` valida el asunto —convención `tipo[alcance]: asunto`, un solo `CHG-NNN`—, re-ejecuta las tres puertas y sella el resultado: `Gate: ...`).
+3. (Forma 4 de ADOPCION) Instala los hooks: `cp tools/pre-commit .git/hooks/pre-commit && cp tools/commit-msg .git/hooks/commit-msg && chmod +x .git/hooks/pre-commit .git/hooks/commit-msg` (el `commit-msg` valida el asunto —convención `tipo[alcance]: asunto`, un solo `CHG-NNN`—, re-ejecuta las tres puertas y sella el resultado: `Gate: ...`). Si eliges una forma más ligera (1-3), no los instales: el verificador y las pruebas funcionan sin ellos.
 
 ### Paso 2 — Skills del kit (si tu agente soporta Agent Skills)
 

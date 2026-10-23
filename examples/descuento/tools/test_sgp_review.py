@@ -188,6 +188,34 @@ class PuertaRevisionTests(unittest.TestCase):
         self.assertEqual(0, p.returncode, p.stdout + p.stderr)
         return p.stdout.strip()
 
+    def _con_requisitos(self, repo, ids="[EXP-001]"):
+        archivo = repo / "changes" / "CHG-999-prueba.md"
+        texto = archivo.read_text(encoding="utf-8").replace(
+            "id: CHG-999\n", f"id: CHG-999\nrequisitos: {ids}\n")
+        archivo.write_text(texto, encoding="utf-8")
+        _git(repo, "add", "changes/CHG-999-prueba.md")
+
+    def test_fila_nueva_sin_requisito_falla(self):
+        repo = self._repo()
+        self._con_requisitos(repo)
+        h = self._hash(repo)
+        self._fila_log(repo, "revisión de T001 con senior-reviewer (subagente ses_123) "
+                             f"diff: {h}", fecha="2026-10-23")
+        self._marcar(repo)
+        codigo, salida = self._validar(repo)
+        self.assertEqual(1, codigo, salida)
+        self.assertIn("requisito", salida)
+
+    def test_fila_nueva_con_requisito_pasa(self):
+        repo = self._repo()
+        self._con_requisitos(repo)
+        h = self._hash(repo)
+        self._fila_log(repo, "revisión de T001 (EXP-001) con senior-reviewer (subagente ses_123) "
+                             f"diff: {h}", fecha="2026-10-23")
+        self._marcar(repo)
+        codigo, salida = self._validar(repo)
+        self.assertEqual(0, codigo, salida)
+
     def test_fila_nueva_con_fuente_pasa(self):
         repo = self._repo()
         h = self._hash(repo)
