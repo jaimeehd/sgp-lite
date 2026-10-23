@@ -88,6 +88,14 @@ class SgpKitTests(unittest.TestCase):
         self.assertEqual(1, len(backups))
         self.assertEqual("MIA", backups[0].read_text(encoding="utf-8"))
 
+    def test_hash_normaliza_finales_de_linea(self):
+        # Windows + core.autocrlf: CRLF en el árbol no debe parecer una edición
+        a = self.base / "lf.txt"
+        b = self.base / "crlf.txt"
+        a.write_bytes(b"uno\ndos\n")
+        b.write_bytes(b"uno\r\ndos\r\n")
+        self.assertEqual(sgp_kit.sha256(a), sgp_kit.sha256(b))
+
     def test_cli_version_sin_accion_ni_source(self):
         # --version funciona solo: informa la versión del kit sin exigir acción ni --source
         rc = sgp_kit.main(["--version"])

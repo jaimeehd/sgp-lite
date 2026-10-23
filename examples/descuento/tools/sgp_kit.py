@@ -32,11 +32,12 @@ MANIFEST = "sgp-kit.manifest"
 
 
 def sha256(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as fh:
-        for chunk in iter(lambda: fh.read(65536), b""):
-            h.update(chunk)
-    return h.hexdigest()
+    """Hash con finales de línea normalizados (CRLF→LF).
+
+    En Windows, un checkout con `core.autocrlf` deja CRLF en el árbol: sin normalizar,
+    el archivo parece «editado» y `update` lo reporta como conflicto falso."""
+    data = path.read_bytes().replace(b"\r\n", b"\n")
+    return hashlib.sha256(data).hexdigest()
 
 
 def read_version(source: Path) -> str:

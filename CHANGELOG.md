@@ -84,6 +84,11 @@ Historial de versiones de **sgp-lite** (kit, política de ingeniería y protocol
   del humano). (4) Se retira `max_iteraciones_por_tarea`: era una regla declarada sin sensor y pasa
   a ser una guía de trabajo sin clave de configuración. 6 pruebas nuevas (79 en
   `test_sgp_check.py`, 23 en `test_sgp_review.py`). Propagado al ejemplo y al zip.
+- kit 1.12.1: **el instalador no confunde CRLF con ediciones**. `sgp_kit.py` normaliza los
+  finales de línea (CRLF→LF) al calcular el hash de un archivo gestionado: en Windows, un
+  checkout con `core.autocrlf` dejaba CRLF en el árbol y `update` lo reportaba como «editado
+  localmente» (conflicto y respaldo falsos). Con archivos LF o CRLF del mismo contenido el
+  hash coincide. 1 prueba nueva (11 en `test_sgp_kit.py`). Propagado al ejemplo y al zip.
 
 ### 2026-10-20
 - kit 1.8.1: la guarda de enlaces `sgp_links.py` revisa **el universo que git considera del
