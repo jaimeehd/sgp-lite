@@ -1,5 +1,5 @@
 """Pruebas del verificador. Ejecutar:  python -m unittest tools/test_sgp_check.py -v"""
-import os, subprocess, sys, tempfile, textwrap, unittest
+import datetime, os, shutil, subprocess, sys, tempfile, textwrap, unittest
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -17,18 +17,29 @@ SPEC = textwrap.dedent("""\
 """)
 
 
-def change(estado="aplicando", ids="[EXP-001, EXP-002]", tasks=None, extra="", inicio="2026-09-22", apetito=3, carril="normal", diseno=""):
+def change(estado="aplicando", ids="[EXP-001, EXP-002]", tasks=None, extra="", inicio="2026-09-22", apetito=3, carril="normal", diseno="", criterios="- [ ] x"):
     tasks = tasks if tasks is not None else (
         "- [x] T001 [EXP-001] uno\n  Hecho cuando: pasa\n- [x] T002 [EXP-002] dos\n  Hecho cuando: pasa\n")
     return (f"---\nid: CHG-001\ncarril: {carril}\nestado: {estado}\napetito_dias: {apetito}\ninicio: {inicio}\nrequisitos: {ids}\n---\n"
-            f"## Criterios de finalización\n- [ ] x\n\n{diseno}\n## Tareas\n{tasks}\n{extra}")
+            f"## Criterios de finalización\n{criterios}\n\n{diseno}\n## Tareas\n{tasks}\n{extra}")
 
 
-def sgp_yaml(**cmd):
-    lines = ["rutas:", "  tests: tests", "comandos:"]
+def sgp_yaml(ratchet=None, **cmd):
+    lines = ["rutas:", "  tests: tests"]
+    if ratchet:
+        lines.append(f"  ratchet: {ratchet}")
+    lines.append("comandos:")
     for k in ("build", "tests", "lint", "test_por_requisito"):
         lines.append(f'  {k}: "{cmd.get(k, "")}"')
     return "\n".join(lines) + "\n"
+
+
+def _env(extra=None):
+    """Entorno de las pruebas: hermético frente al SGP_TESTS_APPROVED del shell (el escape
+    del ratchet se pasa explícito en cada prueba que lo necesita)."""
+    e = {k: v for k, v in os.environ.items() if k != "SGP_TESTS_APPROVED"}
+    e.update(extra or {})
+    return e
 
 
 class Base(unittest.TestCase):
@@ -47,9 +58,12 @@ class Base(unittest.TestCase):
         return d.name
 
     def run_check(self, root, *args, env=None):
-        e = dict(os.environ, **(env or {}))
-        p = subprocess.run([PY, CHECK, "--root", root, "--today", "2026-09-24", *args], capture_output=True, text=True, env=e)
+        p = subprocess.run([PY, CHECK, "--root", root, "--today", "2026-09-24", *args],
+                           capture_output=True, text=True, env=_env(env))
         return p.returncode, p.stdout + p.stderr
+
+    def git(self, root, *a):
+        return subprocess.run(["git", *a], cwd=root, capture_output=True, text=True)
 
 
 class Estructura(Base):
@@ -200,13 +214,12 @@ class PreMerge(Base):
 
 
 class Git(Base):
-    def git(self, root, *a):
-        return subprocess.run(["git", *a], cwd=root, capture_output=True, text=True)
-
     def setup_repo(self):
         r = self.repo({"tests/test_core.py": "def test_a():\n    assert 1 == 1\n"})
         self.git(r, "init", "-q"); self.git(r, "config", "user.email", "a@b.c"); self.git(r, "config", "user.name", "t")
-        self.git(r, "add", "-A"); self.git(r, "commit", "-qm", "base")
+        self.git(r, "add", "-A")
+        p = self.git(r, "-c", "commit.gpgsign=false", "commit", "-qm", "base")
+        self.assertEqual(p.returncode, 0, p.stderr)
         return r
 
     def test_ratchet_bloquea_debilitar(self):
@@ -230,6 +243,81 @@ class Git(Base):
         self.git(r, "add", "-A")
         rc, out = self.run_check(r, "--ratchet", env={"SGP_TESTS_APPROVED": "1"})
         self.assertEqual(rc, 0, out)
+
+    def repo_git(self, files):
+        r = self.repo(files)
+        self.git(r, "init", "-q"); self.git(r, "config", "user.email", "a@b.c"); self.git(r, "config", "user.name", "t")
+        self.git(r, "add", "-A")
+        p = self.git(r, "-c", "commit.gpgsign=false", "commit", "-qm", "base")
+        self.assertEqual(p.returncode, 0, p.stderr)
+        return r
+
+    def test_ratchet_sin_git_falla_cerrado(self):
+        # Guarda que no pudo verificar ≠ verde: sin git no hay forma de saber qué se borra.
+        r = self.repo({})
+        rc, out = self.run_check(r, "--ratchet")
+        self.assertEqual(rc, 1); self.assertIn("falla cerrado", out)
+
+    def test_ratchet_nada_que_vigilar_avisa_en_voz_alta(self):
+        # Sin pruebas vigiladas el ratchet NO se calla: avisa y explica cómo configurarlo.
+        r = self.repo_git({})
+        rc, out = self.run_check(r, "--ratchet")
+        self.assertEqual(rc, 0); self.assertIn("nada que vigilar", out); self.assertIn("ratchet:", out)
+
+    def test_ratchet_glob_configurada_detecta_modificacion(self):
+        r = self.repo_git({"sgp.yaml": sgp_yaml(ratchet="tools/test_*.py"),
+                           "tools/test_kit.py": "def test_a():\n    assert 1 == 1\n"})
+        (Path(r) / "tools/test_kit.py").write_text("def test_a():\n    pass\n")
+        self.git(r, "add", "-A")
+        rc, out = self.run_check(r, "--ratchet")
+        self.assertEqual(rc, 1); self.assertIn("tools/test_kit.py", out)
+
+    def test_ratchet_bloquea_borrar_la_ultima_prueba(self):
+        # Borrar TODO el conjunto vigilado (git rm del único fichero): el índice queda sin
+        # pruebas y antes se respondía «nada que vigilar» (verde). El universo suma HEAD.
+        r = self.repo_git({"tests/test_unica.py": "def test_a():\n    assert 1 == 1\n"})
+        self.git(r, "rm", "-q", "tests/test_unica.py")
+        rc, out = self.run_check(r, "--ratchet")
+        self.assertEqual(rc, 1); self.assertIn("tests/test_unica.py", out)
+
+    def test_ratchet_glob_bloquea_borrado(self):
+        r = self.repo_git({"sgp.yaml": sgp_yaml(ratchet="tools/test_*.py"),
+                           "tools/test_kit.py": "def test_a():\n    assert 1 == 1\n",
+                           "tools/test_otra.py": "def test_b():\n    assert 1 == 1\n"})
+        self.git(r, "rm", "-q", "tools/test_kit.py")
+        rc, out = self.run_check(r, "--ratchet")
+        self.assertEqual(rc, 1); self.assertIn("tools/test_kit.py", out)
+
+    def test_ratchet_bloquea_renombrar_fuera_de_la_ruta(self):
+        # `git mv` fuera de la ruta vigilada retira cobertura: no puede pasar en verde.
+        r = self.repo_git({"tests/test_a.py": "def test_a():\n    assert 1 == 1\n"})
+        self.git(r, "mv", "tests/test_a.py", "notas.txt")
+        rc, out = self.run_check(r, "--ratchet")
+        self.assertEqual(rc, 1); self.assertIn("notas.txt", out)
+
+    def test_ratchet_permite_renombrar_dentro(self):
+        r = self.repo_git({"tests/test_a.py": "def test_a():\n    assert 1 == 1\n"})
+        self.git(r, "mv", "tests/test_a.py", "tests/test_b.py")
+        rc, out = self.run_check(r, "--ratchet")
+        self.assertEqual(rc, 0, out)
+
+    def test_ratchet_bloquea_renombrar_y_debilitar(self):
+        original = "".join(f"def test_{i}():\n    assert {i} == {i}\n\n" for i in range(5))
+        r = self.repo_git({"tests/test_a.py": original})
+        (Path(r) / "tests/test_a.py").write_text(original.replace("assert 0 == 0", "pass", 1))
+        self.git(r, "add", "-A")
+        self.git(r, "mv", "tests/test_a.py", "tests/test_b.py")
+        rc, out = self.run_check(r, "--ratchet")
+        self.assertEqual(rc, 1); self.assertIn("renombrada y modificada", out)
+
+    def test_ratchet_varias_rutas_por_coma(self):
+        r = self.repo_git({"sgp.yaml": sgp_yaml(ratchet="tests, extras"),
+                           "tests/test_core.py": "def test_a():\n    assert 1 == 1\n",
+                           "extras/test_extra.py": "def test_b():\n    assert 1 == 1\n"})
+        (Path(r) / "extras/test_extra.py").write_text("def test_b():\n    pass\n")
+        self.git(r, "add", "-A")
+        rc, out = self.run_check(r, "--ratchet")
+        self.assertEqual(rc, 1); self.assertIn("extras/test_extra.py", out)
 
 
 class Borrador(Base):
@@ -265,6 +353,200 @@ class Mayor(Base):
                             tasks="- [x] T001 [EXP-001] uno\n  Hecho cuando: ok\n- [x] T002 [OTR-001] dos\n  Hecho cuando: ok\n")})
         rc, out = self.run_check(r)
         self.assertEqual(rc, 0); self.assertIn("toca 2 dominios", out); self.assertIn("sube a carril 'mayor'", out)
+
+
+class CommitMsg(Base):
+    """--commit-msg: falla cerrado, valida la convención y sella con las tres puertas re-ejecutadas."""
+
+    def repo_msg(self, files=None):
+        r = self.repo({"changes/CHG-001-x.md": change(), **(files or {})})
+        self.git(r, "init", "-q"); self.git(r, "config", "user.email", "a@b.c"); self.git(r, "config", "user.name", "t")
+        self.git(r, "add", "-A")
+        p = self.git(r, "-c", "commit.gpgsign=false", "commit", "-qm", "base")
+        self.assertEqual(p.returncode, 0, p.stderr)
+        return r
+
+    def run_msg(self, root, texto):
+        f = Path(root) / "_msg.tmp"
+        f.write_text(texto, encoding="utf-8")
+        p = subprocess.run([PY, CHECK, "--root", root, "--today", "2026-09-24", "--commit-msg", str(f)],
+                           capture_output=True, text=True, encoding="utf-8", errors="replace",
+                           env=_env({"PYTHONIOENCODING": "utf-8"}))
+        return p.returncode, p.stdout + p.stderr, f.read_text(encoding="utf-8")
+
+    def test_sin_fichero_falla_cerrado(self):
+        p = subprocess.run([PY, CHECK, "--root", self.repo({}), "--commit-msg", ""], capture_output=True,
+                           text=True, env=_env())
+        self.assertEqual(p.returncode, 1)
+        self.assertIn("fichero del mensaje", p.stdout + p.stderr)
+
+    def test_mensaje_vacio_falla(self):
+        rc, out, _ = self.run_msg(self.repo_msg(), "\n  \n")
+        self.assertEqual(rc, 1); self.assertIn("vacío", out)
+
+    def test_asunto_sin_convencion_falla(self):
+        rc, out, _ = self.run_msg(self.repo_msg(), "arreglar cosas varias\n")
+        self.assertEqual(rc, 1); self.assertIn("convención", out)
+
+    def test_dos_cambios_en_un_commit_falla(self):
+        rc, out, _ = self.run_msg(self.repo_msg(), "feat: migración CHG-001 y CHG-002\n")
+        self.assertEqual(rc, 1); self.assertIn("CHG-001, CHG-002", out)
+
+    def test_sella_con_tres_puertas(self):
+        rc, out, texto = self.run_msg(self.repo_msg(), "feat(tools): añade la guarda\n\nCuerpo del cambio.\n")
+        self.assertEqual(rc, 0, out)
+        self.assertIn("Gate: sgp_check 0 err | sgp_review OK | ratchet sin-tests", texto)
+
+    def test_ignora_comentarios_y_tijera_de_git(self):
+        # COMMIT_EDITMSG real de `git commit -v`: comentarios del índice y diff tras la tijera.
+        # Solo cuenta el mensaje: ni el diff ni los comentarios lo rechazan, y el fichero final
+        # queda con el mensaje limpio + sello (antes de la tijera, que Git descarta al limpiar).
+        bruto = ("feat: cierra CHG-001\n\n# Changes to be committed:\n"
+                 "#\tmodified:   changes/CHG-002-y.md\n"
+                 "# ------------------------ >8 ------------------------\n"
+                 "# Everything below it will be ignored.\n"
+                 "diff --git a/changes/CHG-002-y.md b/changes/CHG-002-y.md\n+CHG-003\n")
+        rc, out, texto = self.run_msg(self.repo_msg(), bruto)
+        self.assertEqual(rc, 0, out)
+        self.assertIn("Gate: ", texto)
+        self.assertNotIn("# Changes to be committed", texto)
+        self.assertNotIn("diff --git", texto)
+
+    def test_solo_comentarios_es_mensaje_vacio(self):
+        rc, out, _ = self.run_msg(self.repo_msg(), "# Changes to be committed:\n#\tmodified: x\n")
+        self.assertEqual(rc, 1); self.assertIn("vacío", out)
+
+    def test_estructura_valida_el_indice_no_el_arbol(self):
+        # El índice pierde sgp.yaml pero el árbol lo conserva: el sello debe hablar del commit.
+        r = self.repo_msg()
+        self.git(r, "rm", "--cached", "-q", "sgp.yaml")
+        self.assertTrue((Path(r) / "sgp.yaml").is_file())
+        rc, out, texto = self.run_msg(r, "feat: x\n")
+        self.assertEqual(rc, 1); self.assertIn("falta sgp.yaml", out); self.assertNotIn("Gate:", texto)
+
+    def test_revision_en_rojo_rechaza_sin_sello(self):
+        pendiente = ("- [ ] T001 [EXP-001] uno\n  Hecho cuando: pasa\n"
+                     "- [x] T002 [EXP-002] dos\n  Hecho cuando: pasa\n")
+        r = self.repo_msg({"changes/CHG-001-x.md": change(tasks=pendiente),
+                           "docs/LOG-PROCESO.md": "| Fecha | # | Tipo | Qué | Estado | Referencia |\n"
+                                                  "|---|---|---|---|---|---|\n"})
+        (Path(r) / "changes/CHG-001-x.md").write_text(
+            change(tasks=pendiente.replace("- [ ] T001", "- [x] T001")), encoding="utf-8")
+        self.git(r, "add", "-A")
+        rc, out, texto = self.run_msg(r, "feat: cierra la tarea\n")
+        self.assertEqual(rc, 1); self.assertIn("ronda de revisión", out); self.assertNotIn("Gate:", texto)
+
+    def test_sello_idempotente(self):
+        r = self.repo_msg()
+        rc, out, texto = self.run_msg(r, "feat: x\n")
+        self.assertEqual(rc, 0, out)
+        rc, out, texto2 = self.run_msg(r, texto)
+        self.assertEqual(rc, 0, out)
+        self.assertEqual(texto2.count("Gate:"), 1)
+
+    def test_merge_sin_sello(self):
+        rc, _, texto = self.run_msg(self.repo_msg(), "Merge branch 'algo' en main\n")
+        self.assertEqual(rc, 0); self.assertNotIn("Gate:", texto)
+
+    def test_estructura_en_rojo_rechaza_sin_sello(self):
+        r = self.repo_msg({"sgp.yaml": None})
+        rc, out, texto = self.run_msg(r, "feat: x\n")
+        self.assertEqual(rc, 1); self.assertIn("falta sgp.yaml", out); self.assertNotIn("Gate:", texto)
+
+    def test_ratchet_en_rojo_rechaza_sin_sello(self):
+        r = self.repo_msg({"tests/test_core.py": "def test_a():\n    assert 1 == 1\n"})
+        (Path(r) / "tests/test_core.py").write_text("def test_a():\n    pass\n")
+        self.git(r, "add", "-A")
+        rc, out, texto = self.run_msg(r, "feat: toca pruebas\n")
+        self.assertEqual(rc, 1); self.assertIn("SGP_TESTS_APPROVED=1", out); self.assertNotIn("Gate:", texto)
+
+
+class HookSh(Base):
+    """El wrapper `tools/commit-msg` (sh), de extremo a extremo donde hay sh (Git Bash/CI)."""
+
+    @unittest.skipUnless(shutil.which("sh"), "sin sh en PATH: se omite el wrapper")
+    def test_wrapper_valida_y_sella(self):
+        # La puerta de estructura corre sin --today: el cambio empieza hoy para no agotar apetito.
+        r = self.repo({"changes/CHG-001-x.md": change(inicio=datetime.date.today().isoformat())})
+        tools = Path(r) / "tools"
+        tools.mkdir()
+        for n in ("sgp_check.py", "sgp_review.py", "commit-msg"):
+            shutil.copy2(Path(__file__).with_name(n), tools / n)
+        self.git(r, "init", "-q"); self.git(r, "config", "user.email", "a@b.c"); self.git(r, "config", "user.name", "t")
+        self.git(r, "add", "-A")
+        p = self.git(r, "-c", "commit.gpgsign=false", "commit", "-qm", "base")
+        self.assertEqual(p.returncode, 0, p.stderr)
+        msg = Path(r) / "_msg.tmp"
+        msg.write_text("feat: x\n", encoding="utf-8")
+        p = subprocess.run(["sh", "tools/commit-msg", str(msg)], cwd=r, capture_output=True, text=True,
+                           encoding="utf-8", errors="replace",
+                           env=_env({"PYTHONIOENCODING": "utf-8"}))
+        self.assertEqual(p.returncode, 0, p.stdout + p.stderr)
+        self.assertIn("Gate: sgp_check 0 err", msg.read_text(encoding="utf-8"))
+
+
+class Hecho(Base):
+    """Cierre duro: 'hecho' exige consistencia de cierre (antes: ningún test cubría el salto)."""
+    CRIT_OK = "- [x] todo cubierto con prueba en verde\n- [x] demo del flujo pasó\n"
+
+    def test_hecho_consistente_pasa(self):
+        r = self.repo({"changes/CHG-001-x.md": change(estado="hecho", criterios=self.CRIT_OK)})
+        rc, out = self.run_check(r)
+        self.assertEqual(rc, 0, out)
+
+    def test_hecho_criterio_sin_marcar_falla(self):
+        r = self.repo({"changes/CHG-001-x.md": change(estado="hecho", criterios="- [x] uno\n- [ ] dos sin marcar\n")})
+        rc, out = self.run_check(r)
+        self.assertEqual(rc, 1); self.assertIn("criterio(s) sin marcar", out); self.assertIn("dos sin marcar", out)
+
+    def test_hecho_tarea_pendiente_falla(self):
+        r = self.repo({"changes/CHG-001-x.md": change(estado="hecho", criterios=self.CRIT_OK,
+                        tasks="- [ ] T001 [EXP-001] uno\n  Hecho cuando: pasa\n- [x] T002 [EXP-002] dos\n  Hecho cuando: pasa\n")})
+        rc, out = self.run_check(r)
+        self.assertEqual(rc, 1); self.assertIn("tareas pendientes (T001)", out)
+
+    def test_hecho_sin_seccion_criterios_falla(self):
+        ch = change(estado="hecho", criterios=self.CRIT_OK).replace("## Criterios de finalización\n", "")
+        rc, out = self.run_check(self.repo({"changes/CHG-001-x.md": ch}))
+        self.assertEqual(rc, 1); self.assertIn("sin sección «## Criterios de finalización»", out)
+
+    def test_hecho_sin_tareas_falla(self):
+        r = self.repo({"changes/CHG-001-x.md": change(estado="hecho", criterios=self.CRIT_OK, tasks="")})
+        rc, out = self.run_check(r)
+        self.assertEqual(rc, 1); self.assertIn("'hecho' sin tareas", out)
+
+    def test_hecho_tarea_sin_hecho_cuando_falla(self):
+        r = self.repo({"changes/CHG-001-x.md": change(estado="hecho", criterios=self.CRIT_OK,
+                        tasks="- [x] T001 [EXP-001] uno\n- [x] T002 [EXP-002] dos\n  Hecho cuando: pasa\n")})
+        rc, out = self.run_check(r)
+        self.assertEqual(rc, 1); self.assertIn("sin «Hecho cuando:»", out)
+
+    def test_hecho_con_marca_por_aclarar_falla(self):
+        r = self.repo({"changes/CHG-001-x.md": change(estado="hecho", criterios=self.CRIT_OK, extra="\n[POR-ACLARAR] duda\n")})
+        rc, out = self.run_check(r)
+        self.assertEqual(rc, 1); self.assertIn("[POR-ACLARAR]", out)
+
+    def test_hecho_sin_criterios_falla(self):
+        r = self.repo({"changes/CHG-001-x.md": change(estado="hecho", criterios="")})
+        rc, out = self.run_check(r)
+        self.assertEqual(rc, 1); self.assertIn("sin criterios de finalización", out)
+
+    def test_hecho_criterio_con_asterisco_sin_marcar_falla(self):
+        r = self.repo({"changes/CHG-001-x.md": change(estado="hecho", criterios="- [x] uno\n* [ ] otro\n")})
+        rc, out = self.run_check(r)
+        self.assertEqual(rc, 1); self.assertIn("1 criterio(s) sin marcar", out)
+
+    def test_hecho_no_deriva_con_specs(self):
+        # Los cruces externos (specs/, carril) se saltan: pueden cambiar después de cerrado el cambio.
+        r = self.repo({"changes/CHG-001-x.md": change(estado="hecho", ids="[EXP-001, EXP-009]", criterios=self.CRIT_OK)})
+        rc, out = self.run_check(r)
+        self.assertEqual(rc, 0, out)
+
+    def test_cancelado_sigue_saltandose(self):
+        r = self.repo({"changes/CHG-001-x.md": change(estado="cancelado",
+                        tasks="- [ ] T001 [EXP-001] uno\n  Hecho cuando: pasa\n")})
+        rc, out = self.run_check(r)
+        self.assertEqual(rc, 0, out)
 
 
 class Nuevo(Base):

@@ -100,10 +100,11 @@ Dentro de tu proyecto:
    ```
    Si no sabes cuáles son, pregúntale a tu asistente: "¿Qué comandos uso para compilar y para correr las pruebas de este proyecto?".
 3. **Abre `AGENTS.md`** y escribe dos o tres líneas sobre qué es tu proyecto y qué comandos usa.
-4. **Instala el candado de pruebas** (evita que se borren pruebas por accidente; el hook también ejecuta el verificador y, si tu proyecto usa `docs/LOG-PROCESO.md`, la puerta de revisión). En Git Bash, desde la raíz del proyecto:
+4. **Instala los candados de commit** (evita que se borren pruebas por accidente y sella cada mensaje con el resultado de sus puertas; los hooks también ejecutan el verificador y, si tu proyecto usa `docs/LOG-PROCESO.md`, la puerta de revisión). En Git Bash, desde la raíz del proyecto:
    ```bash
    cp tools/pre-commit .git/hooks/pre-commit
-   chmod +x .git/hooks/pre-commit
+   cp tools/commit-msg .git/hooks/commit-msg
+   chmod +x .git/hooks/pre-commit .git/hooks/commit-msg
    ```
    Este paso requiere que la carpeta ya sea un repositorio Git (si no lo es, ejecuta antes `git init`).
 5. **(Opcional) Instala las skills del kit** si tu asistente las soporta:
@@ -228,13 +229,15 @@ El verificador escribe cada problema en español y dice **cómo corregirlo**. Es
 | `sensor 'build' sin configurar` | Falta el comando de compilar en `sgp.yaml` | Complétalo (ver sección 4.2, paso 2) |
 | `contiene marcas [POR-ACLARAR] sin resolver` | Quedaron dudas sin responder en la especificación | Responde las dudas y borra la marca |
 | `estado 'revision' con tareas pendientes` | Cambiaste a revisión con tareas sin terminar | Termina las tareas o vuelve a `aplicando` |
+| `estado 'hecho' con criterio(s) sin marcar` | Cerraste el cambio dejando criterios de finalización abiertos, tareas pendientes o tareas sin «Hecho cuando:» | Marca `[x]` solo lo que de verdad se cumple o vuelve a `aplicando` |
+| `estado 'hecho' sin criterios de finalización` | Marcaste el cambio como hecho sin ningún criterio verificable | Escribe al menos un criterio y márcalo `[x]` |
 
 ### El candado de pruebas
 
 Si el asistente (o tú) intenta borrar o debilitar una prueba existente, Git no dejará hacer el `commit` y mostrará:
 
 ```
-[ERROR] ratchet de pruebas: el commit elimina o modifica líneas existentes en tests/
+[ERROR] ratchet de pruebas: el commit elimina o modifica líneas existentes en tests
 ```
 
 Es una protección, no un fallo. Si de verdad el cambio en la prueba es correcto y lo apruebas tú, se autoriza con:
@@ -242,6 +245,10 @@ Es una protección, no un fallo. Si de verdad el cambio en la prueba es correcto
 ```bash
 SGP_TESTS_APPROVED=1 git commit -m "mensaje"
 ```
+
+### El sello de cada commit
+
+El segundo hook (`tools/commit-msg`) añade al final del mensaje una línea de sello con el resultado de las tres puertas, por ejemplo `Gate: sgp_check 0 err | sgp_review OK | ratchet 0 bloq`. Si el sello dice `ratchet sin-tests`, es que no hay pruebas vigiladas: crea `tests/` (o define la ruta real con `ratchet:` en `sgp.yaml`) y el sello lo reflejará. Si dice `sgp_review INACTIVA`, es que tu proyecto no usa `docs/LOG-PROCESO.md` y esa puerta no aplica. Si un mensaje no sigue la convención (`tipo[alcance]: asunto`) o menciona dos cambios distintos (`CHG-001` y `CHG-002`), Git rechaza el commit y explica cómo corregirlo. Los merge, revert, fixup y squash se aceptan sin sello.
 
 ---
 

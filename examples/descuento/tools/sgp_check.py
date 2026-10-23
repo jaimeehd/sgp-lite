@@ -5,11 +5,17 @@
     python tools/sgp_check.py --run               # además build/tests/lint de sgp.yaml
     python tools/sgp_check.py --stage pre-merge   # estricto: ejecuta todo + trazabilidad por requisito
     python tools/sgp_check.py --ratchet           # bloquea borrar/debilitar pruebas (git, staged)
+    python tools/sgp_check.py --commit-msg FICHERO  # valida y sella el mensaje (hook commit-msg)
     python tools/sgp_check.py --nuevo mi-cambio   # crea changes/CHG-00N-mi-cambio.md desde la plantilla
 
 Mensajes escritos para que un agente sepa QUÉ falta y CÓMO corregirlo. Salida 0 = sin errores.
+El ratchet vigila las rutas de `rutas.ratchet` (por defecto, `rutas.tests`): un renombrado que
+saque una prueba de la ruta vigilada cuenta como retirada. `--commit-msg` valida la convención
+del asunto y que se cite un solo `CHG-NNN`, re-ejecuta las tres puertas y sella el mensaje.
+`estado: hecho` exige consistencia de cierre (criterios y tareas marcados); sus cruces externos
+con specs/ y carril se omiten a propósito, porque pueden cambiar después de cerrado el cambio.
 """
-import argparse, datetime, os, re, subprocess, sys
+import argparse, datetime, fnmatch, os, re, subprocess, sys, tempfile
 from pathlib import Path
 
 ESTADOS = ["propuesta", "aplicando", "revision", "hecho", "cancelado"]
@@ -173,7 +179,38 @@ def check_change(path, reqs, rep_main, today, cfg):
     if estado not in ESTADOS:
         rep.error(name, f"estado inválido '{estado}'", "usa: " + ", ".join(ESTADOS))
         return None
-    if estado in ("hecho", "cancelado"):
+    if estado == "cancelado":
+        return None
+    if estado == "hecho":
+        # Cierre duro: un cambio 'hecho' ya no se verifica entero (los cruces con
+        # specs/ pueden cambiar después de cerrado), pero su CONSISTENCIA de cierre
+        # sí se exige: sin esto, 'hecho' apagaba los sensores sin comprobar nada.
+        mm = re.search(r"^##\s+Criterios de finalización[^\n]*\n(.*?)(?=^##\s|\Z)", text, re.S | re.M)
+        if not mm:
+            rep.error(name, "estado 'hecho' sin sección «## Criterios de finalización»",
+                      "recupera la sección y márcala con [x], o vuelve a 'aplicando'")
+        else:
+            criterios = re.findall(r"^\s*[-*+]\s*\[([ xX])\]\s*(.*)$", mm.group(1), re.M)
+            abiertos = [txt for marca, txt in criterios if marca == " "]
+            if not criterios:
+                rep.error(name, "estado 'hecho' sin criterios de finalización",
+                          "escribe al menos un criterio verificable y márcalo [x]")
+            elif abiertos:
+                rep.error(name, f"estado 'hecho' con {len(abiertos)} criterio(s) sin marcar: "
+                                f"{'; '.join((a or '(sin texto)')[:60] for a in abiertos[:3])}",
+                          "marca con [x] solo lo que de verdad se cumple, o vuelve a 'aplicando'")
+        if not tasks:
+            rep.error(name, "estado 'hecho' sin tareas", "añade las tareas que se ejecutaron o vuelve a 'aplicando'")
+        pend = [t["n"] for t in tasks if not t["done"]]
+        if pend:
+            rep.error(name, f"estado 'hecho' con tareas pendientes ({', '.join(pend)})",
+                      "termina las tareas o vuelve a 'aplicando'")
+        sin_hc = [t["n"] for t in tasks if "hecho cuando" not in t["block"].lower()]
+        if sin_hc:
+            rep.error(name, f"tarea(s) de un cambio hecho sin «Hecho cuando:» ({', '.join(sin_hc)})",
+                      "añade la condición verificable que se cumplió")
+        if PENDING in text:
+            rep.error(name, f"contiene marcas {PENDING} sin resolver", "resuélvelas con el humano y elimina la marca")
         return None
     if estado == "propuesta":          # un borrador no bloquea: sus errores se degradan a avisos
         rep = Report()
@@ -308,25 +345,91 @@ def check_constitution(root, cfg, rep, strict):
                 "indica el sensor (tests, ratchet, estructura, lint) o «humano»")
 
 
+def _patrones_ratchet(cfg):
+    """Rutas vigiladas por el ratchet: `rutas.ratchet` (varias, separadas por coma, admite
+    comodines) y, si no está, `rutas.tests` por compatibilidad con proyectos existentes."""
+    crudo = cfg.get("ratchet") or cfg.get("tests") or "tests"
+    return [p.strip() for p in crudo.split(",") if p.strip()]
+
+
+def _cubierto(ruta, patron):
+    if any(ch in patron for ch in "*?["):
+        return fnmatch.fnmatch(ruta, patron)
+    base = patron.rstrip("/")
+    return ruta == base or ruta.startswith(base + "/")
+
+
+def _universo_versionado(root, env):
+    """Rutas versionadas: índice + árbol de HEAD. Un borrado staged sale del índice pero sigue
+    en HEAD; sin sumar HEAD, borrar TODA la suite vigilada parecía «nada que vigilar» y pasaba
+    en verde (el caso que el ratchet existe para impedir). None = git no responde."""
+    rutas = set()
+    ls = subprocess.run(["git", "ls-files", "-z"], cwd=root, capture_output=True, text=True,
+                        encoding="utf-8", errors="replace", env=env)
+    if ls.returncode != 0:
+        return None
+    rutas.update(f for f in ls.stdout.split("\0") if f)
+    he = subprocess.run(["git", "ls-tree", "-r", "-z", "--name-only", "HEAD"], cwd=root,
+                        capture_output=True, text=True, encoding="utf-8", errors="replace", env=env)
+    if he.returncode == 0:              # sin HEAD (primer commit) no hay árbol que sumar
+        rutas.update(f for f in he.stdout.split("\0") if f)
+    return rutas
+
+
 def ratchet(root, cfg):
+    """Devuelve (rc, detalle): el detalle alimenta el sello del commit-msg. Si no hay
+    pruebas vigiladas NO se calla: avisa y lo deja escrito en el sello (nunca verde silencioso)."""
     if os.environ.get("SGP_TESTS_APPROVED") == "1":
         print("Ratchet omitido: SGP_TESTS_APPROVED=1 (aprobación humana explícita).")
-        return 0
-    tdir = cfg["tests"]
-    proc = subprocess.run(["git", "diff", "--cached", "--numstat", "--", tdir], cwd=root, capture_output=True, text=True)
-    if proc.returncode != 0:
-        print("[AVISO] ratchet: no se pudo ejecutar git; se omite.")
-        return 0
-    bad = [(p[2], int(p[1])) for p in (l.split("\t") for l in proc.stdout.splitlines())
-           if len(p) == 3 and p[1].isdigit() and int(p[1]) > 0]
+        return 0, "omitido"
+    patrones = _patrones_ratchet(cfg)
+    env = dict(os.environ, PYTHONIOENCODING="utf-8")
+    universo = _universo_versionado(root, env)
+    if universo is None:
+        print("[ERROR] ratchet: no se pudo ejecutar git; no se puede verificar el staged (falla cerrado).")
+        return 1, "sin-git"
+    vigilados = [f for f in universo if any(_cubierto(f, p) for p in patrones)]
+    if not vigilados:
+        print(f"[AVISO] ratchet: nada que vigilar; ningún fichero versionado sigue la ruta "
+              f"'{', '.join(patrones)}'.")
+        print("        Cómo corregirlo: crea tus pruebas (p. ej. tests/) o define la ruta real "
+              "con `ratchet:` en la sección `rutas:` de sgp.yaml.")
+        return 0, "sin-tests"
+    pr = subprocess.run(["git", "diff", "--cached", "--numstat", "-z"], cwd=root, capture_output=True,
+                        text=True, encoding="utf-8", errors="replace", env=env)
+    if pr.returncode != 0:
+        print("[ERROR] ratchet: no se pudo ejecutar git diff; no se puede verificar el staged (falla cerrado).")
+        return 1, "sin-git"
+    bad = []
+    regs = [r for r in pr.stdout.split("\0") if r]
+    i = 0
+    while i < len(regs):
+        p = regs[i].split("\t", 2)
+        if len(p) == 3 and p[2] == "" and i + 2 < len(regs):
+            # renombrado (`-z`: add\tdel\t\0vieja\0nueva\0): retirar una prueba de la ruta
+            # vigilada no puede pasar en verde, y renombrar debilitando tampoco.
+            vieja, nueva = regs[i + 1], regs[i + 2]
+            i += 3
+            if not any(_cubierto(vieja, q) for q in patrones):
+                continue                           # no era una prueba vigilada
+            borradas = int(p[1]) if p[1].isdigit() else 0
+            if borradas > 0:
+                bad.append((f"{vieja} (renombrada y modificada)", borradas))
+            elif not any(_cubierto(nueva, q) for q in patrones):
+                bad.append((f"{vieja} -> {nueva} (fuera de la ruta vigilada)", 0))
+            continue
+        i += 1
+        if len(p) == 3 and p[1].isdigit() and int(p[1]) > 0 and any(_cubierto(p[2], q) for q in patrones):
+            bad.append((p[2], int(p[1])))
     if not bad:
-        return 0
-    print(f"[ERROR] ratchet de pruebas: el commit elimina o modifica líneas existentes en {tdir}/")
+        return 0, "0 bloq"
+    print(f"[ERROR] ratchet de pruebas: el commit elimina o modifica líneas existentes en "
+          f"{', '.join(patrones)}")
     for path, n in bad:
-        print(f"        - {path}: {n} línea(s)")
+        print(f"        - {path}: {n} línea(s)" if n else f"        - {path}")
     print("        Cómo corregirlo: no borres ni debilites pruebas para hacer pasar el trabajo. "
           "Si es legítimo, pide aprobación humana y repite con SGP_TESTS_APPROVED=1.")
-    return 1
+    return 1, f"{len(bad)} bloq"
 
 
 def nuevo(root, cfg, slug):
@@ -343,12 +446,139 @@ def nuevo(root, cfg, slug):
     return 0
 
 
+CONVENCIONAL = re.compile(r"^(feat|fix|docs|test|refactor|perf|style|build|ci|chore|revert)"
+                          r"(\([A-Za-z0-9._/-]+\))?!?: \S")
+SIN_SELLO = ("Merge ", "Revert ", "amend! ", "fixup! ", "squash! ")
+TIJERA = "# ------------------------ >8 ------------------------"
+
+
+def _limpiar_mensaje(texto):
+    """Deja solo el mensaje: corta en la tijera de `git commit -v` y descarta las líneas de
+    comentario que Git añade al fichero (estado, ficheros, diff). Sin esto, el diff podía citar
+    otros CHG y rechazar un mensaje correcto, y el sello quedaba tras la tijera: Git lo
+    descartaba al limpiar el mensaje y el hook decía haberlo añadido."""
+    lineas = []
+    for l in texto.splitlines():
+        if l.startswith(TIJERA):
+            break
+        if l.startswith("#"):
+            continue
+        lineas.append(l)
+    limpio = "\n".join(lineas).strip("\n")
+    return (limpio + "\n") if limpio.strip() else ""
+
+
+def _sin_sello(texto):
+    """Quita los sellos `Gate:` finales: un reintento o un rebase no duplica la línea."""
+    lineas = texto.splitlines()
+    while lineas and (not lineas[-1].strip() or lineas[-1].startswith("Gate: ")):
+        lineas.pop()
+    return ("\n".join(lineas).rstrip() + "\n") if lineas else ""
+
+
+def _puerta_estructura(root, today=None):
+    """Sensores de estructura sobre el ÍNDICE (lo que se va a commitear), materializado en un
+    temporal: el árbol de trabajo puede diferir de lo staged y el sello debe hablar del commit,
+    no de una versión que no se está confirmando. Devuelve N errores o None si está en rojo."""
+    env = dict(os.environ, PYTHONIOENCODING="utf-8")
+    with tempfile.TemporaryDirectory() as tmp:
+        idx = subprocess.run(["git", "checkout-index", "-a", "-f", f"--prefix={Path(tmp).as_posix()}/"],
+                             cwd=root, capture_output=True, text=True, encoding="utf-8",
+                             errors="replace", env=env)
+        if idx.returncode != 0:
+            print("[ERROR] commit-msg: no se pudo materializar el índice para validar la estructura:")
+            print(idx.stdout + idx.stderr)
+            return None
+        cmd = [sys.executable, str(Path(__file__).resolve()), "--root", tmp]
+        if today:
+            cmd += ["--today", today]
+        p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace", env=env)
+    salida = p.stdout + p.stderr
+    if p.returncode != 0:
+        print("[ERROR] commit-msg: los sensores de estructura están en rojo:")
+        print(salida)
+        return None
+    m = re.search(r"Resumen: (\d+) error", salida)
+    return int(m.group(1)) if m else 0
+
+
+def _puerta_revision(root):
+    """Puerta de revisión contra el staged. Devuelve (veredicto, rc)."""
+    script = Path(__file__).with_name("sgp_review.py")
+    if not script.is_file():
+        print(f"[ERROR] commit-msg: falta {script.name} junto a sgp_check.py; "
+              "reinstala las herramientas del kit y el hook.")
+        return "ausente", 1
+    env = dict(os.environ, PYTHONIOENCODING="utf-8")
+    p = subprocess.run([sys.executable, str(script), "--root", str(root)],
+                       capture_output=True, text=True, encoding="utf-8", errors="replace", env=env)
+    if p.returncode != 0:
+        print("[ERROR] commit-msg: la puerta de revisión está en rojo:")
+        print(p.stdout + p.stderr)
+        return "FALLA", 1
+    return ("INACTIVA" if "INACTIVA" in p.stdout else "OK"), 0
+
+
+def commit_msg(fichero, root, cfg, today=None):
+    """Puerta del mensaje de commit (hook commit-msg): valida el mensaje, re-ejecuta las tres
+    puertas (estructura sobre el índice, revisión y ratchet) y SELLA el resultado (Gate: ...).
+    Falla cerrado: sin fichero de mensaje no se valida nada."""
+    if not fichero or not Path(fichero).is_file():
+        print("[ERROR] commit-msg: no llega el fichero del mensaje; sin mensaje no se puede validar ni sellar.")
+        print("        Cómo corregirlo: reinstala el hook (cp tools/commit-msg .git/hooks/commit-msg).")
+        return 1
+    try:
+        bruto = Path(fichero).read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        print("[ERROR] commit-msg: el mensaje no está en UTF-8 (revisa i18n.commitEncoding); "
+              "conviértelo y repite, o usa `git commit --no-verify` si es imprescindible.")
+        return 1
+    except OSError as exc:
+        print(f"[ERROR] commit-msg: no se puede leer el mensaje: {exc}")
+        return 1
+    texto = _limpiar_mensaje(bruto)
+    if not texto.strip():
+        print("[ERROR] commit-msg: el mensaje está vacío (solo comentarios o en blanco).")
+        return 1
+    asunto = next(l for l in texto.splitlines() if l.strip())
+    if asunto.startswith(SIN_SELLO):
+        return 0                     # merge/revert/fixup/squash/amend: sin sello (no aportan alcance)
+    if not CONVENCIONAL.match(asunto):
+        print(f"[ERROR] commit-msg: el asunto no sigue la convención (tipo[alcance]: asunto): {asunto}")
+        print('        Cómo corregirlo: p. ej. "feat(tools): añade la guarda X" o "docs: corrige Y".')
+        return 1
+    chgs = sorted(set(re.findall(r"CHG-\d{3}", texto)))
+    if len(chgs) > 1:
+        print(f"[ERROR] commit-msg: el mensaje menciona {len(chgs)} cambios distintos ({', '.join(chgs)});")
+        print("        Un commit = un alcance. Divide el trabajo en commits separados.")
+        return 1
+    n_err = _puerta_estructura(root, today)
+    if n_err is None:
+        return 1
+    verd, rc = _puerta_revision(root)
+    if rc != 0:
+        return 1
+    rc, detalle = ratchet(root, cfg)
+    if rc != 0:
+        return 1
+    sello = f"Gate: sgp_check {n_err} err | sgp_review {verd} | ratchet {detalle}"
+    try:
+        Path(fichero).write_text(_sin_sello(texto) + "\n" + sello + "\n", encoding="utf-8")
+    except OSError as exc:
+        print(f"[ERROR] commit-msg: no se puede escribir el sello en el mensaje: {exc}")
+        return 1
+    print(f"[commit-msg] puertas en verde; sello añadido al mensaje: {sello}")
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser(description="Sensores SGP Lite")
     ap.add_argument("--root", default=".")
     ap.add_argument("--stage", choices=["task", "pre-merge"], default="task")
     ap.add_argument("--run", action="store_true", help="ejecuta build/tests/lint de sgp.yaml")
     ap.add_argument("--ratchet", action="store_true")
+    ap.add_argument("--commit-msg", metavar="FICHERO", dest="commit_msg",
+                    help="valida y sella el mensaje de commit (hook commit-msg)")
     ap.add_argument("--nuevo", metavar="NOMBRE")
     ap.add_argument("--today", help="AAAA-MM-DD (pruebas)")
     ap.add_argument("--version", action="store_true", help="muestra la versión del kit y sale")
@@ -358,8 +588,14 @@ def main():
         return 0
     root = Path(a.root).resolve()
     cfg, cmds = read_config(root)
+    if a.commit_msg is not None:      # "" llega vacío: commit_msg falla cerrado
+        if a.ratchet or a.nuevo:
+            print("[ERROR] --commit-msg no se combina con --ratchet ni --nuevo.")
+            return 1
+        return commit_msg(a.commit_msg, root, cfg, a.today)
     if a.ratchet:
-        return ratchet(root, cfg)
+        rc, _ = ratchet(root, cfg)
+        return rc
     if a.nuevo:
         return nuevo(root, cfg, a.nuevo)
     today = datetime.date.fromisoformat(a.today) if a.today else datetime.date.today()

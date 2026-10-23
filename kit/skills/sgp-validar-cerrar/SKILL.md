@@ -18,5 +18,5 @@ Contexto: el cambio, `specs/` y el resultado de `python tools/sgp_check.py --sta
 
 ## No hacer
 - No marques el cambio como `hecho` sin la aprobación explícita del humano.
-- No marques `estado: hecho` sin la fila de revisión cerrada en `docs/LOG-PROCESO.md` y `python tools/sgp_review.py` en verde: un cambio `hecho` deja de comprobarse, y cerrarlo sin esa ronda es un falso verde.
+- No marques `estado: hecho` sin la fila de revisión cerrada en `docs/LOG-PROCESO.md` y `python tools/sgp_review.py` en verde: de un cambio `hecho` solo se comprueba su consistencia de cierre (criterios y tareas marcados), así que cerrarlo sin esa ronda es un falso verde.
 - No ocultes una prueba trivial o sin cobertura real solo porque el comando devolvió éxito.

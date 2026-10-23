@@ -13,9 +13,9 @@ examples/descuento/
 ├── AGENTS.md  CLAUDE.md  sgp.yaml
 ├── docs/constitution.md  docs/adr/_plantilla.md
 ├── specs/  changes/_plantilla.md
-├── skills/sgp-{especificar,qa-spec,planificar-cambio,ejecutar-tarea,validar-cerrar}/SKILL.md  skills/{system-engineering-policy,protocolo-ingenieria-senior}/SKILL.md
+├── skills/sgp-{documento-requerimientos,especificar,qa-spec,planificar-cambio,ejecutar-tarea,validar-cerrar}/SKILL.md  skills/{system-engineering-policy,protocolo-ingenieria-senior}/SKILL.md
 └── tools/sgp_check.py  tools/sgp_docs.py  tools/sgp_fresh.py  tools/sgp_links.py  tools/sgp_review.py
-    tools/sgp_kit.py  tools/sync_skills.py  tools/pre-commit
+    tools/sgp_kit.py  tools/sync_skills.py  tools/pre-commit  tools/commit-msg
     tools/test_sgp_{check,docs,fresh,links,review,kit}.py
 ```
 
@@ -209,7 +209,7 @@ def test_DESC_002_descuento_fuera_de_rango_falla_con_el_valor(self):
 
 ```
 $ git add tests/test_calculo.py && git commit -m "arreglo rápido"
-[ERROR] ratchet de pruebas: el commit elimina o modifica líneas existentes en tests/
+[ERROR] ratchet de pruebas: el commit elimina o modifica líneas existentes en tests
         - tests/test_calculo.py: 3 línea(s)
         Cómo corregirlo: no borres ni debilites pruebas para hacer pasar el trabajo.
         Si es legítimo, pide aprobación humana y repite con SGP_TESTS_APPROVED=1.
@@ -221,7 +221,7 @@ El commit **no se hizo**. Si de verdad fuera legítimo (una prueba mal escrita),
 
 ## 8. Bonus: un defecto real del propio verificador, encontrado al usarlo
 
-Durante el paso 6, `--stage pre-merge` con `CHG-002` en revisión (carril `rapido`, sin requisitos) mostraba `[AVISO] no hay cambios en estado 'revision'`, que es **falso** — sí lo había, solo que el carril `rapido` no lleva trazabilidad por requisito. Lo corregí en `tools/sgp_check.py` (ahora distingue "no hay ninguno" de "hay, pero es carril rápido") y volví a correr las pruebas del verificador (32 en la versión actual): siguen en verde. La versión corregida es la que trae este zip y también `sgp-lite.zip`.
+Durante el paso 6, `--stage pre-merge` con `CHG-002` en revisión (carril `rapido`, sin requisitos) mostraba `[AVISO] no hay cambios en estado 'revision'`, que es **falso** — sí lo había, solo que el carril `rapido` no lleva trazabilidad por requisito. Lo corregí en `tools/sgp_check.py` (ahora distingue "no hay ninguno" de "hay, pero es carril rápido") y volví a correr las pruebas del verificador (32 en aquella versión; hoy son 66): siguen en verde. La versión corregida es la que trae este zip y también `sgp-lite.zip`.
 
 ---
 

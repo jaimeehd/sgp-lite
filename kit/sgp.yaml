@@ -10,6 +10,11 @@ rutas:
   specs: specs
   cambios: changes
   tests: tests
+# Ratchet real (tools/sgp_check.py --ratchet): rutas de pruebas vigiladas, relativas a la raíz
+# y con `/` (varias por coma), con comodín (p. ej. `ratchet: tests, kit/tools/test_*.py`). Sin
+# esta clave vigila `tests:` por compatibilidad. Si ninguna ruta existe, el ratchet AVISA (nunca
+# un verde silencioso) y el sello del commit-msg deja constancia en el mensaje.
+# ratchet: tests
 # Puerta de revisión (tools/sgp_review.py): claves opcionales con estos mismos
 # valores por defecto. Sin `log_proceso` apuntando a un archivo existente, la
 # puerta avisa que está inactiva y no exige la ronda de revisión.

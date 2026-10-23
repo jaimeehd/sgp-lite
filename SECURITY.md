@@ -8,7 +8,7 @@ Abre un **borrador de aviso de seguridad** en la pestaña *Security* del reposit
 ## Frontera de confianza (importante)
 
 Este kit ejecuta comandos que declares en `sgp.yaml` usando `shell=True`
-(`kit/tools/sgp_check.py`), y el hook `kit/tools/pre-commit` ejecuta el verificador, la puerta de revisión y el ratchet.
+(`kit/tools/sgp_check.py`), y los hooks `kit/tools/pre-commit` y `kit/tools/commit-msg` ejecutan el verificador, la puerta de revisión y el ratchet.
 Consecuencias:
 
 - No instales ni ejecutes el kit sobre un repositorio cuyo `sgp.yaml` o `tools/` no hayas revisado.

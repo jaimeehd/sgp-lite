@@ -86,6 +86,7 @@ más frecuencia y más rápido que antes.
 │       ├── sgp_zip.py           — genera sgp-lite.zip (misma lista de archivos que el instalador)
 │       ├── sync_skills.py       — instala las skills en la ruta de tu agente
 │       ├── pre-commit           — hook de git: verificador, puerta de revisión y ratchet de pruebas
+│       ├── commit-msg           — hook de git: valida el mensaje y lo sella con las tres puertas (Gate: ...)
 │       └── test_*.py            — pruebas de los tools y guardas de este repositorio
 └── examples/
     └── descuento/                — proyecto real y ejecutable de punta a punta (ver docs/ejemplo-practico.md)
@@ -106,10 +107,10 @@ el kit define por sí solo.
 ```bash
 cd kit
 python tools/sgp_check.py --help
-python -m unittest tools/test_sgp_check.py -v   # 32 pruebas del propio verificador
+python -m unittest tools/test_sgp_check.py -v   # 66 pruebas del propio verificador
 ```
 
-Guardas opcionales: `python tools/sgp_links.py` (enlaces relativos y anclas) y `python tools/sgp_fresh.py --require README.md` (frescura con dueño); `--strict` las convierte en fallo para CI.
+Guardas: `python tools/sgp_links.py` (enlaces relativos y anclas) y `python tools/sgp_fresh.py --require README.md` (frescura con dueño); `--strict` las convierte en fallo y este repo ya las ejecuta en CI (job `guardas`).
 
 Para instalar el kit en un repo propio, sigue `kit/LEEME.md`. Si prefieres no usar el instalador,
 descomprime `sgp-lite.zip` en la raíz de tu proyecto (o copia los archivos a mano). El zip se regenera
@@ -144,7 +145,7 @@ Si dudas de **cuánto** usar según el tamaño o la criticidad de tu proyecto, e
    `kit/prompts.md`, `kit/METODOLOGIA.md`, `kit/ADOPCION.md`.)
 2. Edita `docs/constitution.md`, `AGENTS.md` y los comandos de `sgp.yaml` (build, tests, lint,
    `test_por_requisito`) para tu stack.
-3. Instala el hook: `cp tools/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit`.
+3. Instala los hooks: `cp tools/pre-commit .git/hooks/pre-commit && cp tools/commit-msg .git/hooks/commit-msg && chmod +x .git/hooks/pre-commit .git/hooks/commit-msg` (el `commit-msg` valida el asunto —convención `tipo[alcance]: asunto`, un solo `CHG-NNN`—, re-ejecuta las tres puertas y sella el resultado: `Gate: ...`).
 
 ### Paso 2 — Skills del kit (si tu agente soporta Agent Skills)
 

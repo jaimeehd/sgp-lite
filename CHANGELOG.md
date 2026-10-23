@@ -29,6 +29,30 @@ Historial de versiones de **sgp-lite** (kit, política de ingeniería y protocol
   `sgp-validar-cerrar`, `prompts.md` y la plantilla `AGENTS.md` dejan de ordenar marcar `[x]` /
   `estado: hecho` sin esa ronda: un cierre sin registro apagaba los sensores del verificador.
   Propagado al ejemplo y al zip.
+- kit 1.10.0: **cierre duro de `hecho`, ratchet real y sello de commit**. (1) `sgp_check.py` deja de
+  saltarse `estado: hecho`: exige la consistencia de cierre (sección «Criterios de finalización»
+  con al menos un criterio —`-`, `*` o `+`—, ninguno sin marcar, tareas cerradas, «Hecho cuando:»
+  en todas y sin `[POR-ACLARAR]`), sin los cruces externos con `specs/` que pueden derivar tras
+  cerrado el cambio; `cancelado` sigue saltándose. Ese path no tenía ni una prueba. (2) `--ratchet`
+  deja de ser verde silencioso: `rutas.ratchet` (varias rutas relativas por coma, admite comodines;
+  por defecto `rutas.tests`, por compatibilidad) y, si ninguna ruta vigilada existe, **avisa y
+  explica cómo configurarlo** (causa raíz documentada en el piloto: «el `--ratchet` del kit
+  vigilaba la carpeta `tests/` inexistente»). El universo vigilado es índice ∪ árbol de `HEAD`
+  (borrar toda la suite ya no se escapa) y un renombrado que saque una prueba de la ruta vigilada,
+  o que la renombre debilitándola, cuenta como retirada; sin `git`, la guarda **falla cerrado**
+  (no verificado no es verde). (3) Nuevo hook `tools/commit-msg` (flag `--commit-msg FICHERO`):
+  falla cerrado sin fichero de mensaje, trabaja sobre el mensaje limpio (ignora las líneas de
+  comentario y la tijera de `git commit -v`, y escribe el sello antes de la tijera), exige asunto
+  con convención (`tipo[alcance]: asunto`) y un solo `CHG-NNN` por commit, y **sella** el
+  resultado de las tres puertas —estructura validada sobre el **índice**, no sobre el árbol— al
+  final del mensaje (`Gate: sgp_check N err | sgp_review OK|INACTIVA | ratchet N
+  bloq|sin-tests|omitido`); merge, revert, fixup y squash sin sellar; sello idempotente. (4) CI:
+  job `guardas` con `sgp_links --strict` y `sgp_fresh --max-days 180 --require README.md
+  --strict`. El repo del kit gana su `sgp.yaml` propio (el ratchet vigila `kit/tools/test_*.py`)
+  e instala el hook. 34 pruebas nuevas (66 en `test_sgp_check.py`). Propagado al ejemplo y al zip.
+  Al actualizar desde ≤1.9.0: revisa los cambios `hecho` históricos (si les falta la sección de
+  criterios o tienen criterios abiertos, marca `[x]` lo que ya se cumplió; no reabras un cambio
+  histórico solo por esto).
 
 ### 2026-10-20
 - kit 1.8.1: la guarda de enlaces `sgp_links.py` revisa **el universo que git considera del

@@ -1,0 +1,6 @@
+# Configuración SGP del propio repositorio del kit (la del kit distribuido es kit/sgp.yaml).
+# Propósito: decirle a las herramientas del kit dónde mirar en ESTE repo, donde la
+# estructura de adoptador (specs/, changes/, tests/) no aplica: los sensores de estructura
+# emiten avisos por specs/ y changes/ ausentes, y el ratchet mira las pruebas reales.
+rutas:
+  ratchet: kit/tools/test_*.py   # las pruebas del kit viven en kit/tools/, no en tests/

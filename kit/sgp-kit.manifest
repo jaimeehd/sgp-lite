@@ -9,6 +9,7 @@ managed tools/sgp_links.py
 managed tools/sgp_review.py
 managed tools/sync_skills.py
 managed tools/pre-commit
+managed tools/commit-msg
 managed tools/test_sgp_check.py
 managed tools/test_sgp_docs.py
 managed tools/test_sgp_fresh.py
