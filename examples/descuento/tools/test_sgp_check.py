@@ -17,7 +17,7 @@ SPEC = textwrap.dedent("""\
 """)
 
 
-def change(estado="aplicando", ids="[EXP-001, EXP-002]", tasks=None, extra="", inicio="2026-09-22", apetito=3, carril="normal", diseno="", criterios="- [ ] x"):
+def change(estado="aplicando", ids="[EXP-001, EXP-002]", tasks=None, extra="", inicio="2026-09-22", apetito=3, carril="normal", diseno="", criterios="- [ ] `specs/` refleja el comportamiento final.\n- [ ] x"):
     tasks = tasks if tasks is not None else (
         "- [x] T001 [EXP-001] uno\n  Hecho cuando: pasa\n- [x] T002 [EXP-002] dos\n  Hecho cuando: pasa\n")
     return (f"---\nid: CHG-001\ncarril: {carril}\nestado: {estado}\napetito_dias: {apetito}\ninicio: {inicio}\nrequisitos: {ids}\n---\n"
@@ -104,6 +104,20 @@ class Estructura(Base):
         r = self.repo({"changes/CHG-001-x.md": change(tasks="- [x] T001 [EXP-001] uno\n- [x] T002 [EXP-002] dos\n  Hecho cuando: ok\n")})
         rc, out = self.run_check(r)
         self.assertEqual(rc, 1); self.assertIn("T001 no tiene «Hecho cuando:»", out)
+
+    def test_tarea_con_sufijo_se_parsea_y_se_exige_hecho_cuando(self):
+        # `T006a` es una tarea: el parser del kit la reconocía como texto y la ignoraba.
+        r = self.repo({"changes/CHG-001-x.md": change(
+            tasks="- [x] T001a [EXP-001] uno\n- [x] T002 [EXP-002] dos\n  Hecho cuando: ok\n")})
+        rc, out = self.run_check(r)
+        self.assertEqual(rc, 1); self.assertIn("T001a no tiene «Hecho cuando:»", out)
+
+    def test_revision_exige_criterio_de_specs(self):
+        r = self.repo({"changes/CHG-001-x.md": change(estado="revision", criterios="- [ ] x\n")})
+        rc, out = self.run_check(r)
+        self.assertEqual(rc, 1); self.assertIn("sin criterio que cubra `specs/`", out)
+        r = self.repo({"changes/CHG-001-x.md": change(estado="revision")})
+        self.assertEqual(self.run_check(r)[0], 0)
 
     def test_tarea_sin_requisito(self):
         r = self.repo({"changes/CHG-001-x.md": change(tasks="- [x] T001 uno\n  Hecho cuando: ok\n- [x] T002 [EXP-002] d\n  Hecho cuando: ok\n")})
@@ -247,6 +261,35 @@ class Git(Base):
         self.git(r, "add", "-A")
         rc, out = self.run_check(r, "--ratchet", env={"SGP_TESTS_APPROVED": "1"})
         self.assertEqual(rc, 0, out)
+
+    def test_diff_hash_ignora_la_contabilidad(self):
+        # El hash de la fila de revisión cubre el diff sustantivo (sin changes/ ni el log):
+        # añadir la fila o tocar el log no lo cambia; tocar código sí.
+        r = self.setup_repo()
+        (Path(r) / "src").mkdir(exist_ok=True)
+        (Path(r) / "src" / "app.py").write_text("x = 1\n", encoding="utf-8")
+        (Path(r) / "docs" / "LOG-PROCESO.md").write_text("| log |\n", encoding="utf-8")
+        self.git(r, "add", "-A")
+        cfg, _ = sgp_check.read_config(Path(r))
+        h1 = sgp_check.hash_staged(Path(r), cfg)
+        self.assertRegex(h1, r"^[0-9a-f]{64}$")
+        (Path(r) / "changes" / "CHG-001-x.md").write_text("cambio 2\n", encoding="utf-8")
+        (Path(r) / "docs" / "LOG-PROCESO.md").write_text("| log 2 |\n", encoding="utf-8")
+        self.git(r, "add", "-A")
+        self.assertEqual(h1, sgp_check.hash_staged(Path(r), cfg))
+        (Path(r) / "src" / "app.py").write_text("x = 2\n", encoding="utf-8")
+        self.git(r, "add", "-A")
+        self.assertNotEqual(h1, sgp_check.hash_staged(Path(r), cfg))
+
+    def test_diff_hash_cli(self):
+        r = self.setup_repo()
+        (Path(r) / "src").mkdir(exist_ok=True)
+        (Path(r) / "src" / "a.py").write_text("x = 1\n", encoding="utf-8")
+        self.git(r, "add", "-A")
+        p = subprocess.run([PY, CHECK, "--root", r, "--diff-hash"], capture_output=True,
+                           text=True, encoding="utf-8", errors="replace", env=_env())
+        self.assertEqual(p.returncode, 0)
+        self.assertRegex(p.stdout.strip(), r"^[0-9a-f]{64}$")
 
     def repo_git(self, files):
         r = self.repo(files)

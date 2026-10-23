@@ -13,7 +13,9 @@ Esta puerta lo comprueba de forma mecánica:
     id de la tarea y el del cambio), esté CERRADA y mencione a un subagente;
   * desde `revision.corte_fuente` (2026-10-23 por defecto), la fila debe citar
     además `subagente <id>` (no basta el nombre del subagente: eso era
-    auto-atestación);
+    auto-atestación) y `diff: <hash>` (el hash que imprime
+    `python tools/sgp_check.py --diff-hash`), para atar la revisión al contenido
+    revisado y no a una versión anterior;
   * una fila malformada no se ignora: se rechaza y se dice qué línea es.
 
 Inactivación declarada: si el proyecto NO tiene el log, la puerta lo dice (aviso
@@ -191,6 +193,14 @@ def fuente_ok(fila: dict, corte: str) -> bool:
     return bool(FUENTE_RE.search(fila["que"] + " " + fila["ref"]))
 
 
+def diff_ok(fila: dict, corte: str, hash_actual: str) -> bool:
+    """Desde el corte, la fila debe citar `diff: <hash>` del contenido revisado."""
+    if fila["fecha"] < corte:
+        return True
+    m = re.search(r"diff:\s*([0-9a-fA-F]{8,64})", fila["que"] + " " + fila["ref"])
+    return bool(m) and hash_actual.startswith(m.group(1).lower())
+
+
 def revisar(raiz: Path, cfg: dict) -> int:
     cambios = ficheros_cambiados(raiz, f"{cfg['cambios']}/*.md")
     if not cambios:
@@ -223,6 +233,11 @@ def revisar(raiz: Path, cfg: dict) -> int:
     corte = cfg["corte"]
     subagentes = cfg["subagentes"]
     exentas = linea_base(raiz)
+    cfg_check, _ = sgp_check.read_config(raiz)
+    hash_actual = sgp_check.hash_staged(raiz, cfg_check)
+    if hash_actual is None:
+        print("[revisión] FALLA: no se pudo calcular el hash del diff staged (git).")
+        return 1
     faltantes = []
     for cambio in cambios:
         texto_staged = contenido_indexado(raiz, cambio, None)
@@ -271,6 +286,12 @@ def revisar(raiz: Path, cfg: dict) -> int:
                     f"{cambio}: la fila de revisión de {tid} no cita `subagente <id>` "
                     f"(obligatorio desde {corte})"
                 )
+            elif not diff_ok(fila, corte, hash_actual):
+                faltantes.append(
+                    f"{cambio}: la fila de revisión de {tid} no cita `diff: <hash>` del "
+                    f"contenido revisado (obligatorio desde {corte}); calcula el hash con "
+                    f"`python tools/sgp_check.py --diff-hash`"
+                )
             else:
                 for otro in subagentes:
                     if otro not in fila["que"]:
@@ -284,7 +305,7 @@ def revisar(raiz: Path, cfg: dict) -> int:
         print(f"  (una tarea se cierra con {', '.join(subagentes)} y su confirmación "
               f"queda en {log_ruta}:")
         print("   fila de tipo «revisión» CERRADA, que cite la tarea y el cambio,")
-        print(f"   y desde {corte} cite `subagente <id>`).")
+        print(f"   y desde {corte} cite `subagente <id>` y `diff: <hash>`).")
         return 1
 
     print("[revisión] OK: toda tarea cerrada por este commit tiene su fila de "

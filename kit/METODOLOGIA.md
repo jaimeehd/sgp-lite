@@ -69,7 +69,7 @@ Reglas: la respuesta es **observable** (mensaje, código de salida, estado); el 
 1. Los sensores se enganchan por **hooks** (git y, si tu agente lo permite, del agente), no por prompt.
 2. **Un sensor sin comprobación real es un error**: comandos vacíos en `sgp.yaml` fallan en pre-merge.
 3. **Las pruebas no se borran ni se debilitan** para hacer pasar el trabajo (ratchet: `SGP_TESTS_APPROVED=1` solo con tu aprobación).
-4. **Presupuesto:** `apetito_dias` por cambio y `max_iteraciones_por_tarea`. Al agotarse se detiene: **reformular o cancelar, nunca extender**.
+4. **Presupuesto:** `apetito_dias` por cambio (con sensor). Los intentos por tarea son una guía de trabajo, no un sensor: al agotarse se detiene igual — **reformular o cancelar, nunca extender**.
 
 ## Convención de pruebas (trazabilidad real)
 

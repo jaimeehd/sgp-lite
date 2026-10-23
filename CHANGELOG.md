@@ -73,6 +73,17 @@ Historial de versiones de **sgp-lite** (kit, política de ingeniería y protocol
   sustitución). Así un proyecto conserva su política de commits (tope + autorización + sello) sin
   bifurcar ficheros gestionados. 8 pruebas nuevas (75 en `test_sgp_check.py`, 10 en
   `test_sgp_kit.py`). Propagado al ejemplo y al zip.
+- kit 1.12.0: **sensores que faltaban: sufijos de tarea, hash de la revisión y criterio de
+  `specs/`**. (1) `TASK_RE` acepta sufijos (`T006a`): antes el verificador las leía como texto y no
+  exigía su «Hecho cuando» ni contaban para cobertura ni para el cierre (el parser de `sgp_review`
+  ya los aceptaba; ahora ambos coinciden). (2) La fila de revisión cita el hash del diff sustantivo
+  (`diff: <hash>`, con `sgp_check.py --diff-hash`, que excluye `changes/` y el log): desde
+  `revision.corte_fuente` la puerta lo exige y lo compara, así una revisión de una versión anterior
+  ya no vale para el commit. (3) `estado: revision` con requisitos exige un criterio que cubra
+  `specs/`: el cierre no puede ignorar la spec (comprobación de presencia; el contenido sigue siendo
+  del humano). (4) Se retira `max_iteraciones_por_tarea`: era una regla declarada sin sensor y pasa
+  a ser una guía de trabajo sin clave de configuración. 6 pruebas nuevas (79 en
+  `test_sgp_check.py`, 23 en `test_sgp_review.py`). Propagado al ejemplo y al zip.
 
 ### 2026-10-20
 - kit 1.8.1: la guarda de enlaces `sgp_links.py` revisa **el universo que git considera del

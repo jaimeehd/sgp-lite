@@ -5,6 +5,7 @@
     python tools/sgp_check.py --run               # además build/tests/lint de sgp.yaml
     python tools/sgp_check.py --stage pre-merge   # estricto: ejecuta todo + trazabilidad por requisito
     python tools/sgp_check.py --ratchet           # bloquea borrar/debilitar pruebas (git, staged)
+    python tools/sgp_check.py --diff-hash         # hash del staged sin contabilidad (fila de revisión)
     python tools/sgp_check.py --commit-msg FICHERO  # valida y sella el mensaje (hook commit-msg)
     python tools/sgp_check.py --nuevo mi-cambio   # crea changes/CHG-00N-mi-cambio.md desde la plantilla
 
@@ -17,7 +18,7 @@ con specs/ y carril se omiten a propósito, porque pueden cambiar después de ce
 La política de commit (tope de tamaño, token de autorización y campos del sello) se configura en
 `sgp.yaml` bajo `commit:` (`max_lineas`, `autorizacion`, `sello`).
 """
-import argparse, datetime, fnmatch, os, re, subprocess, sys, tempfile
+import argparse, datetime, fnmatch, hashlib, os, re, subprocess, sys, tempfile
 from pathlib import Path
 
 ESTADOS = ["propuesta", "aplicando", "revision", "hecho", "cancelado"]
@@ -25,13 +26,13 @@ ACTIVOS = ("propuesta", "aplicando", "revision")
 CARRILES = {"rapido", "normal", "mayor"}  # rapido: <1d, sin requisitos nuevos | normal: 1 dominio | mayor: cruza dominios/arquitectura/dependencias -> exige diseño y ADR
 ID = r"[A-Z]{2,5}-\d{3}"
 REQ_RE = re.compile(rf"^\s*-\s*\*\*({ID})\*\*\s*(.*)$")
-TASK_RE = re.compile(r"^\s*-\s*\[( |x|X)\]\s+(T\d+)\b(.*)$")
+TASK_RE = re.compile(r"^\s*-\s*\[( |x|X)\]\s+(T\d+[a-z]?)\b(.*)$")
 TAG_RE = re.compile(rf"\[({ID}(?:\s*,\s*{ID})*)\]")
 PENDING = "[POR-ACLARAR]"
 VAGAS = ("adecuad", "rápid", "rapid", "intuitiv", "fácil", "facil", "robust", "eficien", "amigabl")  # raíces
 SIN_PRUEBAS = re.compile(r"Ran 0 tests|no tests ran|collected 0 items|0 tests? (found|ran)|Total tests: 0"
                          r"|No test matches|Ninguna prueba coincide", re.I)  # las dos últimas: dotnet test con filtro sin coincidencias (código 0)
-DEFAULTS = {"max_iteraciones_por_tarea": "5", "max_lineas_constitucion": "20",
+DEFAULTS = {"max_lineas_constitucion": "20",
             "specs": "specs", "cambios": "changes", "tests": "tests",
             "max_lineas": "0", "autorizacion": "Tamano-OK", "sello": "sgp_check, revision, ratchet"}
 
@@ -96,6 +97,23 @@ def read_config(root):
         if m and section:
             (cmds if section == "comandos" else cfg)[m.group(1)] = strip_comment(m.group(2))
     return cfg, cmds
+
+
+def hash_staged(root, cfg):
+    """sha256 del diff staged SIN la contabilidad (`changes/` y el log de proceso).
+
+    Es el hash que la fila de revisión cita (`diff: <hash>`) para atar la revisión al
+    contenido revisado: calcularlo antes de añadir la fila y después de añadirla da lo
+    mismo, porque esa contabilidad queda fuera."""
+    env = dict(os.environ, PYTHONIOENCODING="utf-8")
+    cambios = str(cfg.get("cambios") or "changes").strip("/") or "changes"
+    log = str(cfg.get("log_proceso") or "docs/LOG-PROCESO.md").strip("/")
+    args = ["git", "diff", "--cached", "--binary", "--", ".",
+            f":(exclude){cambios}", f":(exclude){log}"]
+    p = subprocess.run(args, cwd=root, capture_output=True, env=env)
+    if p.returncode != 0:
+        return None
+    return hashlib.sha256(p.stdout).hexdigest()
 
 
 def frontmatter(text):
@@ -224,6 +242,12 @@ def check_change(path, reqs, rep_main, today, cfg):
         rep.error(name, f"contiene marcas {PENDING} sin resolver", "resuélvelas con el humano y elimina la marca")
     if "## Criterios de finalización" not in text:
         rep.error(name, "falta la sección «## Criterios de finalización»", "copia la sección de changes/_plantilla.md")
+    if estado == "revision" and ids and "## Criterios de finalización" in text:
+        mm = re.search(r"^##\s+Criterios de finalización[^\n]*\n(.*?)(?=^##\s|\Z)", text, re.S | re.M)
+        if mm and not re.search(r"^\s*[-*+]\s*\[[ xX]\].*specs/", mm.group(1), re.M):
+            rep.error(name, "estado 'revision' sin criterio que cubra `specs/`: la spec debe "
+                            "reflejar el cierre",
+                      "añade «- [ ] `specs/` refleja el comportamiento final (o «sin cambios: motivo»)»")
     if carril == "mayor":
         if "## Diseño" not in text or not re.search(r"##\s*Diseño.{0,400}Alternativa", text, re.S | re.I):
             rep.error(name, "carril 'mayor' sin sección «## Diseño» con una alternativa descartada",
@@ -664,6 +688,8 @@ def main():
     ap.add_argument("--stage", choices=["task", "pre-merge"], default="task")
     ap.add_argument("--run", action="store_true", help="ejecuta build/tests/lint de sgp.yaml")
     ap.add_argument("--ratchet", action="store_true")
+    ap.add_argument("--diff-hash", action="store_true", dest="diff_hash",
+                    help="muestra el hash del staged sin contabilidad (para la fila de revisión)")
     ap.add_argument("--commit-msg", metavar="FICHERO", dest="commit_msg",
                     help="valida y sella el mensaje de commit (uso interno del hook: Git pasa .git/COMMIT_EDITMSG)")
     ap.add_argument("--nuevo", metavar="NOMBRE")
@@ -680,6 +706,13 @@ def main():
             print("[ERROR] --commit-msg no se combina con --ratchet ni --nuevo.")
             return 1
         return commit_msg(a.commit_msg, root, cfg, a.today)
+    if a.diff_hash:
+        h = hash_staged(root, cfg)
+        if not h:
+            print("[ERROR] no se pudo calcular el hash del diff staged (git).")
+            return 1
+        print(h)
+        return 0
     if a.ratchet:
         rc, _ = ratchet(root, cfg)
         return rc

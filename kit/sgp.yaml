@@ -4,7 +4,6 @@
 # Un `#` precedido de espacio inicia un comentario, salvo dentro de comillas.
 # Ver tools/sgp_check.py (read_config).
 limites:
-  max_iteraciones_por_tarea: 5
   max_lineas_constitucion: 20
 rutas:
   specs: specs
@@ -20,7 +19,7 @@ rutas:
 # puerta avisa que está inactiva y no exige la ronda de revisión.
 # revision:
 #   log_proceso: docs/LOG-PROCESO.md   # registro de rondas de revisión (fila: | fecha | # | tipo | qué | estado | referencia |)
-#   corte_fuente: 2026-10-23           # desde esta fecha, toda fila exige citar `subagente <id>`
+#   corte_fuente: 2026-10-23           # desde esta fecha, toda fila exige `subagente <id>` y `diff: <hash>` (hash de `sgp_check.py --diff-hash`)
 #   subagentes: senior-reviewer, independent-verifier, docs-syncer
 # Política de commit (tools/commit-msg). Con `max_lineas` > 0, un commit que cambie más líneas
 # que ese tope exige una línea «<autorizacion>: autorizado por <quien> · <motivo>».
